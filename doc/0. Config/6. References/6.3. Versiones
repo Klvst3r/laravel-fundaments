@@ -1,0 +1,224 @@
+Instalación de versiones especificas.
+
+
+
+
+Para poder Ejecutar una instalación concreta se deben de tomar en cuenta varios factores.
+
+Para el caso concreto actual con Deban 11 solo es posible trabajar con las dos ultimas veriones estables que en este caso son la verion 8 y la ultima actualización de laravel en su verion 9. En Ambos casos trabajan con PHP Version 8 o superior.
+
+Para el caso de windows si aun tenemos veriones instaladas de PHP 7 se puede instalar las veriones de Larvel 5, 6 y 7 (Versiones 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6 y 7)
+
+
+Todas las versiones de Laravel 5 son iguales, se programa exactamente igual en todas, pero quizas puedan existir algunos micro cambios muy muy pequeños de una versión a otra, para instalar una versión especifica de Laravel debes lanzar el comando:
+
+
+¿Qué versión de Laravel elegir?
+
+Si estás a punto de comenzar un nuevo proyecto, te recomendamos usar la versión 9 o en su defecto la version estable 8.
+
+Si tienes la oportunidad de actualizar un proyecto, actualízalo a la versión 8.
+
+Si quieres dar tus Primeros pasos con Laravel puedes comenzar a partir de la versión 5.5 o superior, y luego revisar las pequeñas novedades o cambios entre versiones (Laravel 8 es muy similar a Laravel 7, 6 y 5.*, las actualizaciones entre cada versión toman de 15 minutos a 1 hora, dependiendo de la complejidad de tu aplicación).
+
+
+¿No sería mejor utilizar LTS?
+
+Taylor, creador de Laravel, te recomienda que utilices la versión más reciente y considera LTS como un anti-patrón. Puesto que al trabajar con LTS haces que sea más difícil actualizar tu aplicación a lo largo del tiempo.
+
+Si decides usar la versión LTS, puedes instalar Laravel 6.
+
+Es importante mencionar que conforme se vaya actualizando Laravel es importante ir actualizando nuestro poryecto a las veriones mas recientes para no perder compatibilidad y funcionalidades a la hora de escalar los proyectos a producción.
+
+Tambien es improtante considerar los recursos donde se desplegara el proyecto final de ahi podremos partir con que verion de desarrollo trabajar. 
+
+
+
+Veriones de Laravel 5 en Windows
+------------
+	composer create-project laravel/laravel proyecto "5.2.*" 
+
+
+
+Donde proyecto, es el nombre de tu proyecto.
+
+Y donde 5.2, es la versión que eliges.
+
+En Windows utilizo esta versión porque es una de las mas estables y que mejor funciona, y ya te digo la manera de programar es igual en esta que en la 5.3, 5.4 y 5.5.
+
+
+--------------------------------
+
+En Linux
+----------
+En Linux dejo a consideración de la instalación la versión por defecto siendo esta, Laravel 9.2.0 con PHP v.8.1.3
+
+Para la creación de un Proyecto en Laravel con Linux hacemos los siguiente:
+
+	composer create-project --prefer-dist laravel/laravel laravel	
+
+
+Laravel 9 en Linux
+---------
+
+Ej.
+	composer create-project laravel/laravel Laravel9 "9.*"
+
+
+
+Laravel 8 en Linux
+---------
+	composer create-project laravel/laravel Laravel8 "8.*"
+
+
+Es importante 
+
+
+
+
+
+
+
+Referencias de las versiones	
+	https://styde.net/que-version-de-laravel-debo-usar/
+
+	https://laravelversions.com/en
+
+	https://www.oulub.com/docs/laravel/es-es/installation
+
+	https://blog.pleets.org/article/instalar-laravel-8
+
+
+Que version debo utilizar
+	https://styde.net/que-version-de-laravel-debo-usar/
+
+Diferencias Entre Versiones
+	https://styde.net/laravel-6-es-lts/
+
+Actualizar versiones
+	https://styde.net/como-actualizar-tu-aplicacion-de-laravel-5-8-a-6-0/
+
+Pruebas con Laravel
+	https://styde.net/pruebas-con-laravel/
+
+
+Versiones 			Vigencia
+5.6 				Inicia en 2018 y Concluye soporte a principios de 2019
+5.7 				Inicia en el segundo semestre de 2018 y concluye soporte a finales de 2019
+5.8 				Inicia en primer seestre de 2019 y concluye soporte a principios de 2020
+
+Versiones actualmente soportadas
+
+6.0 (LTS)			Inicia en el segundo semestre de 2019 y concluira a mediados del 2022
+7					Inicia a principios de 2020 y concluye mantenimiento a principios de 2021.
+8 					Inicia soporte en septiembre de 2020 y se concluye ajustes de seguridad en julio de 2022
+9 					Versión actual inicia en febrero de 2022 y concluye soporte programado en agosto de 2023
+10(no released yet)	Iniciara en febrero de 2023 y tendra soporte hasta agosto del 2024
+
+
+¿Por qué Laravel cambia de versión tan rápidamente?
+
+Laravel recibe una actualización mayor cada 6 meses, con varias características nuevas y pocos cambios que afectan la compatibilidad con la versión anterior.
+
+A partir de Laravel 6 el framework está utilizando «versionamiento semántico» o «semver»; es por esto que verás cómo Laravel progresa de la versión 6 a 7, 8, 9, etc. mientras que anteriormente cada 6 meses la versión cambiaba de 5.0 a 5.1, 5.2, 5.3, etc. Esto no quiere decir que los cambios de código entre versiones de Laravel ahora sean más drásticos, o que debas re-aprender el framework desde el principio, más bien todo lo contrario, puesto que el framework es cada vez más estable, los cambios de compatibilidad entre versiones son más pequeños que antes. El cambio de número solo indica que hay cambios que afectan la compatibilidad con la versión anterior, aunque sean mínimos.
+
+
+--------------------
+¿Debo usar Laravel 5.*, 6 o 7?
+
+No, te recomendamos comenzar con Laravel 9 la versión actual o en su defecto la versión 8 o que utilices Laravel 6 (solo si requieres usar una versión LTS).
+
+No hay razón de impacto para instalar versiones anteriores de Laravel para nuevos proyectos comerciales o personales, a menos que sea con razones educativas, por ejemplo, para seguir un curso. 
+
+Puesto que las diferencias entre versiones a partir de Laravel 5.5 son pequeñas, aún puedes aprender los fundamentos del framework eligiendo uno de nuestros cursos gratuitos: 
+
+
+Cursos Gratuitos:
+-------------------
+
+Primeros Pasos con Laravel 6 
+	https://styde.net/laravel-6/
+
+Curso de Laravel 5.5 desde cero.
+	https://styde.net/laravel-5/
+
+
+También puedes unirte a nuestro listado de correos para avisarte de los nuevos cursos que estamos preparando con Laravel 8:
+
+Fuente:
+https://styde.net/que-version-de-laravel-debo-usar/
+
+
+Fuente:
+
+Comenzando con Laravel
+	Curso de Laravel desde cero
+		https://styde.net/laravel-5/
+
+
+
+Revisiones Pasadas
+	Laravel 5.3
+		https://styde.net/curso-de-novedades-en-laravel-5-3/
+
+	Laravel 5.4
+		https://styde.net/curso-de-novedades-de-laravel-5-4/
+
+	Laravel 5.5 
+		https://styde.net/curso-de-novedades-de-laravel-5-5/
+
+
+
+Las novedades de Laravel 5.6 a 6 están explicadas dentro de:
+	
+	Panel de Control con Laravel
+		https://styde.net/crea-un-panel-de-control-con-laravel/
+
+	Técnicas de autorización con Laravel 
+		https://styde.net/tecnicas-de-autorizacion-con-laravel/
+
+
+Laravel 6
+	Primeras pasos con Laravel 6
+		https://styde.net/laravel-6/
+
+
+Laravel 7
+	Novedades de Laravel 7
+		https://styde.net/laravel-6/
+
+	Actualizar a Laravel 7
+		https://styde.net/guia-de-actualizacion-a-laravel-7/
+		https://styde.net/videotutorial-actualizando-una-aplicacion-de-laravel-6-a-7/
+
+
+Laravel 8
+	Novedades de Laravel 8
+		https://styde.net/novedades-de-laravel-8/
+
+	Actualizar a Laravel 8
+		https://styde.net/guia-de-actualizacion-a-laravel-8/
+		https://styde.net/actualizar-una-aplicacion-a-laravel-8/			
+
+
+Componentes para proyectos con Laravel
+	https://styde.net/como-elegir-un-plugin-o-componente-para-tu-proyecto/						
+
+Interfaces Dinamicas con Laravel y jquery
+	https://styde.net/curso-de-interfaces-dinamicas-con-laravel-y-jquery/	
+
+Laravel 9
+	Instalación de Laravel 9
+		https://styde.net/instalacion-de-laravel-9/
+
+
+	Curso de Laravel 9
+		https://styde.net/curso-de-laravel-9/		
+
+	Categorias de Laravel
+		https://styde.net/category/laravel/
+		
+
+
+
+Para instalar una ve

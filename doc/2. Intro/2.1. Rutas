@@ -1,0 +1,46 @@
+3. Rutas
+
+Laravel se basa en un patron front-controler que se basa en tener un solo punto de entrada en la aplicacion
+
+index.php
+
+Ala tener un unico punto de entrada los unicos archivos a los que se puede acceder son los que estan dentro d la carpeta public.
+
+Todo es por seguridad para no ingresar a la carpeta app que es el coraxon de la aplicacion o a la carpeta config, carpeta de configuración.
+
+Laravel sabra que información que debe mostrar cuando un usuario escribe una url
+
+Para ello nos sirven la rutas para saber que archivo es el que se encarga de administrar las rutas,
+
+para ello
+
+manejar el archivo web.php
+
+Laravel verificara si la rta esta definida en este archivo.
+
+ejemplos de rutas
+
+Route::get('/', function () {
+    //return view('welcome');
+    return "Welcome to principal page";
+});
+
+Route::get('cursos', function(){
+    return "Welcome to courses page";
+});
+
+route::get('cursos/{curso}', function($curso){
+    return "Bienvenido al curso de : $curso";
+});
+
+
+Atajos:
+	Comentarios
+		ALT + SHIFT + A
+
+en ocaciones sera necesario automatizar tareas, en VS Code se puede agregar extensiones
+Extensiones
+	Laravel snipets
+		Route::get
+
+		

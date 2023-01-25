@@ -1,0 +1,107 @@
+2.1 Como generar un dominio local en windows xampp 
+
+vamos a crear un host virtual en tu ordenador local para que accedas desde tu navegador a un dominio "virtual" (algo así como un dominio falso, que solo funcionará en tu máquina local) para cada uno de tus proyectos. Esta práctica permitirá al servidor web Apache que tienes en local trabajar con múltiples nombres de host, de modo que el acceso a cada proyecto se realice por una URL independiente, en lugar de que todos tus proyectos en local se encuentren en carpetas distintas de "localhost".
+
+Para ello vamos a trabajar desde un servidor web Apache que hemos instalado con Xampp, pero de manera similar este procedimiento te podría servir perfectamente para Wamp o cualquier otro programa utilizado para instalar tu entorno de desarrollo en PHP.
+Nota: Esto puede ser útil por diversos motivos. El más importante es por mantener la estructura de carpetas de los proyectos en local, tal como van a estar en el servidor remoto, una vez se publique el proyecto. Pero en mi caso hay otro motivo por el cual estoy configurando este host virtual. En mi ordenador lo tengo enlazado sobre una carpeta de Dropbox, que comparto con diversos ordenadores. De este modo puedo tener acceso a mis archivos de desarrollo local desde cualquiera de mis ordenadores e incluso desde sistemas operativos distintos.
+
+Este proceso es muy sencillo y lo puedes reproducir en diez minutillos sin mayores complicaciones. Consta de dos pasos principales:
+
+    Crear el host virtual en Windows editando el archivo "hosts"
+    Configurar Apache para que acepte VirtualHost y asociarlo a tu carpeta Dropbox
+
+1) Crear tu host local en Windows
+
+El primer paso es configurar el archivo "hosts" de Windows, que mantiene una lista de nombres de dominio que puedes hacer corresponder con direcciones IP. Usarás el nombre de host que desees y lo asociarás a tu IP local.
+
+El archivo de hosts en Windows 7, o Windows 10, está en la carpeta C:\Windows\System32\drivers\etc. Allí verás diversos archivos y tendrás que editar el llamado "hosts".
+Nota: Si esa carpeta o alguna de las carpetas padre, o esos archivos no están visibles en tu sistema, asegúrate de que en las opciones de carpeta tienes configurado que te muestre los archivos ocultos. En otros sistemas Windows consulta con San-Google cuál es la localización del archivo hosts.
+Editar el archivo hosts en modo administrador
+
+Ahora, ten atención a un detalle importante. El archivo "hosts" está protegido contra escritura y tendrás que estar ejecutando tu bloc de notas como administrador para poder salvar los cambios. Si no eres administrador te saldrá un mensaje que dice que "Please check if this file is opened in another program" o algo como "no tiene permisos para guardar en esta ubicación, solicite permisos al administrador".
+
+Para abrir como administrador tienes la opción de abrir primero el Bloc de notas en modo de administración. Para ello, en el menú de programas, pulsas con el botón derecho sobre el icono del Bloc de notas y luego seleccionas "Ejecutar como administrador". Luego abres desde el bloc el archivo de hosts y entonces te permitirá guardar los cambios.
+
+Otros programas como el editor Notepad++ cuando detecten que no tienen permisos para la escritura del archivo, te mostrará una caja de diálogo donde puedas confirmar si deseas realizar la escritura del fichero en modo administrador.
+
+Los cambios en este archivo de hosts que tienes que introducir son bien sencillos. Simplemente le diremos el nombre del host que deseamos crear virtualmente y la IP a la que solicitar los servicios. Tienes varios ejemplos sobre la sintaxis que se debe usar, pero es bien simple.
+
+127.0.0.1      blog.klvst3r.io      #XAMP Laravel 9  
+
+Como has podido ver, se indica primero la IP local 127.0.0.1 y luego el nombre del host virtual, separados por un espacio o tabulador. El resultado quedará más o menos como aparece en la siguiente imagen.
+
+ 
+2) Configurar Apache para aceptar virtualhost
+
+Este segundo paso es un poco más complejo, pero prácticamente con un copia-pega lo tenemos solucionado. Se trata de abrir el archivo de configuración de Apache para los host virtuales "vhost". El archivo está en esta ruta en mi Xampp.
+
+C:\xampp\apache\conf\extra
+
+El nombre del archivo es: httpd-vhosts.conf. Por tanto, la ruta completa es C:\xampp\apache\conf\extra\httpd-vhosts.conf
+
+Lo editas con cualquier editor y verás que tiene una descripción también sobre la sintaxis a usar para configurar los host virtuales en Apache. Nosotros agregaremos al final unas cuantas líneas.
+
+NameVirtualHost *
+<VirtualHost *>
+  DocumentRoot "Q:\XAMPP\htdocs"
+  ServerName localhost
+</VirtualHost>
+<VirtualHost *>
+  DocumentRoot "Q:\XAMPP\htdocs\dev\blogKlvst3r\public"
+  ServerName blog.klvst3r.io
+  <Directory "Q:\XAMPP\htdocs\dev\blogKlvst3r\public">
+    Options All
+    AllowOverride All
+    Require all granted
+  </Directory>
+</VirtualHost>
+
+
+Las primeras líneas son para indicarle a Apache que el host virtual localhost sigue siendo la carpeta "htdocs" de Xampp C:\xampp\htdocs. Esto es bueno que lo dejes así para que puedas mantener los archivos que actualmente tienes en tu localhost y el acceso a aplicaciones como PhpMyAdmin que tienes ya instaladas en local.
+
+Luego tenemos el segundo virtual host que está asociado al host virtual que acabamos de crear. Allí verás un par de datos que tienes que editar. Primero, la ruta C:\miproyecto\httpdocs la deberás cambiar por la ruta de la carpeta que tienes en tu ordenador, donde están los archivos de tu proyecto. Luego tendrás que cambiar también miproyecto.local.com por el nombre del host virtual que acabas de definir en el archivo hosts del Windows.
+
+El listado de código en tu archivo httpd-vhosts.conf quedará más o menos como puedes ver en la siguiente imagen:
+Reiniciar Apache
+
+No te olvides que, después de cualquier cambio en los archivos de configuración de Apache, debes de reiniciar el servidor Apache para que tengan efecto.
+Nota: Por supuesto, aunque no aplica a este artículo, los cambios realizados en el php.ini también requieren el reinicio del servidor. No nunca de estos pequeños detalles que te pueden hacer tiempo y generar frustraciones innecesarias.
+Solucionar "Acceso prohibido!" Error 403
+
+un problema típico que te puedes encontrar en este punto es recibir un error 403 de "acceso prohibido", con un mensaje "Usted no tiene permiso para accesar al directorio solicitado…" (en inglés este error lo encontrarás como "Access Forbidden"). Ocurre porque Apache está rechazando la conexión por la configuración de tu Virtualhost.
+Nota: Este error lo he encontrado en un Xampp más actual, la versión 1.8.1, pero en la versión 1.8.0 que tengo en otro ordenador me había funcionado sin arrojar ningún error 403. En cualquier caso, con la configuración indicada debería funcionarte, pero si encuentras algún problema puedes probar a configurar tu directorio de una manera más detallada.
+
+En definitiva, sería cambiar unas líneas en el bloque "Directory". Con esta otra configuración, el error 403 me ha desaparecido.
+
+<Directory "Q:\XAMPP\htdocs\dev\blogKlvst3r\public">
+    Options All
+    AllowOverride All
+    Require all granted
+  </Directory>
+
+En decenas de webs solucionan este mismo problema y ofrecen diversas otras variantes de configuración que puedes probar si es que te arroja este error de acceso. Te sugiero ver el enlace Adding VirtualHost fails: Access Forbidden Error 403 (XAMPP) (Windows 7) donde ofrecen muchas variantes y configuraciones que han funcionado para muchos otros desarrolladores.
+
+ 
+Abriendo el virtual host recién configurado
+
+Ahora ya solo te queda crear un archivo "index.html", "index.php", o como lo desees crear, para acceder a través de tu navegador.
+
+http://blog.klvst3r.io/
+
+Accederás al "index.php" o "index.html" que tengas en esa carpeta.
+
+Con esto es todo, ya tienes tu Virtualhost configurado sobre Xampp y puedes comenzar a desarrollar en un entorno más avanzado y similar a cómo van a estar las cosas cuando lleves el proyecto a producción. Es una configuración que nos lleva apenas 10 minutos pero que realmente hace una diferencia en el día a día del desarrollo de los proyectos.
+Permitir el listado de directorio
+
+Opcionalmente, otra cosa que me ha venido bien en algunas ocasiones es permitir el listado de directorio en el host virtual (para que te muestre el listado de carpetas y archivos que tienes al acceder a un directorio donde no tengas el documento por defecto).
+Nota: Este error lo he encontrado en un Xampp más actual, la versión 1.8.1, pero en la versión 1.8.0 que tengo en otro ordenador me había funcionado sin arrojar ningún error 403. En cualquier caso, con la configuración indicada debería funcionarte, pero si encuentras algún problema puedes probar a configurar tu directorio de una manera más detallada.
+
+El listado de directorio en tu virtualhost se consigue incluyendo una línea de configuración dentro del elemento "directory".
+
+<Directory "Q:\XAMPP\htdocs\dev\blogKlvst3r\public">
+    Order allow,deny
+    Allow from all
+    Options Indexes FollowSymLinks
+</Directory>
+
+Con esto ya lo tienes todo configurado. Realmente tardas más en leerte el artículo que en realizar los cambios en tu sistema.

@@ -1,0 +1,39 @@
+Error 404 Not Found y las rutas existen en el proyecto
+
+Al trabajar con debian existe un inconveniente al trabajar con Laravel 
+
+Esto puede ser por el el modulo mod_rewrite de apache nos solicite activar este modulo para poder trabajar con URL amigables con Laravel
+
+Esto puede ser debido a una configuración en el archivo de apache2
+
+Para ello editamos el archivo de configuración en Debian 10 para habilitar:
+
+
+LoadModule rewrite_module modules/mod_rewrite.so descomentando las lineas # de la siguiente sección.
+
+y tambien cambiar dentro del archivo de configurción que requiere que 
+
+Require all denied cambie a -> 
+
+Require all granted
+AllowOverride All
+Options Indexes FollowSymLinks	
+
+Esto es editando el archivo 
+
+	sudo subl /etc/apache2/apache2.conf
+
+
+y se modifican los siguientes lineas, haciendo un respaldo de los datos anteriores como recomendación.
+
+<Directory />
+	Options Indexes FollowSymLinks
+	AllowOverride All
+	Require all granted
+</Directory>
+
+<Directory /var/www/>
+	Options Indexes FollowSymLinks
+	AllowOverride None
+	Require all granted
+</Directory>

@@ -1,0 +1,40 @@
+How to solve laravel route not found exception
+
+route not found exception is one of the common exceptions in laravel. most of the time we show a 404 page if the route not found, but actually, we can redirect any pace.
+laravel route not found exception
+so in this post, we will learn
+
+    👉 How to redirect a user to the “404 page” if the route not exist.
+    👉 How to redirect a user to the homepage if the route not exist.
+    👉 How to redirect back a user if the route not exist.
+
+Redirect a user to the "404 page" Laravel
+
+The 404 is HTTP Response code and using this code HTTP reminds us that this page not found for this file is not found. when you get the response code we show a page to our user so that the user can understand easily that this page not found this file is not found. in the laravel project, we can do this in many ways.
+now you will learn how can we redirect our user to the 404 page using route any method in Laravel
+
+Route::any('{url}', function(){
+    return redirect('/404');
+})->where('url', '.*');
+
+Note: put this code after your all routes
+Redirect a user to the home page if the route not found or page not found
+
+Suppose you want to redirect the user to the homepage if the URL is not correct or the page is not found. to do this in the laravel project you can use route any method.
+
+Route::any('{url}', function(){
+    return redirect('/');
+})->where('url', '.*');
+
+Note: put this code after your all routes
+Redirect back User is there if the route not exist or face not found
+
+Redirect user to the same page from where he sends a request for the new page that actually not present on your website.
+Suppose you show your data using pagination and you have only five pages of data. Now Suppose Caesar is on the 5 number page and sends a request to view the 6 number page which is actually not present on your website. in this case you can redirect back to the 5 number page, instead of redirect to the 404 pages.
+We also solve this using the laravel route any method.
+
+Route::any('{url}', function(){
+    return back();
+})->where('url', '.*');
+
+Note: put this code after your all routes.

@@ -1,0 +1,24 @@
+Error de permisos en Linux
+
+
+En oaciones las aplicaciones que corremos o que iniciamos en un sistema operativo, requieramos continuar trabajando en otra plataforma y en otro sistema operativo.
+
+En algunos casos al hacer esta tarea de importación genere un problema de permisos con una leyenda similar a la que sigue a continuación:
+
+Copy Code
+```The stream or file "/opt/bitnami/projects/app-name/storage/logs/laravel.log" could not be opened in append mode: failed to o
+pen stream: Permission denied```
+
+Solución
+
+No debemos preocuparnos, Ya que si estamos trabajando con una plataforma Linux debemos ejecutar algunos comandos:
+
+Para poder dar solución y otrogar permisos ejecutamos:
+
+    sudo chmod -R 775 storage
+
+Si el problema persiste ejecutamos entonces el siguiente comando
+
+    sudo chmod -R ugo+rw storage
+
+Ahora podremos verificar la ejecuación desde cualquier plataforma.

@@ -1,0 +1,113 @@
+Preguntas de configuracion de Apache
+
+
+¿Dónde está el archivo de configuración de Apache en Linux?
+
+En el directorio / etc / httpd / conf encontrará los tres archivos de configuración básicos de Apache: httpd. conf, acceso. conf y srm. conf.
+
+Índice de contenidos
+¿Cómo accedo al archivo de configuración de Apache?
+¿Dónde está el archivo apache2 Dir conf?
+¿Dónde busca Apache los archivos?
+¿Cómo abro Apache en el navegador?
+¿Cómo encuentro la sintaxis httpd conf?
+¿Cómo sé si Apache está instalado en Linux?
+¿Cómo sé si Apache está escuchando en el puerto 80?
+¿Dónde se encuentra .htaccess?
+¿Cómo sé si Apache está instalado?
+¿Cómo muevo un archivo a var www en HTML?
+¿Cuál es el archivo httpd conf?
+¿Qué URL usará en un navegador para probar Apache?
+¿Cómo inicio Apache en Linux?
+¿Cómo ejecuto Apache?
+
+
+
+¿Cómo accedo al archivo de configuración de Apache?
+Trabaja
+
+Introducción.
+Inicie sesión en su sitio web con el usuario raíz a través de una terminal y navegue hasta los archivos de configuración en la carpeta ubicada en / etc / httpd / escribiendo cd / etc / httpd /.
+2Presione la tecla Insertar para comenzar a editar el archivo.
+3Guarde los cambios presionando la tecla Esc, escribiendo: wq y luego presionando Enter.
+
+
+¿Dónde está el archivo apache2 Dir conf?
+Los detalles de la configuración principal de su servidor Apache se encuentran en el archivo “/ etc / apache2 / apache2. conf ”archivo.
+
+¿Dónde busca Apache los archivos?
+Apache usa archivos de configuración para cambiar su comportamiento. Por lo general, los almacena en / etc / apache2 / en sistemas Unix, pero el directorio de configuración puede variar, dependiendo de cómo se instaló y en qué sistema operativo lo está ejecutando.
+
+¿Cómo abro Apache en el navegador?
+Para conectarse al servidor y acceder a la página predeterminada, inicie un navegador e ingrese esta URL:
+
+
+1. http: // localhost / Apache debería responder con una página de bienvenida y debería ver “¡Funciona!”. …
+2. http://127.0.0.1/…
+3. http://127.0.0.1:8080/
+
+
+
+¿Cómo encuentro la sintaxis httpd conf?
+Verifique la configuración de su servidor HTTP Apache
+
+conf archivo de configuración. Revisar todo el archivo de configuración en busca de errores tipográficos puede ser una tarea engorrosa, pero afortunadamente Apache proporciona una forma de escanear su archivo httpd. conf archivo para cualquier error de sintaxis. Esto se puede hacer usando la herramienta configtest del programa apachectl.
+
+¿Cómo sé si Apache está instalado en Linux?
+Busque la sección Estado del servidor y haga clic en Estado de Apache. Puede comenzar a escribir “apache” en el menú de búsqueda para limitar rápidamente su selección. La versión actual de Apache aparece junto a la versión del servidor en la página de estado de Apache. En este caso, es la versión 2.4.
+
+
+
+¿Cómo sé si Apache está escuchando en el puerto 80?
+
+
+1. lsof -i enumerará los puertos abiertos y las aplicaciones correspondientes. lsof | grep apache para apache. …
+2. Consulte / etc / hosts para conocer las direcciones IP conectadas a los nombres.
+3. Consulte / etc / apache2 / sites-enabled / para conocer la configuración de los sitios que están activos para Apache.
+4. Consulte /etc/apache2/ports.conf para escuchar.
+
+
+¿Dónde se encuentra .htaccess?
+Los . El archivo htaccess es un archivo de configuración del servidor que le dice a su servidor cómo manejar ciertas cosas en su sitio web. Por ejemplo, cómo redirigir a los usuarios, proteger con contraseña el área de administración o proteger algunos directorios, etc. Se encuentra en la carpeta raíz de su sitio de WordPress.
+
+
+¿Cómo sé si Apache está instalado?
+Vaya a http: // server-ip: 80 en su navegador web. Debería aparecer una página que diga que su servidor Apache se está ejecutando correctamente. Este comando mostrará si Apache se está ejecutando o se ha detenido.
+
+
+
+¿Cómo muevo un archivo a var www en HTML?
+
+1. Terminal abierta.
+2. escriba sudo nautilus presione enter.
+3. Navegue hasta el archivo o carpeta de destino cuyos permisos desea cambiar (/ var / www)
+4. Haga clic derecho en el archivo o carpeta (carpeta html)
+5. Seleccione Propiedades.
+6. Haga clic en la pestaña Permisos.
+7. Haga clic en los archivos de acceso en la sección Otros.
+8. Seleccione “Crear y eliminar archivos”.
+
+
+¿Cuál es el archivo httpd conf?
+El httpd. conf es el archivo de configuración principal del servidor web Apache. … Se recomienda encarecidamente ejecutar Apache de forma independiente para obtener un mejor rendimiento y velocidad. ServerRoot “/ etc / httpd” La opción ServerRoot especifica el directorio en el que residen los archivos de configuración del servidor Apache.
+
+¿Qué URL usará en un navegador para probar Apache?
+Tendrás Apache ejecutándose. Paso 5 → Vaya a su navegador y escriba http://127.0.0.1 o http: // localhost: 80 para verificar el alojamiento del servidor web Apache por XAMPP visitando el panel.
+
+¿Cómo inicio Apache en Linux?
+Comandos específicos de Debian / Ubuntu Linux para iniciar / detener / reiniciar Apache
+
+1. Reinicie el servidor web Apache 2, ingrese: # /etc/init.d/apache2 restart. $ sudo /etc/init.d/apache2 reiniciar. …
+2. Para detener el servidor web Apache 2, ingrese: # /etc/init.d/apache2 stop. …
+3. Para iniciar el servidor web Apache 2, ingrese: # /etc/init.d/apache2 start.
+
+
+¿Cómo ejecuto Apache?
+Instalar el servicio Apache
+
+1. En la ventana del símbolo del sistema, ejecute el siguiente comando: httpd.exe -k install -n “Servidor HTTP Apache”
+2. Desde la ventana del símbolo del sistema, ejecute el siguiente comando y presione ‘Enter’.
+3. Reinicie su servidor y abra un navegador web una vez que haya vuelto a iniciar sesión.
+
+
+

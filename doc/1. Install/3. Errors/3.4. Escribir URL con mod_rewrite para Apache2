@@ -1,0 +1,280 @@
+4.5 Cómo reescribir URL con mod_rewrite para Apache en Debian 10 
+
+
+
+Introducción
+
+
+¿Qué es mod_rewrite?
+¿Qué es Mod_rewrite? El módulo mod_rewrite utiliza un mecanismo de sobrescritura basado en reglas y un analizador PCRE regular para reorganizar las URL solicitadas a pedido. De forma predeterminada, mod_rewrite asigna la URL a la ruta del sistema de archivos. Sin embargo, también se puede usar para redirigir una URL a otra URL o para invocar una alerta de proxy interno.
+
+mod_rewrite proporciona una forma flexible y poderosa de manipular URL con un número ilimitado de reglas. Cada regla puede tener una cantidad ilimitada de condiciones, reglas vinculadas, lo que le permite reescribir las URL en función de las variables del servidor, las variables de entorno, los encabezados HTTP o las marcas de tiempo.
+
+mod_rewrite se ejecuta en la ruta URL completa, incluida la sección de información de la ruta. La regla de sobrescritura se puede invocar en archivos httpd.conf o .htaccess. La ruta generada por la regla de sobrescritura puede implicar una serie de consultas o puede dar lugar a un subprocesamiento interno, una redirección de solicitudes externas o un rendimiento de proxy interno.
+
+
+
+Apache "mod_rewrite" El módulo le permite reescribir URLs de una manera más limpia, traduciendo rutas legibles por humanos en cadenas de consulta amigables con el código. También le permite reescribir URL según las condiciones.
+
+Un .htaccess file le permite crear y aplicar reglas de reescritura sin acceder a los archivos de configuración del servidor. Colocando el .htaccess archivo en la raíz de su sitio web, puede administrar las reescrituras por sitio o por directorio.
+
+En esta sección, habilitará mod_rewrite y use .htaccess archivos para crear una redirección de URL básica y luego explorar un par de casos de uso avanzados.
+
+
+Prerrequisitos
+
+Para seguir esta seccion , necesitará:
+
+Paso 1: Habilitación de mod_rewrite
+
+
+Establecer mod_rewrite
+
+Habilitar mod_rewrite:
+
+sudo a2enmod rewrite
+
+sudo systemctl restart apache2
+
+
+Configurar el reconocimiento de reglas desde el archivo .htaccess
+
+sudo nano /etc/apache2/sites-available/000-default.conf
+
+
+Dentro de este archivo, encontrará un bloque que comienza con <VirtualHost *: 80>. Dentro de este bloque, agregue el siguiente bloque nuevo para que el archivo de configuración se vea así
+
+---
+<VirtualHost *:80>
+   <Directory /var/www/html>
+      Options Indexes FollowSymLinks MultiViews
+      AllowOverride All
+      Require all granted
+   </Directory>
+. . .
+</VirtualHost>
+---
+
+
+Para habilitar las nuevas reglas necesitamos reiniciar el servidor Apache
+
+sudo systemctl restart apache2
+
+
+Ahora puede agregar reglas de reescritura al archivo .htaccess que normalmente se encuentra en el directorio raíz de la aplicación web.
+
+
+
+
+
+Para que Apache comprenda las reglas de reescritura, primero debemos activar mod_rewrite. Ya está instalado, pero está deshabilitado en una instalación de Apache predeterminada. Utilizar el a2enmod comando para habilitar el módulo:
+
+	sudo a2enmod rewrite
+
+
+Esto activará el módulo o le avisará que el módulo ya está habilitado. Para que estos cambios surtan efecto, reinicie Apache:
+
+    sudo systemctl restart apache2
+
+mod_rewrite ahora está completamente habilitado. En el siguiente paso, configuraremos un .htaccess archivo que usaremos para definir reglas de reescritura para redireccionamientos.
+
+Paso 2: configurar .htaccess
+
+Un .htaccess file nos permite modificar nuestras reglas de reescritura sin acceder a los archivos de configuración del servidor. Por esta razón, .htaccess es fundamental para la seguridad de su aplicación web. El período que precede al nombre del archivo asegura que el archivo esté oculto.
+
+Nota: Cualquier regla que pueda poner en un .htaccess El archivo también se puede colocar directamente en los archivos de configuración del servidor. De hecho, el documentación oficial de Apache recomienda usar archivos de configuración del servidor en lugar de .htaccess gracias a tiempos de procesamiento más rápidos:
+
+	http://httpd.apache.org/docs/2.4/howto/htaccess.html
+
+
+
+Sin embargo, en este sencillo ejemplo, el aumento de rendimiento será insignificante. Además, establecer reglas en .htaccess es conveniente, especialmente con varios sitios web en el mismo servidor. No requiere reiniciar el servidor para que los cambios surtan efecto ni privilegios de root para editar reglas, lo que simplifica el mantenimiento y el proceso de realizar cambios con una cuenta sin privilegios. El software popular de código abierto como WordPress y Joomla se basa en .htaccess archivos para realizar modificaciones y reglas adicionales bajo demanda.
+
+Antes de empezar a usar .htaccess archivos, deberá configurar y asegurar algunas configuraciones más.
+
+De forma predeterminada, Apache prohíbe el uso de .htaccess archivo para aplicar las reglas de reescritura, por lo que primero debe permitir cambios en el archivo. Abra el archivo de configuración de Apache predeterminado usando nano o tu editor de texto favorito:
+
+    sudo nano /etc/apache2/sites-available/000-default.conf
+
+Dentro de ese archivo, encontrará un bloque comenzando en la primera línea. Dentro de ese bloque, agregue el siguiente bloque nuevo para que su archivo de configuración tenga el siguiente aspecto. Asegúrese de que todos los bloques estén correctamente sangrados:
+
+/etc/apache2/sites-available/000-default.conf
+
+
+    
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    
+
+    . . .
+
+Guarde y cierre el archivo. Si usaste nano, hazlo presionando CTRL+X, Y, luego ENTER.
+
+Luego, verifique su configuración:
+
+    sudo apache2ctl configtest
+
+Si no hay errores, reinicie Apache para que sus cambios surtan efecto:
+
+    sudo systemctl restart apache2
+
+Ahora, crea un .htaccess archivo en la raíz web:
+
+    sudo nano /var/www/html/.htaccess
+
+Agregue esta línea en la parte superior del nuevo archivo para activar el motor de reescritura.
+
+/var/www/html/.htaccess
+
+RewriteEngine on
+
+Guarda el archivo y cierra.
+
+Ahora tienes un operativo .htaccess archivo que puede utilizar para controlar las reglas de enrutamiento de su aplicación web. En el siguiente paso, crearemos un archivo de sitio web de muestra que usaremos para demostrar las reglas de reescritura.
+
+Paso 3: configuración de reescrituras de URL
+
+Aquí, configuraremos una reescritura de URL básica que convierte URL bonitas en rutas reales a las páginas. Específicamente, permitiremos que los usuarios accedan http://your_server_ip/abouty mostrar una página llamada about.html.
+
+Empiece por crear un archivo llamado about.html en la raíz web:
+
+    sudo nano /var/www/html/about.html
+
+Copie el siguiente código HTML en el archivo, luego guárdelo y ciérrelo.
+
+/var/www/html/about.html
+
+
+    
+        
+
+About Us
+
+
+    
+
+Puede acceder a esta página en http://your_server_ip/about.html, pero tenga en cuenta que si intenta acceder http://your_server_ip/about, verás un 404 No encontrado error. Para acceder a la página usando /about en su lugar, crearemos una regla de reescritura.
+
+Todos RewriteRules siga este formato:
+
+Estructura general de RewriteRule
+
+RewriteRule pattern substitution [flags]
+
+    RewriteRule especifica la directiva.
+    pattern es una expresión regular que coincide con la cadena deseada de la URL, que es lo que el espectador escribe en el navegador.
+    substitution es la ruta a la URL real, es decir, la ruta del archivo que Apache sirve.
+    flags son parámetros opcionales que pueden modificar el funcionamiento de la regla.
+
+Creemos nuestra regla de reescritura de URL. Abre el .htaccess expediente:
+
+    sudo nano /var/www/html/.htaccess
+
+Después de la primera línea, agregue lo siguiente RewriteRule y guarde el archivo:
+
+/var/www/html/.htaccess
+
+RewriteEngine on
+RewriteRule ^about$ about.html [NC]
+
+En este caso, ^about$ es el patrón, about.html es la sustitución, y [NC] es una bandera. Nuestro ejemplo usa algunos caracteres con un significado especial:
+
+    ^ indica el inicio de la URL, después your_server_ip/.
+    $ indica el final de la URL.
+    about coincide con la cadena «aproximadamente».
+    about.html es el archivo real al que accede el usuario.
+    [NC] es una bandera que hace que la regla no distinga entre mayúsculas y minúsculas.
+
+Ahora puedes acceder http://your_server_ip/about en su navegador. De hecho, con la regla que se muestra arriba, las siguientes URL también apuntarán a about.html:
+
+    http://your_server_ip/about, debido a la definición de la regla.
+    http://your_server_ip/About, porque la regla no distingue entre mayúsculas y minúsculas.
+    http://your_server_ip/about.html, porque el nombre de archivo original siempre funcionará.
+
+Sin embargo, lo siguiente no funcionará:
+
+    http://your_server_ip/about/, porque la regla establece explícitamente que no puede haber nada después about, ya que el $ el personaje aparece después about.
+    http://your_server_ip/contact, porque no coincidirá con el about cadena en la regla.
+
+Ahora tienes un operativo .htaccess archivo con una regla básica que puede modificar y ampliar según sus necesidades. En las siguientes secciones, mostraremos dos ejemplos adicionales de directivas de uso común.
+
+Ejemplo 1: simplificación de cadenas de consulta con RewriteRule
+
+Las aplicaciones web a menudo utilizan cadenas de consulta, que se adjuntan a una URL con un signo de interrogación (?) después de la dirección. Los parámetros separados se delimitan mediante un ampersand (&). Las cadenas de consulta se pueden utilizar para pasar datos adicionales entre páginas de aplicaciones individuales.
+
+Por ejemplo, una página de resultados de búsqueda escrita en PHP puede usar una URL como http://example.com/results.php?item=shirt&season=summer. En este ejemplo, se pasan dos parámetros adicionales al imaginario result.php secuencia de comandos de la aplicación: item, con el valor shirty season con el valor summer. La aplicación puede utilizar la información de la cadena de consulta para crear la página adecuada para el visitante.
+
+Las reglas de reescritura de Apache se emplean a menudo para simplificar enlaces tan largos y desagradables como el ejemplo anterior en URL amigables que son más fáciles de escribir e interpretar visualmente. En este ejemplo, nos gustaría simplificar el enlace anterior para convertirnos en http://example.com/shirt/summer. los shirt y summer los valores de los parámetros todavía están en la dirección, pero sin la cadena de consulta y el nombre del script.
+
+Aquí hay una regla para implementar esto:
+
+Sustitución simple
+
+RewriteRule ^shirt/summer$ results.php?item=shirt&season=summer [QSA]
+
+los shirt/summer coincide explícitamente en la dirección solicitada y se le dice a Apache que sirva results.php?item=shirt&season=summer en lugar.
+
+los [QSA] Las banderas se utilizan comúnmente en las reglas de reescritura. Le dicen a Apache que agregue cualquier cadena de consulta adicional a la URL servida, por lo que si el visitante escribe http://example.com/shirt/summer?page=2 el servidor responderá con results.php?item=shirt&season=summer&page=2. Sin él, la cadena de consulta adicional se descartaría.
+
+Si bien este método logra el efecto deseado, tanto el nombre del artículo como la temporada están codificados en la regla. Esto significa que la regla no funcionará para ningún otro elemento, como pants, o temporadas, como winter.
+
+Para hacer la regla más genérica, podemos usar expresiones regulares para hacer coincidir partes de la dirección original y usar esas partes en un patrón de sustitución. La regla modificada se verá así:
+
+Sustitución simple
+
+RewriteRule ^([A-Za-z0-9]+)/(summer|winter|fall|spring) results.php?item=$1&season=$2 [QSA]
+
+El primer grupo de expresiones regulares entre paréntesis coincide con una cadena que contiene caracteres alfanuméricos y números como shirt o pants y guarda el fragmento emparejado como el $1 variable. El segundo grupo de expresiones regulares entre paréntesis coincide exactamente summer, winter, fallo spring, y de manera similar guarda el fragmento coincidente como $2.
+
+Los fragmentos coincidentes se utilizan en la URL resultante en item y season variables en lugar de las codificadas shirt y summer valores que usamos antes.
+
+Lo anterior convertirá, por ejemplo, http://example.com/pants/summer dentro http://example.com/results.php?item=pants&season=summer. Este ejemplo también está preparado para el futuro, ya que permite reescribir correctamente varios elementos y temporadas utilizando una sola regla.
+
+Ejemplo 2 – Agregar condiciones con lógica usando RewriteConds
+
+Las reglas de reescritura no siempre se evalúan necesariamente una por una sin limitaciones. los RewriteCond La directiva nos permite agregar condiciones a nuestras reglas de reescritura para controlar cuándo se procesarán las reglas. Todos RewriteConds cumplir con el siguiente formato:
+
+Estructura general de RewriteCond
+
+RewriteCond TestString Condition [Flags]
+
+    RewriteCond especifica el RewriteCond directiva.
+    TestString es la cadena para probar.
+    Condition es el patrón o condición que debe coincidir.
+    Flags son parámetros opcionales que pueden modificar la condición y las reglas de evaluación.
+
+Si un RewriteCond se evalúa como verdadero, el siguiente RewriteRule será considerado. Si no es así, la regla se descartará. Múltiple RewriteConds pueden usarse una tras otra, aunque todas deben evaluarse como verdaderas para que se considere la siguiente regla.
+
+Como ejemplo, supongamos que le gustaría redirigir todas las solicitudes a archivos o directorios inexistentes en su sitio a la página de inicio en lugar de mostrar el estándar 404 No encontrado página de error. Esto se puede lograr con las siguientes reglas de condiciones:
+
+Redirigir todas las solicitudes a archivos y directorios inexistentes a la página de inicio
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /
+
+Con lo anterior:
+
+    %{REQUEST_FILENAME} es la cadena a comprobar. En este caso, es el nombre de archivo solicitado, que es una variable del sistema disponible para cada solicitud.
+    -f es una condición incorporada que verifica si el nombre solicitado existe en el disco y es un archivo. los ! es un operador de negación. Conjunto, !-f se evalúa como verdadero solo si el nombre especificado no existe o no es un archivo.
+    Similar, !-d se evalúa como verdadero solo si el nombre especificado no existe o no es un directorio.
+
+los RewriteRule en la última línea entrará en vigencia solo para solicitudes a archivos o directorios inexistentes. los RewriteRule en sí mismo es muy simple y redirige cada solicitud a la / raíz del sitio web.
+
+mod_rewrite le permite crear URL legibles por humanos. En este tutorial, aprendió a usar el RewriteRule directiva para redirigir las URL, incluidas las que tienen cadenas de consulta. También aprendió a redirigir URL condicionalmente mediante la RewriteCond directiva.
+
+Si desea obtener más información sobre mod_rewrite, echa un vistazo a Introducción a mod_rewrite de Apache y Documentación oficial de Apache para mod_rewrite.
+
+
+Referencias:
+
+http://httpd.apache.org/docs/current/rewrite/intro.html
+
+http://httpd.apache.org/docs/current/mod/mod_rewrite.html
+
+https://www.goranstimac.com/blog/how-to-enable-mod_rewrite-in-apache-server-on-ubuntu/debian-linux-server/
+
+https://www.digitalocean.com/community/tutorials/how-to-rewrite-urls-with-mod-rewrite-for-apache-on-debian-9
+
+https://www.digitalocean.com/community/tutorials/how-to-rewrite-urls-with-mod_rewrite-for-apache-on-debian-8

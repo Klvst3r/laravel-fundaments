@@ -1,0 +1,12 @@
+
+
+El archivo de configuración que pudiera permitir un procesamiento adecuado de las rutas en laravel es el siguiente y debera crearse en la raiz del proyecto, en caso necesario.
+
+
+.htaccess
+---
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteRule ^(.*)$ $1 [L]
+</IfModule> 
+---

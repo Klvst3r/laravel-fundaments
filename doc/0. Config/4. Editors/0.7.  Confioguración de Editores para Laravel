@@ -1,0 +1,115 @@
+0.7. Confioguración de Editores para Laravel
+
+Para poder hacer uso de la creación de los controladores con Laravel, utilizamos la siguiente extensión
+
+	PHP Intelephense	Si encuentra un error lo marca, lo segundo, si necesitamos un controlador
+
+		Al escribir por ejemplo si qiuero hacer uso de este controlador escribimos:
+
+		Curso
+
+		Se desplegara dentro de las opiones para poder seleccionarse.
+		Quedando:
+
+			use App\Http\Controllers\CursoController;
+
+
+Para poder trabajar corretamente en Laravel y si elegimos como nuestro editor de codigo visual Studio code, debemos agregar ciertas caracteristicas para que nuestro trabajo fluya de forma continua y sin complicaciones.
+
+Para ello se deberan integrar los sigientes complementos:
+
+
+	DotENV
+	EditorConfig for Visual Studio Code
+	HTML CSS Support 
+	Laravel Artisan
+	Laravel Blade formatter
+	Laravel Blade Snippets
+	Laravel Blade Wrapper
+	Laravel Create View
+	Larvel Extension Pack
+	Laravel Extra Intellisense
+	Laravel goto view
+	Laravel Helpers
+	Laravel Intellisense
+	Laravel Snippets
+	laravel-goto-components
+	PHP Intelephanse
+	Viev Language Features
+
+	Emmet
+
+
+
+Para el caso de Sublime
+
+	CTRL + SHIFT + p : list packages
+
+	    Package Control: Necesario para instalar plugins o paquetes
+
+	    AdvancedNewFile: Para crear nu evos archivos fácilmente
+
+	    Blade Snippets: Para usar instrucciones de Blade en las vistas
+
+	    Tailwind CSS Autocomplete: Sugerir componentes de Tailwind en las vistas
+
+	    DocBlockr: Crear bloques de comentarios fácilmente
+
+	    Emmet: Autocompletar etiquetas de HTML
+
+	    Laravel Blade AutoComplete: Autocomplete estructuras comunes en las vistas de Blade
+
+	    Laravel Blade Highlighter: Resalta el código con colores adecuados en las vistas
+
+	    Laravel Helper Completions: Sugerir el uso de helpers comunes en el código
+
+	    PHP Companion: Útil para importar definiciones de clases
+
+	    phpfmt: Útil para corregir el estilo del código PHP
+
+	    SideBarEnhacements: Para agregar opciones adicionales en la barra lateral
+
+	    SublimeLinter: Útil para detectar errores de sintaxis en el código
+
+	    SublimeLinter-php: El linter propio para detectar errores en código PHP
+
+Adicional a estos se recomienda contar con los siguientes:
+
+	- Search Stack Overflow
+	- Bracket Highlighter
+	- Alignment
+    - AutoFileName
+    - BracketHighLighter
+    - Can I Use
+    - Codekit
+    - Color HighLighter
+    - ColorPicker
+    - DocBlockr
+    - Emmet
+    - FileDiffs
+    - GitGutter
+    - HTML-CSS-JS Prettify
+    - HTML5
+    - HTML Beautify
+    - Jade
+    - jQuery
+    - JsFormat
+    - Package Control
+    - PvV8
+    - SublimeCodeIntel
+    - Sublime Linter
+    - Sublimerge Pro
+
+
+
+
+Configurar	Key Bindings en Sublime Text
+
+
+---
+[
+    { "keys": ["ctrl+1"], "command": "toggle_side_bar" },
+    { "keys": ["ctrl+7"], "command": "toggle_comment", "args": { "block": false } },
+      { "keys": ["ctrl+shift+7"], "command": "toggle_comment", "args": { "block": true } },
+]
+

@@ -1,0 +1,252 @@
+Configurar Servidor Virtual en apache con Debian 11
+
+Apache Virtual Hosts le permite ejecutar más de un sitio web en una sola máquina. Con Virtual Hosts, puede especificar la raíz del documento del sitio (el directorio que contiene los archivos del sitio web), crear una política de seguridad separada para cada sitio, usar diferentes certificados SSL y mucho más.
+
+Este artículo describe cómo configurar Apache Virtual Hosts en un servidor Debian 11.
+
+Requisitos previos
+-------------------
+Asegúrese de haber cumplido con los siguientes requisitos antes de continuar:
+
+- Nombre de dominio que apunta a la IP de su servidor público.
+- Apache instalado en su sistema.
+- Ha iniciado sesión como root o usuario con privilegios sudo .
+
+
+Crear la estructura del directorio
+--------------------------------
+
+La raíz del documento es el directorio en el que se almacenan y sirven los archivos del sitio web para un nombre de dominio en respuesta a las solicitudes. La raíz del documento se puede configurar en cualquier ubicación que desee.
+
+Usaremos la siguiente estructura de directorios:
+
+var/www/
+├── domain1.com
+│   └── public_html
+├── domain2.com
+│   └── public_html
+├── domain3.com
+│   └── public_html
+
+
+Cada dominio alojado en el servidor tendrá su raíz de documento establecida en /var/www/<domain_name>/public_html.
+
+
+Comencemos por crear el directorio raíz del documento para el primer dominio example.com:
+
+	sudo mkdir -p /var/www/example.com/public_html
+
+
+También crearemos un index.htmlarchivo dentro del directorio raíz del documento del dominio que se mostrará cuando visite el dominio en su navegador.
+
+Abra su editor de texto favorito, cree un nuevo archivo y pegue lo siguiente en él:
+
+/var/www/ejemplo.com/public_html/index.html
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Welcome to example.com</title>
+  </head>
+  <body>
+    <h1>Success! example.com home page!</h1>
+  </body>
+</html>
+
+
+
+Dado que los comandos anteriores se ejecutan como un usuario sudo, los archivos y directorios recién creados son propiedad de root. Para evitar cualquier problema de permisos, cambie la propiedad del directorio raíz del documento del dominio y todos los archivos dentro del directorio al usuario de apache ( www-data):
+
+	sudo chown -R www-data: /var/www/example.com
+
+
+
+
+
+
+
+
+Crear un host virtual
+---------------------
+En los sistemas Debian, los archivos de configuración de Apache Virtual Hosts se encuentran en el directorio /etc/apache2/sites-available.
+
+Y se pueden habilitar mediante la creación de enlaces simbólicos al directorio /etc/apache2/sites-enabled, que Apache lee durante el inicio.
+
+
+Abra el editor de texto de su elección y cree el siguiente archivo de configuración básico de Virtual Host:
+
+/etc/apache2/sitios-disponibles/ejemplo.com.conf
+
+---
+	<VirtualHost *:80>
+	    ServerName example.com
+	    ServerAlias www.example.com
+	    ServerAdmin webmaster@example.com
+	    DocumentRoot /var/www/example.com/public_html
+
+	    <Directory /var/www/example.com/public_html>
+	        Options -Indexes +FollowSymLinks
+	        AllowOverride All
+	    </Directory>
+
+	    ErrorLog ${APACHE_LOG_DIR}/example.com-error.log
+	    CustomLog ${APACHE_LOG_DIR}/example.com-access.log combined
+	</VirtualHost>
+---
+
+
+
+- ServerName: el dominio que debe coincidir con esta configuración de host virtual. Este debe ser su nombre de dominio.
+- ServerAlias: todos los demás dominios o subdominios que también deberían coincidir con este host virtual, generalmente el wwwsubdominio.
+- DocumentRoot: El directorio desde el cual Apache servirá los archivos de dominio.
+- Options: Esta directiva controla qué características del servidor están disponibles en un directorio específico.
+- Indexes: Evita las listas de directorios.
+- FollowSymLinks: Cuando esta opción está habilitada, Apache seguirá los enlaces simbólicos.
+- AllowOverride: especifica qué directivas declaradas en el .htaccessarchivo pueden invalidar las directivas de configuración.
+- ErrorLog, CustomLog: especifica la ubicación de los archivos de registro.
+
+
+Edite el archivo según sus necesidades y guárdelo.
+
+
+Puede nombrar el archivo de configuración como desee. La mejor práctica es utilizar el nombre de dominio como el nombre del archivo de configuración del host virtual.
+
+Para habilitar el nuevo archivo de host virtual, use la secuencia de comandos auxiliar "a2ensite" que crea un enlace simbólico desde el archivo de host virtual al directorio : sites-enabled
+
+	sudo a2ensite example.com
+
+La otra opción es crear manualmente un enlace simbólico como se muestra a continuación:
+	sudo ln -s /etc/apache2/sites-available/example.com.conf /etc/apache2/sites-enabled/
+
+
+Una vez habilitada la configuración prueba si la sintaxis es correcta:
+
+	sudo apachectl configtest
+
+Si no hay errores, verá el siguiente resultado:
+
+Syntax OK
+
+Reinicie el apache2servicio para que los cambios surtan efecto:
+
+
+	sudo systemctl restart apache2
+
+
+Para verificar que todo funciona como se esperaba, abre http://example.comen tu navegador favorito y verás algo como esto:
+
+
+Configurando el dominio "blogklvst3r.io" - Configuración real funcional
+--------------------------------------
+
+Siguiendo el ejemplo anterior, vamos a configurar nuestro dominio local de la siguiente manera:
+
+
+
+
+
+Vamos a generar nuestro archivo de configuración llamado
+	blogklvst3r.io.conf
+
+Dentro de la ruta:
+
+	/etc/apache2/sites-available
+
+Quedando el archivo:
+
+	/etc/apache2/sites-available/blogklvst3r.io.conf
+
+
+Podemos crear un archivo de configuración de nuestro host virtual de la siguiente manera:
+		sudo subl /etc/apache2/sites-available/blogklvst3r.io.conf
+
+El contenido del archivo sera como se muestra en las siguientes directivas:
+
+==========================================================================
+	---
+		<VirtualHost *:80>
+			ServerName blogklvst3r.io
+
+			ServerAdmin admin@klvst3r.io
+			DocumentRoot /var/www/html/dev/blogKlvst3r/public
+
+			<Directory /var/www/html/dev/blogKlvst3r/public/>
+				Options Indexes FollowSymLinks MultiViews
+				AllowOverride All
+				Require all granted
+			</Directory>
+
+			ErrorLog ${APACHE_LOG_DIR}/error.log
+			CustomLog ${APACHE_LOG_DIR}/access.log combined
+		</VirtualHost>
+	---
+
+==========================================================================
+
+4. Guardamos y habilitamos el nuevo host virtual
+			sudo a2ensite blogklvst3r.io.conf
+
+5. Reiniciamos el servidor Web
+			sudo systemctl restart spache2
+
+	Es posible que tengamos que reiniciarlo por el nombre de nuestro servicio, ya que dependera si estamos utilizando Nginx o Apache
+
+
+		Para iniciar Nginx: /etc/init.d/nginx start
+
+		Para reiniciar Nginx:  /etc/init.d/nginx restart
+
+		Para para Nginx:  /etc/init.d/nginx stop
+
+
+	Cómo iniciar, reiniciar o parar apache
+
+		Existen varias formas de arrancar, detener y reiniciar Apache. Siga las instrucciones a continuación.
+
+	Para  detener, iniciar o reiniciar, solo deberás acceder a la terminal y ejecutar esto:
+
+		    Para reiniciar Apache : service apache2 restart
+		    Para detener Apache:service apache2 stop
+		    Para iniciar Apache:service apache2 start
+
+
+
+
+
+Configurar el archivo host
+---------------------
+
+Para que nuestro equipo resuelva de forma local el dominio configurado debemos editar como administrador el archivo:
+	/etc/hosts
+
+6. 	Configurar el archivo de hosts local
+
+	Abrir el archivo de hosts para ello escriba 
+			sudo subl  /etc/hosts	
+
+7. Añadir la nueva IP de su servidor, en la parte inferior del archivo como localhost.
+
+	Quedará algo como esto:	
+
+
+			127.0.0.1 	blogklvst3r.io
+			127.0.0.1 	klvst3r.io
+			127.0.0.1	localhost
+			127.0.1.1	klvst3r.ipv6.infinitum.net.mx	klvst3r
+
+			# The following lines are desirable for IPv6 capable hosts
+			::1     localhost ip6-localhost ip6-loopback
+			ff02::1 ip6-allnodes
+			ff02::2 ip6-allrouters
+
+
+8. Con esto ya quedaría bien configurado un Virtual Host en Debian
+
+
+
+
+Conclusión
+En este tutorial, mostramos cómo crear una configuración de host virtual de Apache en Debian 11. Puede repetir los pasos que describimos anteriormente y crear hosts virtuales adicionales para todos sus dominios.
+
+
+

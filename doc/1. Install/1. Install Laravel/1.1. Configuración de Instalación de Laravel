@@ -1,0 +1,34 @@
+1.1. Configuracion de Instalación de Laravel 9
+
+Instalador de Laravel
+
+Laravel utiliza composer para gestionar sus dependencias, antes de usar Laravel es importante instalar composer 
+
+Para descargar el instalador de Laravel utilizando composer es:
+	composer global require laravel/installer
+
+Algo importante a la hora de instalar composer es colocar el directorio de proveedores de ocmposer en el PATH del sistema para que el ejecutable de Laravel pueda ser localizado en el sistema puede variar dependiendo el sistema, los más comunes incluyen:
+	mac OS: 	$HOME/.composer/vendor/bin
+	Windows:	%USERPROFILE%\AppData\Roaming\Composer\vendor\bin
+	Linux:		$HOME/.config/composer/vendor/bin OR $HOME/.composer/vendor/bin
+
+Una forma de encontrar la ruta de instalación global de composer es ejecutando: 
+	composer global about y observando a detalles las primeras lineas
+
+
+Creando un nuevo proyeto de Laravel
+
+Sintaxis:
+	laravel new <project-name>
+
+Ej.
+	laravel new blog
+
+
+Como el proyecto es creado desde Linux procedemos a generar el proyecto mediante composer:
+
+
+	composer create-project laravel/laravel blogKlvst3r
+
+	
+
