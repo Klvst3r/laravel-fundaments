@@ -1,0 +1,785 @@
+25. Introduccion al Manejo de Base de datos
+
+En esta tercera parte veremos una introducción al manejo de base de datos con Laravel, usaremos la consola interactiva de Laravel, llamada Tinker, para probar el constructor de consultas del framework y su ORM Eloquent, crearemos nuestras primeras tablas, insertaremos datos, realizaremos consultas, veremos una introducción al manejo de relaciones entre tablas y registros con el framework y más.
+
+
+Introducción a las bases de datos y migraciones con Laravel
+===========================================================
+
+Las bases de datos son uno de los aspectos más importantes de un proyecto. Sin embargo el proceso de tener que diseñar, crear y llevar el control de la misma puede resultar bastante tedioso. Afortunadamente Laravel nos proporciona un mecanismo llamado Migraciones con el cual podremos diseñar la estructura de nuestra base de datos y mantener su historial de cambios a lo largo del desarrollo del proyecto.
+
+Notas
+=====
+
+
+Qué son las migraciones
+------------------------
+
+
+Las migraciones son un mecanismo proporcionado por Laravel con el que podemos tener una especie de control de versiones sobre los cambios en la estructura de nuestra base de datos. Con las migraciones podemos diseñar esta estructura utilizando PHP y programación orientada a objetos, sin necesidad de escribir código SQL.
+
+Las migraciones son agnósticas al motor de base de datos que su proyecto use. Al crear un esquema, las migraciones crearán las tablas para el motor de base de datos que tengamos configurado, pero estas mismas migraciones las podemos usar con otros motores de bases de datos diferentes. Es decir, podemos usar el mismo esquema en múltiples motores de bases de datos (siempre que el motor sea soportado por Laravel).
+
+Por defecto las migraciones se encuentran en el directorio database/migrations. Cada migración es un archivo .php que incluye en el nombre del archivo la fecha y la hora en que fue creada la migración (en formato timestamp) y el nombre de la migración.
+
+"Los motores de base de datos soportados por defecto son MySQL, PostgreSQL, SQLite y SQL Server. Además hay componentes de terceros que soportan otros tipos."
+
+
+Migraciones por defecto
+-----------------------
+
+Al crear un nuevo proyecto, Laravel incluye por defecto dos migraciones:
+
+    2014_10_12_000000_create_users_table.php
+    2014_10_12_100000_create_password_resets_table.php
+
+Una migración no es más que una clase de PHP que extiende de la clase Migration. El nombre de la clase corresponde al nombre del archivo, en el caso de 2014_10_12_000000_create_users_table.php, encontramos, pero con formato «studly case» (la primera letra de cada palabra en mayúscula, comenzando con mayúscula) en lugar de separado por guiones:
+---
+class CreateUsersTable extends Migration
+{
+    // ...
+}
+---
+
+
+Métodos de una migración
+------------------------
+
+Dentro de la clase de la migración encontramos dos métodos, up() y down():
+---
+class CreateUsersTable extends Migration
+{
+    public function up()
+    {
+        // ... 
+    }
+    public function down()
+    {
+        // ...
+    }
+}
+---
+
+En el método up() vamos a especificar qué queremos que haga nuestra migración. Por decirlo de alguna forma, en qué manera queremos que «evolucione» nuestra base de datos cuando se ejecute dicha migración. Típicamente agregaremos tablas a la base de datos, pero también podemos agregar columnas a una tabla ya existente, o incluso podemos generar una migración para eliminar una tabla o columna que ya no necesitemos.
+
+Para crear una tabla llamamos al método create del Facade Schema, pasando como primer argumento el nombre de la tabla que queremos crear (en este caso users) y como segundo argumento una función anónima que recibe como argumento un objeto de la clase Blueprint. Con los métodos que nos provee este objeto diseñaremos la estructura de la tabla:
+---
+public function up()
+{
+    Schema::create('users', function (Blueprint $table) {
+        $table->increments('id');
+        $table->string('name');
+        $table->string('email')->unique();
+        $table->string('password');
+        $table->rememberToken();
+        $table->timestamps();
+    });
+}
+---
+
+Es una buena practica que el nombre del archivo de la migración coincida con lo que estamos haciendo dentro de la clase.
+
+El método down() nos permite revertir o «devolver» la operación realizada en el método up(). En el caso de CreateUsersTable, down() nos permitirá eliminar la tabla users (utlizando el método dropIfExists del Facade Schema):
+
+---
+public function down()
+{
+    Schema::dropIfExists('users');
+}
+---
+
+
+Constructor de Esquemas (Schema Builder)
+----------------------------------------
+
+La clase Blueprint nos permite construir nuestras tablas con una interfaz orientada a objetos, a través de diferentes métodos, por ejemplo:
+
+	$table->string('nombre_de_la_columna') permite crear una columna de tipo VARCHAR (cadena de texto).
+
+	$table->integer('nombre_de_la_columna') permite crear una columna de tipo INTEGER (entero).
+
+
+Podemos encadenar métodos para especificar características adicionales, por ejemplo:
+
+	$table->integer('nombre_de_la_columna')->unsigned()->default(0); crea una columna de tipo entero sin signo y cuyo valor por defecto será 0.
+
+Puedemos ver todos los métodos disponibles para crear columnas en la documentación oficial de Laravel.
+	https://laravel.com/docs/5.5/migrations#columns
+
+
+Métodos Helpers
+---------------
+
+Una de las tantas ventajas de usar el constructor de esquemas de Laravel, es que este incluye métodos helpers que facilitan tareas comunes y evitan la necesidad de duplicar código, por ejemplo el método: $table->timestamps(); agregará 2 columnas: created_at y updated_at de tipo timestamp (marca de tiempo) a la tabla en cuestión. Estas columnas son bastante típicas para almacenar el momento en que un registro fue creado o actualizado.
+
+"En programación un Helper no es más que una función de apoyo que permite resolver tareas genéricas / comunes."
+
+Generar la BD
+--------------
+
+Para poder trabajar con las migraciones es necesario primera establecer la base de datos con la que se trabajara, por ello debemos ingresar a la consola y entrar a la Base de datos, vamos a establecer un conjunto de caracteres UTF-8 General_ci
+
+
+    >   mysql -u root -p
+    Enter password: **********
+    Welcome to the MySQL monitor.  Commands end with ; or \g.
+    Your MySQL connection id is 96
+    Server version: 8.0.17 MySQL Community Server - GPL
+
+    Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+    Oracle is a registered trademark of Oracle Corporation and/or its
+    affiliates. Other names may be trademarks of their respective
+    owners.
+
+    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+    mysql> CREATE DATABASE crudlaravel5_5 CHARACTER SET utf8 COLLATE utf8_general_ci;
+    Query OK, 1 row affected, 2 warnings (0.01 sec)
+
+    mysql>exit;
+
+
+
+
+
+Configurar la base de datos
+----------------------------
+
+La configuración de la base de datos la hacemos en el archivo .env que está dentro del directorio principal de nuestro proyecto:
+---
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=crudlaravel5_5 
+    DB_USERNAME=root
+    DB_PASSWORD=desarrollo
+---
+
+En DB_DATABASE colocamos el nombre de nuestra base de datos, en DB_USERNAME el usuario de la base de datos y en DB_PASSWORD la contraseña de la base de datos.
+
+Para aprender más sobre la configuración de entorno en Laravel 5.*, vamos a hacer referncia a una seccion adicional llamada:
+	referencias/Variables de entorno en Laravel
+		
+
+Ejecutar las migraciones
+------------------------
+
+Con el comando de Artisan migrate podemos ejecutar todas las migraciones:
+    > php artisan migrate
+
+Al hacer esto Laravel automáticamente creará nuestras tablas en la base de datos. Al ejecutar nuestras migraciones por primera vez, Laravel creará una tabla llamada migrations donde va a guardar la información de las migraciones que han sido ejecutadas.
+
+Facades
+--------
+
+En la lección se menciono que Schema y Route son Facades. En Laravel los Facades son una manera de acceder a las clases internas del framework con una interfaz estática y fácil de usar. Pero esto no quiere decir que Laravel esté conformado sólo de clases estáticas, al contrario, Laravel utiliza muy buenas practicas de la programación orientada a objetos como la inyección de dependencias, mientras que además incluye Facades y funciones helpers para que sea sencillo interactuar con las clases del framework.
+
+
+Qué son los facades y cómo implementarlos en su proyecto.
+---------------------------------------------------------
+
+El uso de métodos estáticos es muy sencillo puesto que nos permite invocar a un método en cualquier lugar de nuestro sistema, sin tener que preocuparnos por inyectar dependencias y ni siquiera por crear una nueva instancia de una clase. Pero esta facilidad de uso viene con un costo: terminamos con un sistema menos flexible y más acoplado. Aquí es donde entra el concepto de facades en PHP, ideado por Taylor Otwell para Laravel 4, las cuáles son el punto intermedio entre una buena arquitectura y una interfaz fácil de usar.
+
+
+Facades vs helpers vs inyección de dependencias y helper de caché en Laravel 5.3
+--------------------------------------------------------------------------------
+Laravel nos ofrece varias alternativas para trabajar con las clases que se encuentran en el contenedor de inyección de dependencias de la aplicación. Esto a través de la inyección de dependencias, usando Facades o por medio de helpers. En esta lección haremos un repaso del uso de cada una de estas opciones y conoceremos sus diferencias. Además conoceremos cómo usar el nuevo helper de cache.
+
+
+Un helper es una función de ayuda que realiza un procedimiento específico y puede usarse en cualquier parte de la aplicación.
+
+Como ejemplo podemos usar un helper para llamar una vista desde un controlador por medio del helper view():
+---
+public function index()
+{
+     return view('home');
+}
+--
+
+Puede revisar los helpers disponibles en Laravel y cómo funcionan en:
+
+    Documentación oficial
+        https://laravel.com/docs/5.3/helpers
+
+    src/Illuminate/Support/helpers.php
+        https://github.com/laravel/framework/blob/5.3/src/Illuminate/Support/helpers.php
+
+    src/Illuminate/Foundation/helpers.php
+        https://github.com/laravel/framework/blob/5.3/src/Illuminate/Foundation/helpers.php
+
+    
+    Manejo de arreglos con helpers en Laravel
+
+Un facade, en cambio, es una interfaz estática que provee acceso a un objeto de una clase que se encuentra disponible en el contenedor de inyección de dependencias de la aplicación.
+
+Si se trabaja con Facades en una clase que tiene un namespace o nombre de espacios se debe importar la clase del Facade o usar una barra invertida \ para que la aplicación busque la clase en el namespace global. En el archivo config/app.php se encuentran los alias de clases de los Facades usados por la aplicación.
+
+Como ejemplo para hacer el mismo llamado de la vista a través de un controlador pero usando el Facade View:
+--
+public function index()
+{
+     return \View::make('home');
+}
+---
+
+En caso que quiera estudiar a profundidad los Facade de Laravel consulta la documentación oficial. 
+
+    https://laravel.com/docs/5.3/facades
+
+La inyección de dependencias por otro lado, es un patrón de diseño orientado a objeto que nos permite escribir código desacoplado y por tanto reusable.
+
+Como ejemplo pero ahora usando inyección de dependencias:
+---
+//no olvides importar la clase al controlador
+//use Illuminate\View\Factory;
+public function index(Factory $view)
+{
+    return $view->make('home');
+}
+---
+
+
+En Laravel 5.2 y versiones anteriores la manera de trabajar con Cache era a través de Facade o la inyección de dependencias pero ahora en Laravel 5.3 tenemos disponible el helper cache por lo cual puedes en vez de hacer:
+---
+\Cache::put('message','Esto es un mensaje', 5);
+\Cache::get('message');
+---
+
+puedes usar el helper para crear:
+---
+cache()->put('message', 'Esto es un mensaje', 5);
+cache(['message' => 'Esto es un mensaje'], 5);
+---
+
+y para obtener el valor:
+---
+cache('message');
+cache()->get('message');
+---
+
+Cómo crear Helpers personalizados en Laravel
+--------------------------------------------
+
+De manera general un helper es una función de ayuda que realiza una tarea o procedimiento específico y que su uso puede repetirse una y otra vez a lo largo de nuestro proyecto. Esto permite que evitemos seguir escribiendo tal procedimiento en muchos lugares, por ejemplo, puede ser alguna función común que utilicemos en la mayoría de los controladores o vistas. Para este propósito se pueden crear helpers que ayuden a simplificar nuestro código.
+
+Laravel nos ofrece algunos helpers que son de gran utilidad en nuestras nuestras aplicaciones. Estos se encuentran definidos en varios archivos del código fuente del framework:
+
+    vendor/laravel/framework/src/Illuminate/Support/helpers.php
+    vendor/laravel/framework/src/Illuminate/Foundation/helpers.php
+    vendor/laravel/framework/src/Illuminate/Support/Str.php
+    vendor/laravel/framework/src/Illuminate/Support/Arr.php
+
+Los helpers de Laravel están clasificados en varias categorías:
+
+    Los que nos permiten interactuar con arrays: Arr::add para agregar un nuevo par clave/valor, head() y last() para saber el primer elemento y último elemento, entre otros.
+    Los relacionados con las rutas o paths: app_path(), storage_path(), public_path(), entre otros que nos devuelven la ruta absoluta de los directorios app/, storage/ y public/ respectivamente.
+    Los helpers para manipular strings:  Str::limit para limitar el número de caracteres de un string, trans() que permite traducir un texto, Str::slug para generar un URL amigable, entre otros.
+    Los helpers para trabajar URL como: asset(), url(), route(), entre otros.
+    Y los de uso diverso como son: dd(), csrf_token(), auth(), collect(), env(), back(), with(), entre otros.
+
+Para conocer cada uno de ellos y saber cómo funcionan puedes consultar la documentación oficial.
+    https://laravel.com/docs/6.x/helpers
+
+
+
+Pero ¿Qué sucede cuando necesitamos una función que no está definida en Laravel por defecto? en ese caso, podemos crear nuestros propios helpers, no sólo para tener funciones reusables en el proyecto sino también para extender alguna funcionalidad del framework o adaptar algún procedimiento al modelo de negocio, y hacer que Composer realice la autocarga por nosotros.
+
+
+Creación de una función helper en Laravel
+-----------------------------------------
+
+Crea un archivo llamado helpers.php en el directorio app/ (puedes ubicar el archivo en cualquier otro lugar si lo deseas) el cual contendrá para este ejemplo:
+---
+<?php
+if (! function_exists('current_user')) {
+    function current_user()
+    {
+        return auth()->user();
+    }
+}
+---
+
+Modifica tu archivo composer.json para agregar la carga del archivo con la clave files dentro de la sección autoload de la siguiente manera:
+---
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "files": [
+            "app/helpers.php"
+        ]
+    },
+---
+Por último, ejecuta en la consola:
+
+    > composer dump-autoload
+
+Para usar la función tan sólo debe escribirla en algún controlador o vista donde quieras obtener el usuario conectado, por ejemplo, en una vista podemos usar lo siguiente para obtener el nombre del usuario conectado:
+---
+{{ current_user()->name }}
+--
+Así ahora puede escribir tantas funciones como quiera en el archivo helpers.php y usarlas en cualquier parte de la aplicación.
+
+
+En la próxima lección aprenderemos a crear nuestras propias migraciones y a configurar la base de datos.
+
+
+Practica
+=========
+
+En esta tercer parte de la guia daremos una intrrodución al manejo de base de datos con Laravel, y vamos a comenzar con el tema de las migraciones. Las migraciones son un mecanismo que nos provee el Framework con el cual vamos a tener un especie de control de versiones con los cambios en la estructura de la base de datos a lo largo del desarrollo del proyecto. Con las migraciones ademas podemos diseñar dicha estructura usando PHP y POO de una forma muy sencilla y desligada del motor de base de datos que nuestro proyecto vaya a utilizar; por ejemplo nosotros podemos diseñar el esquema de nuesra Bd y luego ejecutar un comando y dicho comando entonces va a crear las tablas para el motor que hayamos configurado, ya sea  MySQL, PostgreSQL, etc, siempre que dicho motor sea soportado por Laravel.
+
+Asi que las migraciones son agnosticas del motor de la BD que el proyecto vaya a utilizar.
+
+Con el ejemplo, actrualmente nuestro poroyecto triene dos migraciones:
+
+2014_10_12_000000_create_users_table.php
+2014_10_12_100000_create_password_resets_table.php
+
+Estas migraciones fueron incluidas cuando se instalo el proyecto, quiere decir que uno no las ha creado manualmente si no que ya estaban aqui.
+
+Vamos a ver como crear migraciones de forma manual.
+
+Podemos ver que cada migración es un archivo, y cada archivo tiene al principio del nombre tiene una marca de tiempo o timestamp con la fecha y la hora en la que fueron creada esta migración, seguido del nombre de la migración en este caso create_users_table o Crear tabla de usuarios. 
+
+Se puede ver que cada parte del nombre esta separada por unserscore o guin bajo. y si abrimos el archivo veremos que el contenido del archivo no es mas que una simple case de PHP que tiene varias partes.
+
+Aca al inicio del archivo podemos ver como se estan importando varias clases del Framework Laravel, por cierto todas las clases de Laravel tienen este nombre de espacio 
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+Esto es indicativo que esta clase forma parte del Framework Laravel y luego tenemos la declaracion de la clase.
+
+y se puede ver que el nombre corresponde al nombre del archivo pero en este caso esta en formato donde cada nombre de cada palabra es una mayuscula en lugar de estar separado por  guines bajos.
+
+Luego esta clase extiende de la clase Migration, que nuevamente es una clase de Laravel y en esta clase vamos a ver la declaración de dos metodos.
+
+El metodo Up y el Metodo Down.
+
+Dentro del directorio databases/migrations/
+
+---_create_users_table.php
+class CreateUsersTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('users');
+    }
+}
+---
+
+
+En el metodo Up es en donde nosotros vamos a especificar lo que queremos que haga esta migración por ejemplo, la migración que tiene el nombre create_users_table, en este caso deberia crear la tabla de usuarios. Y para ello vamos a utilizar el phasa Schema, y vamos a llamar al metodo create y este metodo como primer argumento va a recibir el nombre de la tabla que se quiere crear, pero podria ponerse cualquier otro nombre.
+
+Algo importante a tomar en cuneta es que el nombre de la migración coincida ocn lo que esta haciendo dentro de la clase, como segundo argumento vamos a pasar una funcion anonima, y esta funcion va a recibir un argumento que va a pasar Laravel automaticamnete y este argumento va a ser un objeto de la clase 'Blueprint'. Dentro de Schema Database, por supuesto dentro de Illuminate. Y es con este objeto con el cual finalmente nosotros vamos a diseñar nuestra tabla de usuarios. Aca vamos a tener una serie de metodos que nos van a permitir crear las columnas de nuestra tabla.
+
+El metodo increments en este caso, que recibe como argumento id va a a entonces a crear una columna llama id de tipo autoincremento, en este caso va a ser una columna de entero sin signo, pero tambien va a ser autoincrement.
+
+Por otro lado tenemos entonces el metodo String y pasamos nuevamente el nombre de lo que hace nuestra columna en este caso la columna se llama name y con este metodo va a ser de tipo varchar.
+
+Para el email nuevamente vamos a utilizar String pero en este caso estamos encadenando otro metodo -> unique();
+
+Con este metodo se va a crear otra columna de tipo varchar pero esta columna va  a ser unica, es decir no podra haber dos usuarios con el mismo email en la Bd.
+
+Para la contraseña se va a utilizar otra columna de tipo varchar.
+
+En seguida se tiene un metodo llamado 'rememberToken'. Este metodo no va a representar como tal un tipo de columna de la Bd, sino que Laravel incluye algunos metodos helpers que nos van a permitir generar columnas comunes en nuestra aplicación. Por ejemplo, como los usuariuos van a  tener autenticación, asi Laravel va a utilizar esta columna como una manera de almacenar un token que va a permitir recordar a los usuarios en visitas subsiguientes, a la pagina o a la aplicación, aunque no es necesario entender esto aun.
+
+Vamos a enfocarnos en que con esta clase vamos a poder diseñar nuestras tabvlas en la Base de datos.
+
+Por otro lado tenemos otro metodo llamado 'timestamps' o marcas de tiempo el cual es un metodo helper conveniente con el cual se vana declarar dos columnas. Primero la columna 'created_at'
+
+            $table->timestamps();
+
+
+Definido en:
+---Blueprint.php
+...
+public function timestamps($precision=0){
+    $this->timestamp('created_at',$precisión)->nullable();
+
+    $this->timestamp('updated_at',$precisión)->nullable();    
+}
+...
+---
+
+
+Luego la columna updated_at actualizado el, y esta columna puede tener un valor null por lo tanto aca se esta encadenando el metodo nullable. En este momento estamos dentro de una clase del Framewrok que se utilizar el editor para poder navegar por la clase del metodo de una forma muy simple.
+
+Dentro de la Clase de BluePrint.php se ha definido una funcion que es la que utilizamos llamada desde su declaración
+
+Asi cuando se llama al metodo timestamps, en este caso es como si se estuviese llamando manualmente a los dos metodos mensionados anteriormente, para crear dos columnas en la Bd.
+
+Notemos que en la funcion up()
+
+---...create_users_table.php
+ public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+---
+Laravel permite evitar repetición de codigo, asi cuando invocamos a la linea: 
+    $table->timestamps();
+
+Estaremos invocando a los metodos:
+
+---Blueprint.php
+...
+public function timestamps($precision=0){
+    $this->timestamp('created_at',$precisión)->nullable();
+
+    $this->timestamp('updated_at',$precisión)->nullable();    
+}
+...
+---
+
+Para la creación de las dos columnas 'created_at' y 'updated_at'. Haciendo dos lineas de codigo en una sola, anteriormente tambien se hablo de phases: cuando se mendiono Schema::create()
+
+en este caso con el helper el el formato es similar si vamos a las rutas con y Laravel evita la repetición de codigo.
+
+
+---web.php
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+/*Route::get('/', function () {
+    return view('welcome');
+});
+*/
+
+Route::get('/', function(){
+    return 'Home';
+});
+
+Route::get('/usuarios', 'UserController@index');
+
+
+Route::get('/usuarios/nuevo', 'UserController@create');
+
+Route::get('/usuarios/{id}', 'UserController@show')
+    ->where('id', '[0-9]+');   
+
+Route::get('/saludo/{name}/{nickname?}', 'WellcomeUserController');
+
+---
+
+
+El formato es similar, si nos vamos a las rutas en web.php. el formato es similar que se utiliza para declarar nuestras rutas, y esta es la manera por la cual podemos llama a los metodos estaticos, es decir:
+    Route::get
+
+En PHP con programación orientada a objetos, sin embargo Laravel utiliza un mecanismo mas complejo, este se revisara mas adelante.
+
+Lo importante de momento es acostumbrarnos a esta sintaxis:
+
+    Schema::create()
+
+Con la cual vamos a poder diseñar la estructuera de nuestra BD, y el metodo down(), nos permitira revertir en el metodo up() que se esta creando la tabla users, y en el metodo down lo que se quiere hacer es lo contrario que es eliminar.
+
+Parza ello Laravel va a a utilizar el metodo dropIfExists()
+
+---...create_users_table.php
+
+public function down()
+    {
+        Schema::dropIfExists('users');
+    }    
+---
+
+Esto va a eliminar la tabla en caso de que exista.
+
+Poniento todo lo anterior en accion, para ellos en consola
+    > php artisan migrate
+
+Este es el comando que va a ejecutar entonces todas las migraciones una por una, en este caso presionamos enter y vemos que la salida es:
+
++++
+   
+    $ php artisan migrate
+
+    In Connection.php line 664:
+
+      SQLSTATE[HY000] [2054] The server requested authentication method unknown to the client (SQL: select * from information_schema.tables where table_schema =
+      homestead and table_name = migrations)
+
+
+    In Connector.php line 67:
+
+      SQLSTATE[HY000] [2054] The server requested authentication method unknown to the client
+
+
+    In Connector.php line 67:
+
+      PDO::__construct(): The server requested authentication method unknown to the client [sha256_password]
+
++++
+
+Recibimos error, si vemos el error se ha denegado el acceso o el metodo de atutenticación es desconocido. Por lo tanto no tenemos acceso a la Base de datos, pero si recordamos en ningun momento hemos configurado o creado una Base de datos, asi que vamos a crear uno.
+
+Utilizando MySQL con el usuario de desarollo vamos a configurar.
+
+VAmos a poner nuestro ejemplo con las siguientes credenciales:
+
+User: root
+Password: desarrollo
+Name_BD: CRUDLaravel5_5
+
+
+nos conectamos via consola
+ > $ mysql -u root -p
+Enter password: **********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 43
+Server version: 8.0.17 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2019, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+
+
+Vamos acrear una Base de datos:
+
+Ejecutamos la creación de la base de datos:
+
+> mysql> CREATE DATABASE crudlaravel5_5;
+    Query OK, 1 row affected (0.03 sec)
+
+Con esto vamos a crear una Bd utilizando MySQL, aunque podemos hacerlo de otra forma, por ejemplo, en Mac hay una aplicación llamada "Sequel Pro".
+
+Podemos utilizar tambien "phpmyadmin" para administrar la Bd.
+
+Salimos de la consola.
+
+Nuevamente ejecutamos comando:
+    > php artisan migrate
+
+
+En este caso tenemos el mismo error, esto sucede por que aunque ya tenemos la Base de datos creada, no se ha configurado, en el proyeto, por ello vamos al archivo-
+
+'.env', que es el archivo de entorno y cambiar la configuracion de la BD, en este caso podemos opbservar que tenemos ciertos datos, vamos a registrar la información pertinenete segun nuestro proyecto en puerta.
+
+
+---.env
+...
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=crudlaravel5_5
+DB_USERNAME=root
+DB_PASSWORD=desarrollo
+...
+---
+
+
+si no tuvieramos contraseña quedaria este ultimo dato como sigue:
+
+---
+DB_PASSWORD=
+---
+
+Por cierto es en este archivo de entorno donde nosotros vamos a configurar la aplicación  para el entorno dado, Por ejemplo
+
+    APP_URL=http://localhost:8000/
+
+Ya que tenemos un servicio creado localmente y fue configurado con esa url para esta aplicación.
+
+si hubiesemos configurado nuestro Host virtual, pudiese apuntar a 
+
+    APP_URL=http://klvst3r.io
+
+
+Asi como podemos ver tenemos nuestra pagina de inicio    
+
+
+ahora vamos a colocar el nombre del proyecto
+    APP_NAME=CURDLaravel5.5
+
+Por ejemplo.
+
+si regresamos a la consola y rejecutamos el comando de migraciones.      
+
+    > $ php artisan migrate
+Migration table created successfully.
+Migrating: 2014_10_12_000000_create_users_table
+Migrated:  2014_10_12_000000_create_users_table
+Migrating: 2014_10_12_100000_create_password_resets_table
+Migrated:  2014_10_12_100000_create_password_resets_table
+
+
+Ahora el mensaje es satisfactorio y confirmación de que se creo la tabla de migraciones correctamente, y que se han ejecutado los siguientes archivos dentro de las migraciones.
+
+
+- 2014_10_12_000000_create_users_table
+- 2014_10_12_100000_create_password_resets_table
+
+con el primer archivo se crea la primera tabla de usuarios, y con el segundo archivo se va a crear la tabla para la recuperación de contraseñas. mediante la tabla: create_password-reset_table.
+
+No revisamos esta migración, pero esta tabla tiene 3 columnas la columna email, token y luego otra columna para indicar, cuando se creo este registro. 
+
+Quedando
+
+---...create_password_resets_table.php
+
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreatePasswordResetsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('password_resets');
+    }
+}
+
+---
+
+Tenemos el mismo patron. el nombre del archivo que es 'create_password_resets_table'. En este caso vamos a indicar que vamos a crear la tabla, para recuperación de contraseña, y en el metodo Up(), tenmemso el codigo para crear la tabla, y el metodo down() para eliminar dicha tabla.
+
+si regresamos al navegador y mediante phpmyadmin podemos observar que tebnemos tres tablas.
+
+
+- migrations
+- password_resets
+- users
+
+Aunque podriamos haber esperado solo tener dos tablas, pero Laravel crea otra tabla extra llama 'migrations', donde va a guardar la información de las migraciones que han sido ejecutadas. Por ejemplo en este caso se han ejecutado la migración para ejecutar la tabla 'usuarios' y se ha utilizado la migracion para crear la tabla 'password_resets' para el mecanismo de recuperación de contraseñas.
+
+Y asi las migraciones fueron ejecutadas de una sola vez.
+
+si nos vamos a la estructura de la Bd vamos a ver por ejemplo la tabla de usuarios, todo esta vacia. tenemos entonces: la estructura:
+
+ > mysql> use crudlaravel5_5;
+    Database changed
+
+
+ > mysql> desc migrations;
++-----------+------------------+------+-----+---------+----------------+
+| Field     | Type             | Null | Key | Default | Extra          |
++-----------+------------------+------+-----+---------+----------------+
+| id        | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| migration | varchar(255)     | NO   |     | NULL    |                |
+| batch     | int(11)          | NO   |     | NULL    |                |
++-----------+------------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+
+> mysql> desc password_resets;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| email      | varchar(255) | NO   | MUL | NULL    |       |
+| token      | varchar(255) | NO   |     | NULL    |       |
+| created_at | timestamp    | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+
+> mysql> desc users;
++----------------+------------------+------+-----+---------+----------------+
+| Field          | Type             | Null | Key | Default | Extra          |
++----------------+------------------+------+-----+---------+----------------+
+| id             | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| name           | varchar(255)     | NO   |     | NULL    |                |
+| email          | varchar(255)     | NO   | UNI | NULL    |                |
+| password       | varchar(255)     | NO   |     | NULL    |                |
+| remember_token | varchar(100)     | YES  |     | NULL    |                |
+| created_at     | timestamp        | YES  |     | NULL    |                |
+| updated_at     | timestamp        | YES  |     | NULL    |                |
++----------------+------------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+
+Empezamos con users:
+
+Esto lo maneja Laravel automaticamsnte.
+
+Esta es la introducción al tema de Manejo de migraciones con Laravel.
+
+
+
+
+
+
+
+
+Ejercicio
+=========
+Crea una base de datos y configura el archivo .env para que puedas ejecutar las migraciones con el comando 
+
+    > php artisan migrate
+
+Una vez que lo logre verifica que las tablas se hayan creado con éxito utilizando cualquier administrador de bases de datos.

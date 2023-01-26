@@ -1,0 +1,76 @@
+0.1.1.1 Laravel Homestead
+=================
+
+Si desea trabajar con Laravel Homestead que en realidad es una máquina virtual que viene lista para el desarrollo de proyectos con Laravel y otras tecnologías de PHP como Symfony y Statamic. Al ser una máquina virtual nos va a permitir ejecutar nuestros proyectos sin necesidad de instalar PHP, MySQL, etc. en nuestra máquina local.
+
+
+Laravel Homestead
+
+Laravel Homestead es una máquina virtual que viene lista para el desarrollo de proyectos con Laravel y otras tecnologías de PHP como Symfony y Statamic. Al ser una máquina virtual nos va a permitir ejecutar nuestros proyectos sin necesidad de instalar PHP, MySQL, etc. en nuestra máquina local. En esta primera lección de la serie de Laravel Homestead, aprenderás cómo instalar y configurar todo lo que necesitas para poder comenzar a desarrollar tus proyectos con ayuda de Homestead.
+
+Homestead funciona sobre VirtualBox utilizando Vagrant:
+
+    VirtualBox es la herramienta que nos permite crear máquinas virtuales.
+    Vagrant es una manera elegante y sencilla de administrar y provisionar máquinas virtuales, como por ejemplo Laravel Homestead.
+
+Prerrequisitos de instalación Laravel Homestead
+
+Asegúrate de tener una llave SSH en tu computador, si no la tienes, puedes generarla con: ssh-keygen -t rsa -b 4096 -C "correo@dominio.com"
+
+Para poder utilizar máquinas virtuales es muy probable que debas habilitar la virtualización por hardware (VT-x) en tu equipos, lo cual normalmente se hace desde el BIOS.
+
+Homestead funciona sobre VirtualBox utilizando Vagrant:
+
+    VirtualBox es la herramienta que nos permite crear máquinas virtuales.
+    Vagrant es una manera elegante y sencilla de administrar y provisionar máquinas virtuales, como por ejemplo Laravel Homestead.
+
+
+Instalación de Laravel Homestead:
+
+    1. Descarga VirtualBox: el archivo a descargar varía dependiendo del sistema operativo.
+    	https://www.virtualbox.org/wiki/Downloads
+    
+    2. Descarga Vagrant: de nuevo el archivo a descargar depende del sistema operativo
+    	https://www.vagrantup.com/downloads
+
+    3. Instala VirtualBox: siguiendo los pasos del instalador
+    4. Instala Vagrant: siguiendo los pasos del instalador
+    5. Abre VirtualBox para comprobar que ha sido descargado correctamente
+    6. Agrega el Box de Laravel Homestead con el siguiente comando en la terminal: 
+    	vagrant box add laravel/homestead y espera a que finalice la descarga.
+    
+    7. Comprueba que ha sido instalado con éxito con vagrant box list
+    8. Instala Laravel Homestead clonando su repositorio de git con: 
+    	git clone https://github.com/laravel/homestead.git ~/Homestead
+    
+    9. Abre la URL https://github.com/laravel/homestead en el navegador y comprueba cuál es la última versión estable de Homestead, por último, de vuelta a la terminal, realiza un checkout de dicha versión, por ejemplo para la versión que yo estoy usando el comando es git checkout v6.3.0. Puedes aprender más sobre manejo de Git en nuestro Curso de Git y GitHub.
+    Accede al directorio donde instalaste Homestead por ejemplo con cd ~/Homestead
+    Ahora ejecuta el comando bash init.sh para que se cree el archivo de configuración Homestead.yaml (este archivo de configuración será creado dentro del directorio de Homestead). 
+
+
+Configuración de Laravel Homestead
+------------------------------------
+
+    - Abre el archivo con nano o cualquier otro editor, por ejemplo desde la terminal con: nano ~/Homestead/Homestead.yaml
+    - Edita los valores que haga falta, por ejemplo puedes modificar el directorio de proyectos en caso que no coincida con el que estés usando actualmente. Cuando estés listo guarda el 	archivo.
+    - Crea un Virtual Host modificando el archivo /etc/hosts, de nuevo utilizando el editor de tu preferencia. Es posible que necesites utilizar sudo para editar el archivo, por 	
+    	ejemplo: sudo nano /etc/hosts luego agrega la IP y el dominio en una nueva línea, por ejemplo: 192.168.10.10 my-project.app
+
+Iniciar la máquina virtual
+-----------------------------
+
+    - Vamos al directorio donde instalamos Homestead, por ejemplo: cd ~/Homestead
+    - Desde allí iniciamos la máquina virtual con vagrant run. Vagrant configurará nuestra máquina virtual utilizando el archivo de configuración de Homestead.
+    - Ahora puedes probar el proyecto abriendo el dominio (por ejemplo my-project.app) en el navegador.
+
+Conectándonos a nuestra máquina virtual con SSH
+-----------------------------
+
+    - Vamos nuevamente al directorio Homestead desde la consola con cd ~/Homestead
+    - Ejecutamos el comando vagrant ssh
+    - Podemos salir de la máquina virtual ejecutando exit
+
+Detener la máquina virtual
+--------------------
+Puedes detener la máquina virtual desde el directorio de Homestead con vagrant halt
+

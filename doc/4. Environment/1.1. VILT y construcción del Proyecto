@@ -1,0 +1,71 @@
+1.1. VILT y construcción del Proyecto
+
+Crea un Single Page Application para tu portafolio usando los mejores frameworks y librerías de CSS, JavaScript y PHP.
+
+La creación de este proyecto y los futuros seran lexibles, dinámicos y reactivos en muy poco tiempo.
+
+
+
+Antes de empezar este actual proyecto debemos entender las cosas a utilizar.
+
+Stack tecnologico conocido como VILT
+
+V Vue.js
+I Inertia.js
+L Laravel
+T Tailwind CSS.
+
+
+La idea es crear un SPA, iniciando con Tailwind CSS y aplícalo en un proyecto real, Aprende Inertia JS junto con Vue JS y crea interfaces reactivas para tus usuarios. Aplica Laravel y construye un SPA desde cero en conjunto con todos los componentes del stack VILT. Aprende a usar Laravel Jetstream, uno de los sistemas de autenticación más completos de Laravel. En resumen es tener nuestro portafolio digital y tenerlo en linea.
+
+
+Dominar las tecnologías que dominarán el mundo del desarrollo web con su creciente popularidad y demanda.
+
+
+Contruyendo un Single Page Application (SPA), que antes eran complejos, en poco tiempo y con poco esfuerzo, gracias a estas tecnologías Full Stack. Inertia.js será el mayor aliado en este proceso.
+
+Crearemos nuestro propio Portafolio SPA con una apariencia atractiva gracias a Tailwind, dinámico y reactivo, gracias a Vue.js e Inertia.js, y perfectamente funcional y respaldado gracias a Laravel. Se creará además un panel de administración, usando Laravel Jetstream, que permitirá gestionar esa de habilidades y proyectos que mostrará en su portafolio, aplicando todo lo aprendido con Vue.js, Intertia.js, Laravel y Tailwind CSS.
+
+
+El enfoque del protyecto, permitirá dominar los conceptos y funcionalidades esenciales de Tailwind, Vue.js, Inertia y Laravel en conjunto, mientras además se aplica en un proyecto completamente funcional (tu portafolio funcional como un Single Page Application).
+
+
+No importará el tipo de SPA a construir con VILT, lo harás realidad y con facilidad
+
+Laravel es el framework más popular del mundo y en conjunto con Inertia.js, Vue.js y Tailwind CSS todo esto integrado dentro de Laravel, no tendremos límites. Laravel será ese omponente principal para comunicar y entender con todos ellos, Laravel tendrá la logica y se encargara de todo el Backend. Se Aprovechará el enorme potencial de Laravel para nuestro SPA, sin tener que limitarte a tener solo una API. La idea no es crear una API, tener JSON y retornar peticionaes AJAX, sino que ya con la ayuda de Inertia.sj se va a poder facilitar la integración entre VUE y Laravel oara que todo sea más facil, centrandose en la solución.
+
+Estas tecnologías mencioniadas dominarán el futuro cercano del desarrollo web y es la oportunidad de estar al frente de todos.
+
+Aprenderemos VILT; a aplicarlo y resolver problemas reales para los proyectos e ideas futuras.Aprender VILT aumenta nuestras capacidades y asegurando un futuro brillante, lleno de flexibilidad, efectividad y agilidad para los desarrollos.
+
+
+Fuentes del Stack técnologico.
+
+Vue.js 		- 		https://vuejs.org/
+Inertia.js 	-		https://inertiajs.com/
+Laravel		-		https://laravel.com/
+Tailwindcss	-		https://tailwindcss.com/
+
+
+Que son estas técnologias:
+
+Vuejs
+-----
+Vuejs es un Framework para JavaScript, es decir funcionara con JS, pero ya dentro de una seria de tecnologias, facilitaran el desarrollo con un manejo dinamico de los componentes, de esta forma se tendran condicionales, ciclos, eventos, mostrar u ocultar información. Por tanto es una herramienta a utilizar, a traves de un segundo componente llamado.
+
+
+Inertiajs
+---------
+Inertiajs se comunica directamente con el Frontend en este caso con el framework para el frontend es decir Vuejs, puede trabajar con React y el backen en este caso Laravel, aunque tambien se puede hacer con Ruby. El caso es que se utilizara para comunicar facilmente toda la funcionalidad implementada en nuestro backend con Laravel y la dinamica con la interfaz de usuario del Frontend por medio de Vuejs y que se podra mostrar de manera estetica y agradable para el usuario con los estilos CSS, las clases ya definicas con el framework Tailwind CSS.
+
+Tailwind CSS
+------------
+Framework con clases definidas,, estilos CSS todo para darle mayor estetica y funcionalidad al usuario. En el caso de este framework podemos encontrar mucha funcionalidad relacionada con manejo de formularios, enrutamiento, respuests a eventos, manejo de sesiones, titulos, meta-etiquetas.
+
+Laravel
+-------
+Este Framework de PHP es la base que permitira gestionar e instalar todos estos paquetes, Laravel no solo es un framework para el backend, sino que tambien se le conoce como un framework FullStack. es decir puede manejar el Stack entero, desde al backend hasta el frontend, directamente desde ahi. Integrando estas técnologias en un solo framework,
+
+
+La idea de nuestro sPA es el portafolio, con sus secciones donde mostraremos nuestras habilidades, proyectos, escencialesmente la información que conforma un portafolio tradicional. En escencia es mostrar los proyectos y las capacidades que tenemos como desarrolladores. Las personas podran establecer contacto con los botones y a traves de un correo electronico, con un menaje para compartir. Se tendra asi mismo un dashboard para la gestión de manera muy visual, editandose, agregandose en el panel de administraci+pn integrando nuestro VILT.
+

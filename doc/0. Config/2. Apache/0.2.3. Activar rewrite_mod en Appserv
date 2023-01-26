@@ -1,0 +1,41 @@
+4. Activar rewrite_mod en Appserv
+
+En Windows
+----------
+
+
+
+Si trabajas regularmente con webs en PHP teniendo en cuenta el SEO utilizarás urls amigables (es decir, http://www.muevetebasket.es/nike-zoom-kobe-v/zapatillas/2/ en lugar de http://www.muevetebasket.es/zapatilla.php?id=2).
+
+Para poder trabajar con ellas con el AppServ es necesario activar el módulo rewrite de la siguiente manera:
+
+1.- Abrir el archivo de configuración httpd.conf (se puede acceder a él desde Inicio > Todos los programas > AppServ > Configuration Server > Apache Edit the httpd.conf).
+
+En nuestro caso abrimos el archivo desde nuestro editor:
+
+C:\AppServ\Apache24\conf\httpd.conf
+
+
+2.- Descomentar (quitar #) la línea #LoadModule rewrite_module modules/mod_rewrite.so
+
+3.- Añadir las siguientes líneas al final del fichero httpd.conf:
+<Directory «C:/AppServ/www»>
+Options FollowSymLinks
+AllowOverride All
+Order deny,allow
+Allow from all
+Satisfy all
+</Directory>
+
+4.- Detener Apache (desde Inicio > Todos los programas > AppServ > Control Server by Manual > Apache Stop) y luego arrancarlo de nuevo (Inicio > Todos los programas > AppServ > Control Server by Manual > Apache Start) para que de esta manera el servidor puede asimilar la nueva configuración.
+
+5.- ¡Listo! Ya solo quedará configurar el archivo .htaccess a con la sintaxis de las urls que quieras construir.
+
+En Linux
+----------
+Para habilitar el host virtual de Apache y el módulo de reescritura con el siguiente comando:
+
+		a2enmod rewrite
+		a2ensite klvst3r.io #Siendo klvst3r.io el nombre de nuestro host virtual
+
+		

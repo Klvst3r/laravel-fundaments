@@ -1,0 +1,110 @@
+11.1.7. Instalacion en Linux
+-------------------------------------------------------------
+
+Requisititos
+1. En nuestro caso utilizamos un servidor web Debian 11. 
+
+2. Un nombre de dominio válido apuntado con la IP de su servidor. Una contraseña de root está configurada en el servidor, nosotros utilizaremos sudo.
+
+	Instalar el servidor web Apache Primero, deberá instalar el paquete Apache en su servidor. Puede instalarlo usando el siguiente comando:
+
+		apt-get install apache2 -y
+
+	Una vez que el paquete de Apache esté instalado, verifique la versión de Apache usando el siguiente comando:
+
+		systemctl status apache2
+
+3. Instale PHP y otras extensiones requeridas
+		apt-get install apt-transport-https gnupg2 ca-certificates -y
+
+4. 	A continuación, agregue la clave GPG y el repositorio PHP con el siguiente comando:
+
+		wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+		sh -c 'echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
+
+5. Luego, actualice el repositorio e instale PHP con otras extensiones usando el siguiente comando:
+
+		apt-get update -y
+		apt-get install libapache2-mod-php php php-common php-xml php-gd php8.1-opcache php-mbstring php-tokenizer php-json php-bcmath php-zip unzip curl -y
+
+6. Una vez que PHP esté instalado, edite el archivo php.ini y realice algunos cambios:
+
+		nano /etc/php/8.1/apache2/php.ini
+
+7. Cambiamos las siguientes líneas:
+
+		cgi.fix_pathinfo=0 
+		date.timezone = Mexico/General
+
+8. Guarde y cierre el archivo, luego verifique la versión de PHP usando el siguiente comando:
+
+		php -v		
+
+9. Instalar Composer
+
+	A continuación, deberá instalar Composer en su sistema. Puede instalarlo usando el siguiente comando:
+
+		curl -sS https://getcomposer.org/installer | php		
+
+10. A continuación, mueva el binario de Composer a la ruta del sistema con el siguiente comando:
+
+		mv composer.phar /usr/local/bin/composer
+
+11. A continuación, verifique la versión de Composer con el siguiente comando:
+
+		composer --version		
+
+12. Instalar Laravel
+
+	Luego, cambie el directorio a Apache webroot y descargue la última versión de Laravel usando Composer:
+
+		cd /var/www/html
+		composer create-project --prefer-dist laravel/laravel laravel		
+
+13. A continuación, establezca los permisos y la propiedad adecuados para el directorio de Laravel con el siguiente comando:
+
+		chown -R www-data:www-data /var/www/html/laravel
+		chmod -R 775 /var/www/html/laravel
+
+14. Configurar Apache para Laravel
+
+	A continuación, deberá crear un archivo de configuración de host virtual de Apache para Laravel. Puedes crearlo con el siguiente comando:
+
+		nano /etc/apache2/sites-available/laravel.conf
+
+15. Agregue las siguientes líneas:
+
+		<VirtualHost *:80>
+		    ServerName laravel.example.com
+
+		    ServerAdmin admin@example.com
+		    DocumentRoot /var/www/html/laravel/public
+
+		    <Directory /var/www/html/laravel>
+		    Options Indexes MultiViews
+		    AllowOverride None
+		    Require all granted
+		    </Directory>
+
+		    ErrorLog ${APACHE_LOG_DIR}/error.log
+		    CustomLog ${APACHE_LOG_DIR}/access.log combined
+		</VirtualHost>
+
+16. Guarde y cierre el archivo, luego habilite el host virtual de Apache y el módulo de reescritura con el siguiente comando:
+
+		a2enmod rewrite
+		a2ensite laravel.conf
+
+17. Finalmente, reinicie el servicio de Apache para aplicar los cambios:
+
+		systemctl restart apache2
+
+
+	También puede verificar el estado de Apache con el siguiente comando:
+
+		systemctl status apache2
+
+18. Acceso a Laravel Ahora, abra su navegador web y acceda a la interfaz de usuario web de Laravel usando la URL http://laravel.klvst3r.io 
+	Debería ver la página predeterminada de Laravel en la pantalla.
+
+	Felicidades ha instalado satisfactoriamente Laravel con Apache en Debian 11. 

@@ -1,0 +1,401 @@
+19. Rutas con Laravel
+
+El sistema de Rutas de Laravel es bastante intuitivo y fácil de manejar, pero a la vez muy potente, con éste podemos crear todo tipo de rutas en la aplicación: sencillas o complejas. La idea es comprender cómo crear las primeras rutas en un proyecto de Laravel.
+
+Notas:
+======
+Las rutas son una capa muy importante en Laravel, es por ello que el Framework destina un directorio en la carpeta raíz, llamado >>routes<<, para ubicar todas las rutas de la aplicación.  Por defecto, tiene 2 archivos de rutas web.php y api.php. Como sus nombres lo expresan en web.php se definen las rutas para la web y en api.php las rutas para crear APIs para la aplicación.
+
+Podemos definir rutas de varias maneras comenzamos usando una función anónima, que sigue el siguiente formato:
+--- /routes/web.php
+	Route::get('/esta-es-la-url', function () {
+	    return 'Hola mundo';
+	});
+---
+Se escribe la clase Route que llama al método relacionado con el verbo HTTP, en este caso, get que acepta dos parámetros: el primero es la URL que se llamará desde el navegador y el segundo es una función anónima que devuelve lo que queremos mostrar.
+
+>> Más adelante revisaremos otras formas de definir rutas, como por ejemplo, usando acciones de controladores. <<
+
+Para ver la ruta en funcionamiento debemos escribir en el navegador algo como: http://tu-proyecto.dev/esta-es-la-url, esto dependiendo de VirtualHost que se haya creado para el proyecto. Si no se tiene puede usar "php artisan serve" o revisar la sección de esta guía donde se explico cómo preparar el entorno de desarrollo.
+
+
+Rutas con parámetros
+--------------------
+También con el sistema de rutas de Laravel se pueden crear rutas más complejas que necesiten de parámetros dinámicos.  Se pueden definir de la siguiente forma:
+
+---
+	Route::get('/usuarios/detalles/{id}', function ($id) {
+	    return "Detalles del usuario: {$id}";
+	});
+---
+
+En este caso Laravel se encarga de capturar el segmento de la ruta que es dinámico (lo identifica porque está encerrado entre llaves). Por tanto, en la URL pasamos la identificación del parámetro encerrado entre llaves y en la función anónima lo pasamos como argumento para que pueda ser accedido y usado dentro de dicha función.
+
+Se pueden usar tantos parámetros como sean necesarios, solo es importante que estén encerrados entre llaves {} y los nombres pueden ser alfanuméricos pero no está permitido usar el guión - pero sí el subrayado o underscore _. Además, importa el orden de los parámetros pasados a la función anónima, pero no los nombres que se les de. Por ejemplo:
+---
+	Route::get('posts/{post_id}/comments/{comment_id}', function ($postId, $commentId) {
+	    return "Este el comentario {$commentId} del post {$postId}";
+	});
+---
+
+Rutas con filtros o restricciones de expresiones regulares en los parámetros
+------------------------
+
+Cuando un usuario hace una petición HTTP, Laravel busca en los archivos de rutas una definición que coincida con el patrón de la URL según el método HTTP usado y en la primera coincidencia le muestra el resultado al usuario. Por tanto el orden de precedencia de las definiciones de rutas es muy importante.
+
+Para solucionar los posibles conflictos con el parecido en la URL de distintas rutas puede hacerlo de 2 maneras:
+
+    - Usando el método where para agregar condiciones de expresiones regulares a la ruta. Puede la sección siguiente en este archivo "Rutas con filtros" en Laravel donde se explica detalladamente el uso del método where.
+    - Ordenando las rutas de tal manera que las más específicas estén al principio y las más generales al final del archivo de rutas.
+
+
+Rutas con parámetros opcionales
+-----------------------------
+
+Cuando el uso de un parámetro no es obligatorio, podemos usar el carácter ? después del nombre del parámetro para indicar que es opcional.  Sin embargo, debe añadirse un valor por defecto al parámetro cuando lo colocamos en la función, por ejemplo:
+---
+	Route::get('saludo/{name}/{nickname?}', function ($name, $nickname = null) {
+	    if ($nickname) {
+	        return "Bienvenido {$name}, tu apodo es {$nickname}";
+	    } else {
+	        return "Bienvenido {$name}, no tienes apodo";
+	    }
+	});
+---
+
+
+
+Rutas con filtros en Laravel
+----------------------------
+
+Vamos a aprender a agregar filtros a nuestras rutas de Laravel 5.5 que permitan verificar la data que el usuario está enviando (a través de la url) para redirigirlo a la acción correcta, sin necesidad de utilizar middleware, validaciones u otro tipo de estructura de control, tan solo haciendo uso del método where() dentro el archivo de rutas.
+
+El componente de rutas de Laravel permite capturar las peticiones realizadas por un usuario, de tal manera que podamos evaluar los parámetros enviados y devolver la respuesta acorde a cada petición. Cuando iniciamos un nuevo proyecto, las rutas se establecen por defecto dentro del archivo routes.php en el directorio app\Http, en este archivo se podrá ver algo similar a esto:
+
+---
+	Route::get('/', function () {
+	    return view('welcome');
+	});
+---
+
+Esta es una ruta de tipo GET que devuelve una vista llamada welcome (recuerdemos que en Laravel las vistas se almacenan en el directorio resources/views, utilizando la extensión .blade.php).
+---
+	Route::get('user', function () {
+	    return "foo";
+	});
+	Route::post('user', function () {
+	    return "bar";
+	});
+---
+
+En este caso tenemos dos rutas hacia el mismo url /user, diferenciadas por el tipo de petición, una es de tipo POST (para enviar datos desde un formulario) y otra de tipo GET, de esta forma usando un tipo diferente indicamos cual de ellas debe encargarse de cada solicitud. Por ejemplo, una para mostrar el formulario de registro de usuarios y la otra para almacenar los datos que este formulario envié.
+
+En las rutas también podemos recibir parámetros cómo:
+Route::get('user/{id}', function ($id) {
+    return $id;
+});
+
+En este caso vamos a recibir por medio de la variable $id, por ejemplo, el identificador de un usuario en la base de datos, ahora, que tal si queremos recibir como parámetro en otra ruta el nombre del usuario pero usando el mismo slug:
+---
+	Route::get('user/{id}', function ($id) {
+	    return $id;
+	});
+	Route::get('user/{name}', function ($name) {
+	    return $name;
+	});
+---
+
+¿A donde queremos llegar?
+-----
+
+Si tenemos dos rutas del mismo tipo, con el mismo slug (/user/) y recibiendo los parámetros bajo la misma estructura, podemos enfrentarnos a un problema, ya que probablemente todas las peticiones de tipo /user/nombre, /user/10 van a ser capturadas por la misma ruta, en este caso la primera en orden descendente.
+
+Si somos cuidadosos y hemos tomado todas las precauciones para que esto no ocurra, pero, puede enfrentarse a esta situación cuando se trata de migrar la data o la estructura de un viejo sitio web a uno nuevo hecho en Laravel y no se quiere que estas antiguas url’s estén arrojando 404 cuando un usuario intenta acceder o algo por el estilo, entonces, es aquí donde podemos aprovechar el uso de filtros en las rutas.
+
+Filtros en rutas
+----------------
+
+Los filtros se pueden utilizar haciendo uso de expresiones regulares, por ejemplo, queremos que en el primer bloque capture solo las variables de tipo numérico ($id).
+---
+	Route::get('user/{id}', function ($id) {
+	    return $id;
+	})->where(['id' => '[\d]+']);
+	Route::get('user/{name}', function ($name) {
+	    return $name;
+	});
+---	
+
+Entonces desde ahora todas las rutas de tipo /user/10, van a ser capturadas por la primera ruta, pero ¿Qué ocurre con los datos de tipo string?, la respuesta es sencilla, podemos asegurarnos de usar la misma estructura:
+---
+	Route::get('user/{id}', function ($id) {
+	    return $id;
+	})->where(['id' => '[\d]+']);
+	Route::get('user/{name}', function ($name) {
+	    return $name;
+	})->where(['name' => '[-\w]+']);
+---
+
+Inclusive, se puede limitar a una lista específica de posibles valores. Digamos que además del problema que ya se tiene al usar user/{name} y user/{id}, el sistema debe ser capaz de manejar posibles peticiones de tipo user/create, user/delete, /user/update. Si se ingresa cualquiera de estas url, la petición va a ser capturada por la segunda ruta, pero eso no es lo que queremos, vamos a solucionarlo fácilmente.
+---
+	Route::get('user/{id}', function ($id) {
+	    return $id;
+	})->where(['id' => '[\d]+']);
+	Route::get('user/{slug}', function ($slug) { 
+	    return $slug; 
+	})->where(['slug' => 'create|delete|update']);
+	Route::get('user/{name}', function ($name) {
+	    return $name;
+	})->where(['name' => '[-\w]+']);<br>
+---
+    En este caso debemos asegurarnos que la ruta que posee la restricción este primero para que pueda ser evaluada correctamente.
+
+Desde ahora cuando se trate de user/delete, user/update, user/create, las peticiones van a ser capturadas por este segundo bloque ya que has definido explícitamente cuáles son los posibles valores de ese {slug} y cualquier valor de tipo string que esté fuera de esa lista va a ser capturado por la tercera ruta.  Finalmente podemos probar todo esto con el siguiente código:
+---
+	Route::get('user/{id}', function ($id) {
+	    return "Esto es un ID:".$id;
+	})->where(['id' => '[\d]+']);
+	Route::get('user/{slug}', function ($slug) {
+	    return "Esto es un Slug:".$slug;
+	})->where(['slug' => 'create|delete|update']);
+	Route::get('user/{name}', function ($name) {
+	    return "Esto es un Nombre:".$name;
+	})->where(['name' => '[-\w]+']);
+---
+Ahora se puede probar cada ruta en el navegador y podrá ver como se devuelve el resultado esperado.	
+
+----------------------------
+
+Practica:
+======
+
+Vamos a ver como general las primeras rutas con Laravel, para ello vamos a la carpeta:
+	/routes/web.php
+
+Definimos ahi nustras primeras rutas, que incluso ya se tienen una primera ruta inicial:
+---
+	Route::get('/', function () {
+    	return view('welcome');
+	});
+---
+
+Laravel da el control total de como vamos a definir las rutas de la aplicación
+
+Definimos la ruta para el home:
+---
+	Route::get('/', function () {
+    	return 'Home';
+	});
+---
+
+En lughar de una vista retornaremos una cadena de texto, con el texto anterior convertimos esta cadena de texto en una respuesta http, la cual podremos ver en el navegador.
+
+Podemos definir tantas rutas como hagan falta, vamos a suponer que estamos trabajando en un modulo de usuarios y por lo tanto queremos tener una ruta para visualizar los datos en pantalla, asi que definimos una nueva ruta que se llamara usuarios, y como segundo argumento tenemos una funcion anonima las cual va a retornar una cadena 
+
+---
+	Route::get('/', function(){
+	    return 'Home';
+	});
+
+	Route::get('/usuarios', function(){
+	    return 'Usuarios';
+	});
+---
+En Browser:
+	/
+
+Esto retornara la cadena Usuarios, por ahora se trabajara con cadena de texto y no con vistas.
+
+La ide es concentrase en como crear rutas con Laravel, para despues tomar el tema de vistas, controladores, y mucho mas.
+
+si queremos crear una ruta para mostrar el detalle de un usuario:
+
+Declaramos la ruta Usuarios y luego detalles.
+
+Esto inidica que usuario quiero editar. Esto en proyectos de PHP se puede logar utilizando la variable global $_GET para tener el Id del usuario, 
+
+Route::get('/', function(){
+    return 'Home';
+});
+
+Route::get('/', function(){
+    return 'Usuarios';
+});
+
+Route::get('/usuarios/detalles', function(){
+    return 'Mostrando detalles del usuario: '.$_GET['id'];
+});
+
+Si en el naveghador yo voy a la URL
+	http://127.0.0.1:8000/usuarios
+
+Devolvera la cadena de Texto usuarios
+
+Por ahora que se trabaja con cadenas de texto con vistas para poder concentrarse a las rutas con Laravel y despues de ello poder manejar vistas, controladores y algo mas.
+
+Si deseamos crear una ruta para mostrar el detalle de un usuaior.con este escenario por ajemplo tenemos la ruta usuarios ty luego detalles esta ruta no me indica que usuario quiero editar, Si recordamos cono se trabajaba anteriormente se hace usutiliando la variable global $GET, para por ejemplo obtener el id del usuario. 
+
+Esto lo podemos lograrlo de la siguiente manera:
+---
+	Route::get('/', function(){
+	    return 'Home';
+	});
+
+	Route::get('/', function(){
+	    return 'Usuarios';
+	});
+
+	Route::get('/usuarios/detalles', function(){
+	    return 'Mostrando detalles del usuario: '.$_GET['id'];
+	});
+---
+Puedo tener el mismo resultado con las comillas doble, y tenemos una url mas limplia dcomo la siguiente
+Browser:
+	http://127.0.0.1:8000/usuarios/5
+	
+Con php esto es muy dificil de lograr sin embargo con Frameworks como Laravel esto es muy simple.
+
+Simplemente de nuevo en nuestro archivo de rutas vamos a colocar un parametro dinamico dentro de nuestras rutas empleando llaves, y dentro de las llaves colocamos el nombre del parametro {id}, este parametro se recibe en la funcion anonima. La infiormación se obtendra de la siguiente manera.
+
+Para imprimir el vaor sin concatenar lo solemso hacer entre llaves, para mejorar la legibilidad de la cadena de texto.
+
+----
+	Route::get('/usuarios/{id}', function($id){
+    	return "Mostrando detalles del usuario: {$id}";
+	});
+---
+En el navegador:
+	http://127.0.0.1:8000/usuarios/5
+	
+Logrando tener URL mas limpias.
+
+Ahora que sucede si quiero definir una ruta para por ejemplo crar usuarios.Pasamos nuevamente una función nonima. No hay parametros
+
+---
+
+Route::get('/usuarios/nuevo', function(){
+	return 'Crear unuevo usuario';
+});
+---
+En el navegador:
+	http://127.0.0.1:8000/usuarios/5
+
+Me muestra la salida:
+	Mostrando detalles del usuario: nuevo
+
+Esto sucede por que Laravel compara las rutas en orden y la primera ruta que coincida es la ruta que se va a utilizar y las demas se van a ignorar, en este acaso es usuarios/nuevo.
+
+Entonces para poder solucionar esto existen dos formas:
+
+Metodo 1:
+---
+	Route::get('/usuarios/{id}', function($id){
+    	return "Mostrando detalles del usuario: {$id}";
+	})->where('id','[0-9]+');  	
+
+---
+Indicando a Laravel que este Id puede ser alfanumerico, lo definimos con el metodo "where" que se encadena a la inforamción de la ruta. La declaración devuelve un objeto y por lo tanto podremos llamar al metodo "where" pasando al metodo una expresión regular que coincida con dicho parametro que solo validara numeros y que podemos tener mas de un numero.
+
+Entonces
+En el navegador:
+	http://127.0.0.1:8000/usuarios/5	
+
+Pero si 
+		http://127.0.0.1:8000/usuarios/nuevo	
+
+Salida:
+	Crear unuevo usuario		
+
+Por fin nuestra ruta esta funcionando y esta funcionando por que ya no coincide con los valores numericos, por lo tanto usuario/nuevo ya coincide con la ultima funcion que definimos.
+
+Ahora
+Si conocemos sobre expresiones regulares, sabemos que tambien podremos definirla de la siguiente manera:
+
+Metodo 2:
+si regresamos ahora a usuatrios/100 no regresa a detalles del usuario.
+
+Podemos cambiar la expresion regular  
+---
+	Route::get('/usuarios/{id}', function($id){
+        return "Mostrando detalles del usuario: {$id}";
+    })->where('id','\w+');   
+---
+Cambiamos la expresion regular para aceptar letras y numeros y 
+en el browser:
+	http://127.0.0.1:8000/usuarios/nuevo
+
+Ahora esta aceptando caracteres que son letras o numeros.
+
+Una posible solucion es cambiar el orden de las rutas, quedando de la siguiente manera:
+---
+	Route::get('/usuarios/nuevo', function(){
+	    return 'Crear unuevo usuario';
+	});
+	Route::get('/usuarios/{id}', function($id){
+	        return "Mostrando detalles del usuario: {$id}";
+	    })->where('id','\w+');   
+---
+De esta manera cuando Laravel Busque la URL Usuarios nuevo va a coincidir con la ruta va a coincidir con la primera y la segunda va a ser ignorada.
+
+Laravel permite pasar mas de un parametro en nuestras rutas.
+Por ejemplo.
+
+---
+
+Route::get('/usuarios/nuevo', function(){
+   return 'Crear unuevo usuario';
+});
+
+Route::get('/usuarios/{id}', function($id){
+   return "Mostrando detalles del usuario: {$id}";
+    });   
+
+Route::get('/saludo/{name}/{nickname}', function($name, $nickname){
+    return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+});
+---	  	    
+
+Tendremos ahora un parametro {name} y un segundo parametro {nickname}. En la funcion anonima esta vez va a tener dos parametros, y retomaremos que recibira dos parametros 
+En el navegador
+Op1
+	http://127.0.0.1:8000/usuarios/100
+
+	Mostrando detalles de usuario: 100
+Op2
+	http://127.0.0.1:8000/usuarios/nuevo
+
+Op3:
+	http://127.0.0.1:8000/saludo/Raúl/Klvst3r	
+	Bienvenido Raul, tu nombre clave es: Klvst3r
+
+si ahora en el navegador podremos verificar el funcioanmiento de las rutas antes descritas, ahora tenemos una nueva ruta para el saludo.
+
+Que sucede si el usuario no quiere tener un nombre clave.
+
+Podemos declarar el que parametro "nickname sea opcional de la siguiente manera:
+---
+	Route::get('/saludo/{name}/{nickname?}', function($name, $nickname = null){
+		if ($nickname){}
+   			return "Bienvenido {$name}, tu nombre clave es: {$nickname}";
+   		}else{
+   			return "Bienvenido {$name}, No hay nombre clave ";
+   		}
+	});
+---
+Con el signo de interrogacion, y en el valor de la funcion tendra un valor por defecto puede ser null.
+
+Ahora la respuesta puede tener o no nombre clave si pasamos o no un segundo parametro.
+
+
+Podemos preguntar si tenemos un nickname, o no.
+En el Bronser
+Op 1:
+	http://127.0.0.1:8000/saludo/Raul/Klvst3r
+Op 2:
+	http://127.0.0.1:8000/saludo/Raul
+
+En ambos casos funcionara ya que tenemos un punto de verificación.
+
+Ahora que estamos probando las nuevas funciones hemos estado recurriendo al navegador una y otra vez, es to puede ser un poco tedioso.
+
+Si el llenado de formularios puede ser tedioso, por ello en la siguiente seccion veremos como comenzar a utilizar El Framework de Laravel y herramientas de programacion para que realicen estas verificaciones de manera automatica por nosotros.
+

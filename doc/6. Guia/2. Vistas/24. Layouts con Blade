@@ -1,0 +1,719 @@
+24. Layouts con Blade
+
+Notas
+=====
+
+A medida que nuestro proyecto crece nuestras plantillas se vuelven más complejas y es inevitable encontrarnos con que estamos repitiendo etiquetas y estructuras que podríamos compartir entre multiples vistas. Es por ello que en esta seccion 24 le enseñaremos a integrar cualquier diseño usando Laravel Blade; para que de esta manera pueda sacarle provecho a las diferentes directivas que ofrece este motor de plantillas y evitar así la repetición de código HTML, además de mantener sus vistas sencillas, expresivas, elegantes y bien estructuradas.
+
+
+Cuando se trabaja con Laravel puede utilizar Bootstrap, Materialize, Bulma o cualquier framework de CSS o diseño personalizado que quiera.
+
+Directiva @include
+------------------
+
+Blade incluye una directiva llamada @include. Para usarla solamente tenemos que pasarle el nombre del archivo que queremos incluir:
+---	
+	@include('header')
+	    <h1>{{ $title }}</h1>
+	    ...
+	@include('footer')
+---
+
+Podemos usar múltiples directivas @include dentro de una misma plantilla de Blade.
+
+
+
+Helper asset()
+--------------
+
+El helper asset nos dará la ruta absoluta al archivo indicado:
+---	
+	<link href="{{ asset('css/style.css') }}" rel="stylesheet">
+---
+Utilizando este helper podemos evitar que la ruta del archivo cambie dependiendo de la URL.
+
+
+
+Layout principal
+----------------
+
+En lugar de separar nuestra plantilla en diferentes archivos, podemos crear una sola plantilla que tendrá toda la estructura de nuestro diseño. Podemos llamar a esta plantilla layout.blade.php, por ejemplo, y colocar todo el código de nuestro diseño allí.
+
+Utilizando la directiva @yield dentro de esta plantilla podemos indicar secciones (pasando como argumento el nombre de la sección) y luego en plantillas individuales podemos colocar el contenido de dichas secciones:
+---
+	<main role="main" class="container">
+	    @yield('content')
+	</main>
+---
+
+
+Puede nombrar su layout de cualquier forma, siempre y cuando coloque la extensión .blade.php. En este ejemplo se llama layout.blade.php.
+
+Puede agregar tantas directivas @yield como quiera a su layout. Por ejemplo, puede agregar una directiva yield para personalizar el título de la página:
+---
+	<title>@yield('title') - Klvst3r.io</title>
+---
+
+
+Extender de una plantilla
+-------------------------
+
+En cada una de nuestras plantillas individuales en lugar de incluir el header o footer le indicamos a Laravel que la vista debe extender de layout.blade.php. No es necesario colocar la extensión del archivo. Tampoco es necesario colocar la ruta completa, ya que Laravel por defecto buscará el archivo dentro del directorio resources/views:
+---
+	@extends('layout')
+---
+
+
+Hecho esto, debemos definir las secciones. Para ello utilizamos la directiva @section, pasando como argumento el nombre de la sección:
+---
+	@section('title') Usuario {{ $id }} @endsection
+	@section('content')
+	    <!-- Contenido de la sección -->
+	@endsection
+---
+
+
+
+Indicamos el final o cierre de la sección con la directiva @endsection.
+
+
+
+
+"La directiva @section define una sección de contenido, mientras que la directiva @yield es usada para mostrar el contenido de una sección específica."
+
+Dado que el titulo es una sola línea, podemos pasar el contenido como el segundo argumento de @section:
+---
+	@section('title', "Usuario {$id}")
+---
+
+
+El código que se encuentra entre comillas es PHP y no Blade, por lo que en lugar de utilizar la sintaxis de dobles llaves {{ $id }} utilizaremos {$id} o simplemente $id.
+
+
+Practica
+========
+
+En esta sección vamos a ver como integrar un diseño con Laravel Blade evitando la repetición de codigo en nuestras vistas. Para inregrar un diseño en nuestra aplicación necesitasmo un diseño, como no vamos a crear uno vamos a utilizar uno ya hecho desde la página de Bootstrap.
+
+	https://getbootstrap.com/
+
+Ahora, cuando se trabaje con Laravel se puede utilizar Bootstrap, Materialize, Bulma o cualquier framework de CSS que se quiera, o si se quiere a un Front-end developer en el equipo, se puede trabajar en la creación de un diseño personalizado, esto es irrelevante por que sin importar el Framework o el HTMl qu ese tenga, se puede integrar con Blade.
+
+Vamos a copiar un ejemplo de la página de Bootstrap, un ejemplo que tenga tanto header como footer; Seleccionando el tema "Sticky footer w/navbar"
+
+Desde:
+	https://getbootstrap.com/docs/5.1/examples/sticky-footer-navbar/
+
+Posteroir a ello, 
+- click derecho
+- Ver codigo fuente
+- copiar codigo fuente del ejemplo.
+
+Pero antes de intentar intregrar este ejemplo con Laravel, vamos a copiarlo simplemente dentro del directorio publico del proyecto.
+
+Podemos incluso crear un proyectro aparte para hacer esto, puede ser separado de Laravel, asi podemos dividir esta tarea en dos pasos, hacer que el ejemplo funcione y luego integrarlo con Laravel.
+
+Vamos a llmar el ejemplo "boostrap.html". Copiamos ahora si el codigo fuente. Aunque podemos ver que este ejemplo esta haciendo referencia a los archivos de JS que tienen una hubicación relativa al ejemplo.
+
+Lo guardamos en 
+	/public/bootstrap.html
+
+
+Vamos a ver si podemos desde la pagina de bootstrap utilizar el CDN, para no necesitar copiar todos estos archivos, vamos a la parte de la documentación, donde podemos ver las etiquetas que uiliza el CDN.
+
+En la parte de la documentación:
+	https://getbootstrap.com/docs/5.1/getting-started/introduction/
+
+donde podemos ver la etiquetas que utilizan el CDN, copiamos para ver el codigo CSS, y hay otro codigo CSS que lo copiaremos del propio proyecto.
+---
+    <!-- Bootstrap core CSS -->
+	<link href="css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+	<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
+---
+
+
+Se hace lo mismo de referenciar los archivos CDN para la parte de JS
+---	
+	  <script src="/docs/5.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->		
+---
+
+
+Para poder visualizar el resultado lo hacemos desde raiz y el nombre de la pagina de ejemplo.
+	http://127.0.0.1:8000/bootstrap.html	
+
+Por algun motivo en esta versión no se utiliza jQuery, pero la funcionalidad es a traves de JS.
+
+
+Integración del diseño en el proyecto de Laravel
+-------------------------------------------------
+
+El diseño se puede considerar de dos partes, la parte del header, y luego la parte del footer, en medio esta la parte del contenido. Seleccionando la parte del header copiando en la caprte views, se crearia un archivo ej. header.blade.php.
+
+Lo mismo con el contenido, para la parte del contenido dentro de la etiqueta main y la parte del footer. La tercera parte es el cierre con el footer.
+
+Dentro de la carpeta de vista se tendras las areas
+- header.blade.php
+- content.blade.php
+- footer.blade.php
+
+quedaria pendinete como podemos incluir estos archivos a user.blade.php
+
+Esto es muy sencillo puesto que Laravel Blade incluye una directiva llamada @include, y como parametro tenemos que colocar el nombre del archivo que queremos incluir
+Antes:
+---user.blade.php
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Listado de Usuarios - Klvst3r</title>
+	</head>
+	<body>
+		<h1>{{ $title }}</h1>
+
+		<hr/>
+		
+		<ul>
+
+			@forelse($users as $user)
+					<li>{{ $user }} </li>
+
+			@empty
+				<p>No hay usuarios registrados</p>
+			@endforelse
+			
+		</ul>
+
+		{{ time() }}
+
+	</body>
+	</html>
+---
+Hacia la integracion de las secciones de la vista
+---user.blade.php
+@include('header');
+	<h1>{{ $title }}</h1>
+	...
+---
+
+Relativo a la carpeta views y sin preocuparnos de escribir la extension del archivo, y entonces para el footer vamos a hacer exactamente lo mismo, quedando completo:
+---user.blade.php
+	@include('header')
+	
+	<br/>
+	<h1 class="mt-5">{{ $title }} </h1>
+	
+
+	<hr/>
+	
+	<ul>
+
+		@forelse($users as $user)
+				<li>{{ $user }} </li>
+
+		@empty
+			<p>No hay usuarios registrados</p>
+		@endforelse
+		
+	</ul>
+
+@include('footer')
+---
+
+En el navegador:
+	http://127.0.0.1:8000/usuarios
+
+Todo esto se ha hecho de una manera que se pueda reusar en diferentes páginas.
+
+
+
+
+Duplicidad de trabajo en las vistas
+-------------------------------------
+
+Sin embargo esta no es la mejor manera de resolver este problema, por que por ejemplo si nosotros, queremos incluir un sidebar, es decir una barra lateral, y para ello vamos al ejemplo.
+
+ ---user.blade.php
+ @include('header')
+	
+	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+		</div>
+		<div class="col-4">
+
+			<h2 class="mt-5">Barra lateral</h2>
+		</div>
+	</div>
+	
+
+@include('footer')
+ ---
+
+Aca se empieza a complicar con la fomra de trabajar de este diseño, puesto que vamos a incluir el header y el footer, sino que entonces aca debemos crear otro archivo, para incluir el sidebar, por que esta barra lateral puede que debemos duplicarla en otras paginas.
+
+---user.blade.php
+	<div class="col-4">
+		@include('sidebar')
+	</div>
+---
+
+Creando otro archivo blade
+---sidebar.blade.php
+		<h2 class="mt-5">Barra lateral</h2>
+---
+Si hacemos esto y regresamos al navegador tenemos el mismo resultado, sin embargo vamos a crear otra vista
+
+De vuelta a 
+---Usercontroller.php
+	 public function show($id)
+    {
+
+       return "Mostrando detalles del usuario: {$id}";  
+    }
+---
+Pasamos a esto
+
+---
+public function show($id)
+    {
+       return view('users-show', compact('id'));
+       
+    }
+---
+
+Se llamara la vista 'users-show', y podemos copiar la cadena de texto del ultimo return ejecutado, para mostrarlo en la vista, pero antes necesitampos pasar el id, a la vista de esta forma ya vista en la sección anterior.
+
+De vuelta a la carpeta views, vamos acrear un nuevo archivo llamado 'users-show.blade.php'. A este archivo se agregaran el header, el footer y el sidebar. Lo caul hace un poco mas dificil estar recordando todos los include para esta nueva plantilla.
+
+Tomando como base el archivo de users.blade.php, copiar el diseño y pegarlo en la vista recien creada
+
+---users-show.blade.php
+@include('header')
+	
+	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">Usuario {{ $id }} </h1>
+	
+				Mostrando detalles del usuario: {{ $id }}"
+		</div>
+		<div class="col-4">
+			@include('sidebar')
+		</div>
+	</div>
+	
+
+@include('footer')
+
+---
+Ejecutamos las pruebas en termianl asi como en el navegador:
+	http://127.0.0.1:8000/usuarios/10
+
+Esto genera un problema con el css ya que apunta a la carpeta "usuarios"	 la cual no existe, para ello lo solucionamos con el helper asset.
+
+en el header de las vistas
+
+---header.blade.php
+    <!-- Bootstrap core CSS -->
+<link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet"  crossorigin="anonymous">
+---
+
+Esto va a ser bastante util sobre todo si no estamos utilizando un virtual host en nuestro entorno de trabajo. Este helper que provee Laravel nos va a dar la ruta absoluta al archivo indicado. 
+
+Volviendo al tema, nos podemos dar cuanta que en las vistas 'users' terminamos duplicando parte del diseño para emplearlo en 'users-show' a otra vista de forma individual, en este caso la parte que deberia cambiar, es la parte donde tenemos el titrulo, y el detalle de la seecion en ambas vistas; sin mebargo para las vistas y lograr esto debemos tambien duplicar parte de las capas, que forman parte del diseño base. Asi si mas adelante quisieramos cambiar la columna para que ocupe mas espacio 
+
+
+---users-show.blade.php
+@include('header')
+	
+	
+	<div class="row mt-3">
+		<div class="col-9">
+
+---		
+
+Si queremos hacer un cambio en el espaciado este lo hara solamente en una vista y tendremos que hacer el cambio en cada una de las vistas. Eso nos obligaria a estar cambiando vista por vista, y esto es precisamente lo que se quiere eviar.
+
+
+
+Mejorando el diseño de las vistas con Blade
+--------------------------------------------
+Afortunadamente Laravel y Blade ofrecen un mecanismo mejor para trabajar con los dieseños, en este caso en vez  de separar con varios archivos pequeños, vamos a crear un solo archivo que vamos a llmar 'layout.blade.php', aunque podemos darle el nombre que quieramos.
+
+En este caso vamos a copiar el codigo dentro de header
+
+---layout.blade.php
+...
+<main role="main" class="container">
+
+  @yield('content')  
+  
+</main>
+...
+---
+
+Vamos a utilizar la directiva @yield('content') y como argumento de la seccion en este caso de content, o contenido, de vuelta a users.blade.php, ahora en vez de incluir el footer y el header, le vamos a indicar a Laravel o blade que esta vista va a extender de layout
+
+
+@extends('layout')
+
+Y con layout nos referimos al nombre del archivo layout.blade.php solo que recordando que no vsmoa a colocar la extension ni tampoco los directorio puesto que esta ruta del  archivo va  a estar relativo a la carpeta views. Luego a continuación devemos definir las secciones. 
+
+En layout declaramos una sola llamada 'content'. Entonces debemos definir que la seccion incluida, es la seccion de contenido o content para ello vamos a utilizar la directiva @section con el nombre de la seccion
+
+---users.blade.php
+@extends('layout')
+	
+
+@section('content')	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+		</div>
+		<div class="col-4">
+			@include('sidebar')
+		</div>
+	</div>
+	
+
+@endsection
+---
+
+
+De esta manera indicamos que la vista 'users.blade.php' va a extender de layout pero va a definir la seccion de contenido entre las directivas
+
+@section('content') y @endsection
+
+si hacemos esto y recargamos el navegador, tenemos el mismo resultado de antes sin embargo ya no necesitamos los archivos de header y footer.
+	http://127.0.0.1:8000/usuarios
+
+Puesto que el codigo de ambos, va a estar condensado en un solo archivo, asi nos estaremos preguntando que no estamos logrando mucho por que todavia hay partes del codigo de diseño en users.blade.php dentro de la vista. Sin embargo esta tambien podemos reusarlo de forma muy sencilla.
+
+Copiamos el codigi de 'users.blade.php' en la seccion de 'content' y nos vamos a layout.blade.php, y vamos a elimiar un momento la directiva @yield('content'), pero la colocamos dentro de la columna
+
+---layout.blade.php
+<main role="main" class="container">
+
+  <div class="row mt-3">
+    <div class="col-8">
+      
+        @yield('content')  
+      
+    </div>
+    <div class="col-4">
+      @include('sidebar')
+    </div>
+  </div>
+
+
+  
+</main>
+---
+
+Por otro lado vamos a copiar el contenido dentro de 'sidebar.blade.php'. Dentro de 'layout.blade.php'
+
+<div class="col-4">
+      @section('sidebar')
+        <h2 class="mt-5">Barra lateral</h2>}
+      
+    </div>
+  </div>
+
+
+Pero como yo quiero mostrar en este caso el contenido de esta seccion, en vez de cerrar con el section, vamos a cerrar con la directiva @show 
+De vuelta a 'users.blade.php', vamos a necesitar colocar solo el contenido de esta seccion
+
+---users.blade.php
+@extends('layout')
+	
+
+@section('content')	
+	
+	<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+
+@endsection
+---
+
+Con esto si regresamos al navegador obtendremos el mismo resultado.
+	http://127.0.0.1:8000/usuarios
+
+Pero ya no tenemos todos esos divs molestos que forman parte del diseño pero no forman parte de esta seccion.
+
+Asi vamos a tener un solo lugar centralizado donde puedo entonces, cambiarlos nos referimos a layout.blade.php cambiando los espacios o el diseño o los divs si asi se necesitan. Por otro lado si necesitamos que en otra de las secciones como por ejemplo 'users.blade.php'. Queremos sobreescribir, la seccion de la barra lateral, como podremos imaginar esto podremos lograrlos 
+
+Tomamos el siguiente codigo de
+---layout.blade.php
+  @section('sidebar')
+        <h2 class="mt-5">Barra lateral</h2>}
+      @show
+---
+y lo llevamos a users.blade.php
+
+utilizando simplemente la directiva @section para declarar otra seccion dentro de users.blade.php
+
+---users.blade.php
+@extends('layout')
+	
+
+@section('content')	
+	
+	<h1 class="mt-5">{{ $title }} </h1>
+	
+			<hr/>
+		
+			<ul>
+
+				@forelse($users as $user)
+						<li>{{ $user }} </li>
+
+				@empty
+					<p>No hay usuarios registrados</p>
+				@endforelse
+		
+			</ul>
+
+@endsection
+
+@section('sidebar')
+	<h2 class="mt-5">Barra lateral personalizada</h2>
+@endsection
+---
+
+
+De vuelta a navegador
+	http://127.0.0.1:8000/usuarios
+
+Logramos sobreescribir con exito una de las secciones de nuestro layout y con esto nuestra vista queda mucho mas limpia, organizada y libre de fragmentos que formarn parte del layout y no del contenido de esta seccion, ahora de pronto nosotros no queremos reemplzar completamente el contenido de la barra lateral, si no que queremos colocar contenido encima o debajo del contenido que tenemos en el layout. Para hacer esto podemos utilizar la directiva @parent
+
+---users.blade.php
+	
+@section('sidebar')
+	@parent
+
+	<h2 class="mt-5">Barra lateral personalizada</h2>
+@endsection
+---
+
+Regresamos al navegador y podremos ver el resultado, tenemos el titulo que esta en layout.blade.php y debajo tenemos el titulo que tenemos en users.blade.php.
+
+
+
+Cambios dentro de Users-Show
+-----------------------------
+
+
+Nuevamente extendemos en 
+---users-show.blade.php
+@include('header')
+	
+	
+	<div class="row mt-3">
+		<div class="col-8">
+			<h1 class="mt-5">Usuario {{ $id }} </h1>
+	
+				Mostrando detalles del usuario: {{ $id }}"
+		</div>
+		<div class="col-4">
+			@include('sidebar')
+		</div>
+	</div>
+	
+
+@include('footer')
+
+@extends('layout')
+
+@section('content')
+	<h1 class="mt-5">Usuario {{ $id }} </h1>
+	
+		Mostrando detalles del usuario: {{ $id }}"
+@endsection
+---
+	
+en este caso nuevamente extendemos layout y luego declaramos la seccion content y finalizamos con endsection y enotnces vamos a copiar el contenido de las secciones dentro de las dirctivas section y endsection y con ersto vamos a poder lograr reemplazar el codigo anterior, vemos en la parte superior el codigo para sustituir el header y el footer incluyendo fragmentos del diseño mientras que nuestro codigo que utiliza el layout y extendiende de secciones y es limpio no inlcuye partes del diseño y es muy facil de leer y de entender y me modificar y personalizar.
+
+Al hacer esto puedo regresar al navegador y puedo ver el resultado.
+	http://127.0.0.1:8000/usuarios/10
+
+Al tener proyectos que tengan decens de urls	 se va a tener la ventaja de comprobar que al menos ninguna de ellas esta arojando un error 500 o algo similar simplemente reejecutando las pruebas 
+
+Personlizacion del titulo
+-----------------------
+
+Vamos a crear otra seecion dentro de layout.blade.php
+
+Vamos a suponer que queremos personalizar el titulo de la pagina dependiendo de la seccion donde nos encontremos.
+
+De:
+---layout.blade.php
+<title>Sticky Footer Navbar Template · Bootstrap v5.1</title>
+---
+a:
+---layout.blade.php
+<title>@yield('title') - Klvst3r.io</title>
+---
+
+De vuelta en:
+---users.blade.php
+	@extends('layout')
+
+@section('title', "Usuario {$id}")		
+
+@section('content')	
+---
+
+Podemos utilizar la directiva section para sobreescribir el titulo, y esta es otra manera de poder utilizar la directiva section, en vez de abrir y cerrar section podemos pasar todo el contenido en linea en una sola linea.
+
+Esto es util por supuesto para secciones para el titulo que no va a requerir html, en este caso lo que esto y pasando entre comillas es codigo de PHP, y no es codigo de blade, entonces seria incorrecto, puesto que lo que esta enytre comillas  
+
+---users-show.blade.php
+	@extends('layout')
+
+	@section('title', "Usuario {$id}")		
+
+	@section('content')
+---
+
+en 
+---users.blade.php
+@extends('layout')
+
+@section('title', "Usuarios")			
+
+@section('content')	
+---
+
+Recargando la pagina
+	http://127.0.0.1:8000/usuarios
+	y
+	http://127.0.0.1:8000/usuarios/10
+
+
+Hecho esto ya deberia ser seguro eliminar, los archivos footer, header y sidebar.
+
+en nuestro caso los vamos a conservar pero los vamos a poner en un contenedor interno puesto que ya no los vamos a utilizar, verificando con las pruebas unitarias.
+
+Entonces podemos eliminar los archivos y reejcutar las pruebas.
+
+Antes de finalizar revisemos algo más, puesgto que en proyectos donde se tenga muchismimos modulos es importante colocarlos todos dentro de la carpeta views, no va a ser lo mas elegante y estamos tratando de evitar diplicidad de codigo poero tambien, de tener una mejor estructura de nuestro proyecto asi que para solucionar este peuqeño problema.
+
+Vamos a crear una nueva carpeta llamada, users dentro de views y movemos las vistas a este directorio, al hacer esto vamos a dañar el proyecto.
+
+Asi que debemos tener cuidado en las referencias de los nuevos archivos.
+
+Renombramos los archivos de la siguiente manera
+
+	users.blade.php -> index.blade.php
+	users-show-blade.php -> show.blade.php
+
+Puesto que ya va a estar dentro del directorio users.
+
+ahora nos vamos a UsersController.php
+
+y vamos a utilizar la sintaxis
+---UserController.php
+...
+ $title = 'Listado de usuarios';        
+    
+        return view('users.index', compact('title', 'users'));
+...
+
+...
+public function show($id)
+    {
+       return view('users.show', compact('id'));
+       
+    }
+---        
+
+Para indicar que esta vista va a estar dentro del subdirectorio users y dentro un archivo llamado index.blade.php.
+
+Lo mismo debajo del directorio users.show.blade.php
+
+Al hacer esto podemos regresar a las pruebas y verificar que todo este correcto.
+
+
+
+Ejercicio
+=========
+
+Cree un archivo menu.blade.php e incluyalo en el header del layout principal. Dentro del archivo menu, cree un menú con enlaces a las diferentes rutas de la aplicación. Asegúrese de ejecutar las pruebas para verificar que todo siga funcionando correctamente.
+
+
+
+
+Documentación y ejemplos con Bootstrap
+---------------------------------------
+	https://getbootstrap.com/
+
+	
+
+Ayuda
+=====
+
+¿Qué debo usar para incluir el menu.blade.php? ¿@yield y @section? ¿Solo @section y @show? y nada de eso me da resultado. 
+
+Lo podemos hacer de diferentes formas y nada. Posterior a una investigación y localizar la directiva @include dentro del layout principal. El @include en el layout principal, buscar una vista dentro del directorio view, de tal forma que solo debe invocarse como @include('menu). A lo anterior le llaman "Including Sub-Views".
+
+En mi caso hice enlaces hacia "usuarios", y hacia "usuarios/5", y aquí es importante no pasar por alto el uso de:
+	{{ asset('usuarios') }}
+y
+	{{ asset('usuarios/5') }}
+
+Para que los enlaces funcionen de manera correcta, independientemente de la profundidad de la url.
+
+layout.blade.php
++++
+<header>
+	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+		<a class="navbar-brand" href="{{ asset('/') }}"> Fixed navbar </a>
+-----
+	[ href="{{ asset('/') }}"> ]
+
+
+
+

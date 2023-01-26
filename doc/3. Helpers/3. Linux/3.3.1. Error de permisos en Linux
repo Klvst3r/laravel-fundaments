@@ -1,0 +1,22 @@
+Error de permisos en Linux
+
+
+
+My application is being deployed to AWS Lightsail(LAMP) and when I try to run artisan migrate it says:
+
+Copy Code
+```The stream or file "/opt/bitnami/projects/app-name/storage/logs/laravel.log" could not be opened in append mode: failed to o
+pen stream: Permission denied```
+
+Solución
+
+no worries, yea i'm pretty novice to linux/unix system so some commands(even the basic ones like nano/sudo) are foreign to me.
+
+Anyway I managed to fix it as I was only granting permission to via this command:
+
+Copy Code
+sudo chmod -R 775 storage
+The fix was to add this:
+
+Copy Code
+sudo chmod -R ugo+rw storage

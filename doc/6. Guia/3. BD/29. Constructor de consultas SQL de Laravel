@@ -1,0 +1,1509 @@
+29. Constructor de consultas SQL de Laravel
+
+
+Notas:
+======
+Ahora veremos más a detalle de cómo funciona el constructor de SQL de Laravel y aprovecharé la ocasión para mostrar cómo puede ejecutar consultas SQL de forma manual utilizando el framework y cómo puede protegerse del ataque de inyección SQL cuando utilizas Laravel haciendo uso del Costructor de consultas SQL
+
+
+
+Método insert
+-------------
+
+Con el método "DB::insert" podemos escribir consultas SQL de forma manual para insertar contenido dentro de nuestra base de datos. Por ejemplo, el código del seeder "ProfessionSeeder.php" que utiliza el método "DB::table":
+
+---
+	DB::table('professions')->insert([
+	 'title' => 'Desarrollador back-end',
+	]);
+---
+
+Puede ser re-escrito utilizando el método "DB::insert", directamente con código SQL:
+
+	"DB::insert('INSERT INTO professions (title) VALUES ("Desarrollador back-end")');""
+
+
+_____
+	Aunque "DB::insert" nos da el mismo resultado que "DB::table", cuando realizamos consultas de este tipo y recibimos datos ingresados por un usuario debemos tener mucho cuidado, ya que nos exponemos a ataques de inyección de SQL.
+_____
+
+
+
+Inyección de SQL
+-----------------
+
+Nuestro código es vulnerable a inyecciones de SQL cuando insertamos variables dentro de una solicitud de SQL. Por ejemplo, si tuviera una consulta donde se selecciona una serie de articulos dependiendo de un autor:
+
+	$sql = "SELECT * FROM articles WHERE id_author = $id";
+
+Esta consulta trae todos los artículos escritos por un determinado autor. Sin embargo, dentro de esta consulta estamos insertando contenido de forma directa al colocar la variable "$id".
+
+Supónga que ingresamos a los artículos del autor desde una URL, pasando como argumento el "id" del autor (?id=1 o articulos/{id}), en este caso retornaríamos todos los artículos escritos por el autor cuyo id sea igual a 1. Sin embargo, como nuestro código es vulnerable, un usuario malintencionado podría cambiar la URL por "?id=1 UNION SELECT password FROM users". La consulta realmente se estaría realizando de esta forma:
+	
+	SELECT * FROM articles WHERE id_author = 1 UNION SELECT password FROM users;
+
+Esta consulta selecciona todos los artículos y luego selecciona todas las contraseñas almacenadas en la tabla "users".
+
+____
+	Al almacenar contraseñas en una base de datos asegurese de siempre encriptarlas.
+____
+
+
+
+Parametros dinámicos
+--------------------
+
+
+Para evitar ataques de inyección de SQL podemos utilizar parámetros dinámicos. Laravel utiliza internamente el componente PDO de PHP y debido a esto podemos colocar marcadores en nuestra consulta. Laravel nos permite pasar sus valores en un array como segundo argumento del método:
+
+-	
+	DB::insert('INSERT INTO professions (title) VALUES (?)', ['Desarrollador back-end']);
+-
+
+
+Otra forma de pasar los parametros es usando como marcador un parametro de sustitución con nombre y como segundo argumento pasamos un array asociativo de los respectivos parámetros con sus valores:
+-
+	DB::insert('INSERT INTO professions (title) VALUES (:title)', ['title' => 'Desarrollador back-end']);
+-
+
+
+Al hacer esto estaremos protegidos de ataques de inyección de SQL puesto que los parámetros dinámicos serán escapados de forma automática y segura.
+
+
+
+Método select
+-------------
+
+Utilizando el método "DB::select" podemos construir una consulta "SELECT" de SQL de forma manual:
+-
+	DB::select('SELECT id FROM professions WHERE title = ?', ['Desarrollador back-end']);
+-
+
+
+Por otro lado, utilizando el constructor de consultas podemos realizar una consulta SQL de tipo "SELECT", de la siguiente forma:
+-
+	$professions = DB::table('professions')->select('id')->take(1)->get();
+-
+
+
+El resultado de esta consulta es un objeto de la clase "Illuminate\Support\Collection" que encapsula el array de datos y esto nos trae algunas ventajas extras: una interfaz orientada a objetos con la cual trabajar y muchas funciones extras. Por ejemplo, podemos utilizar el método "first" para obtener el primer resultado de la consulta (en el caso de este ejemplo, la primera profesión):
+-
+	$professions->first(); // en vez de $professions[0]
+-
+
+
+
+Consultas con condicionales (WHERE)
+-----------------------------------
+
+El constructor de consultas también nos permite realizar consultas condicionales utilizando "where":
+-
+	$profession = DB::table('professions')->select('id')->where('title', '=', 'Desarrollador back-end')->first();
+-
+
+El operador = dentro del método "where" es opcional. Pasando como primer argumento el nombre de la columna, como segundo argumento el operador de comparación y como tercer argumento el valor que se quiere encontrar(en este caso Back-end developer), Laravel asumirá que quieres usar el operador de comparación de igualdad "(=)":
+where('title', 'Back-end developer')
+
+El método "where" también acepta un array asociativo, donde indicamos el nombre de la columna y el valor que esperamos encontrar:
+-
+	where(['title' => 'Desarrollador back-end'])
+-
+
+
+
+
+Métodos dinámicos
+-----------------
+
+También podemos utilizar métodos dinámicos:
+-
+	$profession = DB::table('professions')->whereTitle('Desarrollador back-end')->first();
+-
+
+
+En este caso "whereTitle" es lo equivalente a escribir "where('title', '=', 'Desarrollador back-end')".
+
+
+
+Omitir el método select de DB::table
+------------------------------------
+
+Omitiendo el método "select()" al utilizar "DB::table" podemos retornar todas las columnas:
+
+
+---UserSeeder.php
+    $profession = DB::table('professions')->where('title', '=', 'Back-end developer')->first();
+    dd($profession); 
+
+---  
+
+
+
+Variaciones del metodo Where() de varias maneras
+-----------------------------
+
+Ademas podemos utilizar el metodo "where()" de Laravel de muchas maneras, por ejemplo:
+
+- Se puede omitir el segundo parametro (operador).
+
+
+---UserSeeder.php
+    $profession = DB::table('professions')->where('title', 'Back-end developer')->first();
+    dd($profession); 
+
+---  
+
+Si se regresa a la consola y se ejecutan los seeder, se obtiene el mismo resultado:
+
+
+- Se puede pasar un array, en este caso un array asociativo donde las llaves seran los nombres de las columnas
+
+
+---UserSeeder.php
+    $profession = DB::table('professions')->where(['title' => 'Back-end developer'])->first();
+    dd($profession); 
+---
+
+
+Por supuesto al utilizar el constructor de consultas de SQl de Laravel, no se tiene que preocupar de inyección de SQL a menos que se utilice:
+
+    //DB:row
+
+Pero esto será tema de otra sección.
+
+
+La intención no es mostrar todos los metodos del constructor de consultas sino dar una idea general de como se puede utilizar y como sacarle provecho y cual es su diferencia bvs utilizando SQL plano.
+
+
+Por cierto, cuando se esta encadenando metodo en PHP, se pueden dividirlos en diferentes lineas de la siguiente manera
+
+
+---UserSeeder.php
+    $profession = DB::table('professions')
+    ->where(['title' => 'Back-end developer'])
+    ->first();
+    dd($profession); 
+---
+
+
+Por ultimo solamente se necesita obtener el id de la profesión. En este caso se puede hacer si se llama al metodo "value()", en vez del metodo "fisrt()". Pasando como argumento el nombre de la columna de la cual queremos obtener su valor, en este caso es un id.
+
+
+
+---UserSeeder.php
+
+     $profession = DB::table('professions')
+               ->where(['title' => 'Back-end developer'])
+               ->value('id');
+               
+                dd($profession); 
+
+---
+
+
+
+Observamos que obtenemos el 1, de manera muy simple. Por lo cual ahora puedo renombrar la variable a "professionId" y tambien se debe hacer en la inserción del usuario en la tabla de usuarios. No se va a trabajar con un objeto sino el Id directamente.
+
+
+
+
+
+
+
+
+
+Practica:
+=========
+
+En la sección anterior mostramos como cargar Seeds para cargar datos dentro de la base de datos, y generamos dos Seeders uno para profesiones y ottro para usuarios que podemos revisar en:
+---ProfessiónSeeder.php
+
+	public function run()
+	    {
+
+	        DB::table('professions')->insert([
+	            'title' => 'Back-end developer'
+	        ]);
+
+	        DB::table('professions')->insert([
+	            'title' => 'Front-end developer'
+	        ]);
+
+	        DB::table('professions')->insert([
+	            'title' => 'Web Designer'
+	        ]);
+	    }
+---
+
+Donde se agregaron tres profesiones y en el Seeder de Usuarios agregamos un solo usuario, 
+
+
+---UserSeeder.php
+	public function run()
+	    {
+	       DB::table('users')->insert([
+	            'name' => 'Klvst3r',
+	            'email' => 'klvst3r@email.com',
+	            'password' => bcrypt('laravel'),
+
+	       ]);
+	    }
+
+---
+
+
+Sin embargo quedo pendiente, aprender a enlazar una professión a un usuario, esto es lo que vamos a ver en esta sección donde se vera como podemos trabajar con el constructor de consultas de Laravel para ejecutar consultas SQL e incluso como podemos hacerlo directamente con SQL.
+
+En lugar de utilizar el constructor de consultas SQL de Laravel que logramos utilizar de la siguiente manera, Primero llamando al metodo "table" y luego llamando al segundo metodo que se quiera utiliar, que pude ser "insert, update, select, delete" que se veran en esta sección. Uno puede llamar directamente al metodo insert.
+
+
+---ProfessionSeeder.php
+public function run()
+    {
+
+        DB::inert();
+
+        DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Web Designer'
+        ]);
+    }
+
+---
+
+
+Pero 3este va a ser diferente, este va a ser un metodo que nos va a permitir interactuar directamente con SQL, en lugar del constructor de consultas SQL de Laravel, ya que como vemos nosotros vamos a ejecutar sentencias SQL pero realemente no se escribe nada de SQL, ya que si tocara escribir SQL manualmente se tendria que hacerlo de la siguiente manera:
+
+
+---ProfessionSeeder.php
+public function run()
+    {
+
+        DB::insert('INSERT INTO professions');
+
+...
+---
+
+
+Se utilizaria "INSERT INTO"  luego el nombre de la tabla "professions", luego entre () los campos que queremos insertar y acontinuación entonces vamos a pasar sus valores. Por ejemplo:
+
+---ProfessionSeeder.php
+public function run()
+    {
+
+        DB::insert('INSERT INTO professions (title) VALUES ("Desarrollador back-end")');
+
+...
+---
+
+Uina vez hecho esto podemos comentar brevemente las linaes inferiores para ejecutar solamente la que se esta indicando:
+
+---ProfessionSeeder.php
+
+public function run()
+    {
+
+         DB::insert('INSERT INTO professions (title) VALUES ("Desarrollador back-end")');
+
+        /*
+        
+         DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Web Designer'
+        ]);
+
+        */
+    }
+
+---
+
+Con esto puedo regresar a la consola y reejecutar:
+
+	> php artisan db:seed;
+
+En la terminal se puede utilizar un alias "art" de php artisan, Para definirlo puede hacerse de la siguiente manera:
+
+	> alias art=php artisan
+
+
+Con esto puedo regresar entonces con phpmyadmin y revisar 
+
+mysql> select * from professions;
++----+------------------------+------------+------------+
+| id | title                  | created_at | updated_at |
++----+------------------------+------------+------------+
+|  1 | Desarrollador back-end | NULL       | NULL       |
++----+------------------------+------------+------------+
+
+
+En la tabla entonces de "professions" se tiene una nueva profesión y en este caso no hay ningun problema con la sentencia que se ejecuto en:
+
+---ProfessionSeeder.php
+
+public function run()
+    {
+
+        DB::insert('INSERT INTO professions (title) VALUES ("Desarrollador back-end")');
+      
+    }
+---
+
+
+
+Puesto que se esta escribiendo de forma manual, pero si el valor "Desarrollador back-end" proviniese de un usuario se deberia tener mucho cuidado, de no cargarlo directamente de esta forma, ya que se expone a ataques de inyección SQL. Entonces, en vez de hacer lo anterior, se deberia utilizar un marcador para indicar la posición de un parametrro dinamico. Luego utilizando Laravel podemos pasarlo como segundo argumento del metodo "insert" de la siguiente manera:
+
+
+---ProfessionSeeder.php
+
+public function run()
+    {
+
+       DB::insert('INSERT INTO professions (title) VALUES (?)', ["Desarrollador Back-end"]);
+     
+    }
+---
+
+
+Notese ahora que en este caso ya no se necesita utilizar comillas dobles "", asi que no solo es más seguro sino que es m´´as facil:
+
+
+
+
+---ProfessionSeeder.php
+
+public function run()
+    {
+
+       DB::insert('INSERT INTO professions (title) VALUES (?)', ['Desarrollador Back-end']);
+     
+    }
+---
+
+Por ello ya uno no tiene por que preocuparse por comillas dentrode comillas, hecho esto se puede regresar a la consola y ejecutar:
+
+	> $ php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+
+
+El resultado:
+
+
+mysql> select * from professions;
++----+------------------------+------------+------------+
+| id | title                  | created_at | updated_at |
++----+------------------------+------------+------------+
+|  1 | Desarrollador back-end | NULL       | NULL       |
++----+------------------------+------------+------------+
+
+El resultado es el mismo que antes, otra manera de lograr este resultado más practica es cuando tenemos, muchos parametros. Es que se utiliza un signo de interrogación como marcador vamos a utilizar un parametro de sustitición con nombre, en este caso ":title", "title" precedido de ":"
+
+---ProfessionSeeder.php
+
+public function run()
+    {
+
+       DB::insert('INSERT INTO professions (title) VALUES (:title)', ['Desarrollador Back-end']);
+     
+    }
+---
+
+Y entoces se necesita pasar un array asociativo, donde se indica el nombre del parametro en sustitución y luego el valor que lo va a reemplazar:
+
+
+---ProfessionSeeder.php
+
+public function run()
+    {
+
+       DB::insert('INSERT INTO professions (title) VALUES (:title)', ['title'=>'Desarrollador Back-end']);
+     
+    }
+---
+
+De pronto si se tienen muchos valores se pueden colocar en diferentes lineas, 
+
+---ProfessionSeeder.php
+
+public function run()
+    {
+
+       DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+       	'title'=>'Desarrollador Back-end'
+       	]);
+     
+    }
+---
+
+Hecho esto se puede regresar a la consola y rejecutar 
+
+	> php artisan db:seed
+
+
+Se puede ver que es el mismo resultado inicial.
+
+
+
+mysql> select * from professions;
++----+------------------------+------------+------------+
+| id | title                  | created_at | updated_at |
++----+------------------------+------------+------------+
+|  1 | Desarrollador back-end | NULL       | NULL       |
++----+------------------------+------------+------------+
+
+
+
+Sin embargo podemos ver en este momento que al regresar al editor, comentando la linea anterior ejecutada, y se descomentan las lineas anteriormente descomentadas:
+
+---ProfessionSeeder.php
+    public function run()
+    {
+
+        
+       /* DB::insert('INSERT INTO professions (title) VALUES (:title)', [
+        'title'=>'Desarrollador Back-end'
+        ]);*/
+
+        DB::table('professions')->insert([
+            'title' => 'Back-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Front-end developer'
+        ]);
+
+        DB::table('professions')->insert([
+            'title' => 'Web Designer'
+        ]);
+    }
+
+---
+
+
+Se va a dejar el codigo anterior descomentado para que se puede ver la diferencia entre trabajar directamente con SQL contra la utilización de consultas de SQL de LAravel.
+
+Ahora en "UserSeeder.php" y regresando al tema, a manera de pregunta cuando se tiene la duda de ¿como podemos entonces enlazar una profesión a un usuario?.
+
+Para ello vamos a utilizar un "select" para obtener el "id" de la profesion del desarrollador "Back-end". Para ello primero se va a utilizar con SQL mediante el metodo "select" y no con el constructor de consultas SQL de Laravel fluido:
+
+1. Se va a seleccionar 
+
+
+---UserSeeder.php
+	public function run()
+    {
+
+       DB::select('SELECT id FROM professions WHERE title = "Desarrollador Back-end"');
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+
+       ]);
+    }
+
+---
+
+En este caso se escribe : 'SELECT id FROM professions WHERE title = "Desarrollador Back-end"', Para seleccionar la columna "id" de la table de "professions" donde el "title" de la profesion sea: "Desarrollador Back-end", se va a obtener el resultado en una variable que se llamara "$profesions".
+
+
+Y se va a nuevamente obtener el resultado de una variable que se llamara $profesions. Se utiliza nuevamente la funcion "dd" para poder visualizar el resultado entonces de llamar al metodo "select" con la sentencia "sql"
+
+
+---UserSeeder.php
+	public function run()
+    {
+
+       $professions = DB::select('SELECT id FROM professions WHERE title = "Back-end Developer"');
+
+       dd($professions);
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+
+       ]);
+    }
+
+---
+
+
+De regreso a la consola:
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	array:1 [
+	  0 => {#569
+	    +"id": 1
+	  }
+	]
+
+
+Notemos que en este caso tenemos un array y dentro de este array en la primera posición es decir en la posicion "0", tenemos un objeto:
+
+	 0 => {#569
+	    +"id": 1
+  		}
+
+Este objeto entonces contiene la propiedad o atributo "id" que contiene el valor 1 lo que quiere decir que si regresamos al editor en:
+
+---UserSeeder
+public function run()
+    {
+
+       $professions = DB::select('SELECT id FROM professions WHERE title = "Back-end Developer"');
+
+       dd($professions);
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            // 'profesion_id' => '??',
+
+       ]);
+    }
+
+---
+
+
+Se puede entonces tener el "id" de la "profession" de esta manera:
+
+
+---UserSeeder
+public function run()
+    {
+
+       $professions = DB::select('SELECT id FROM professions WHERE title = "Back-end Developer"');
+
+       dd($professions);
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions[0]->id,
+
+       ]);
+    }
+
+---
+
+
+
+Con el array de "professions" se va a obtener el indice 0 y luego la propiedad que se sabe esta en este objeto que esta en el indice 0, Para verificar entonces se hace lo siguiente:
+
+
+
+---UserSeeder
+public function run()
+    {
+
+       $professions = DB::select('SELECT id FROM professions WHERE title = "Back-end Developer"');
+
+       dd($professions[0]->id); //Linea modificada para visualizar el resultado
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions[0]->id,
+
+       ]);
+    }
+
+---
+
+Deberiamos ver entonces en la consola un 1:
+
+	>  php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	1
+
+
+Recordando que al escribir la conslta de SQL de la manera anterior, no es lo más seguro, en este caso y de nueva cuenta no importa por que se esta escribiendo en la consulta el valor. Pero si este dato proviene por parte del usuario, entonces nos estamos exponiendo a ataques de SQL.
+
+Asi que nuevamente se va  autilizar un marcador y se va a psar el titulo como un segundo argumento utiizando un array y de esta forma Laravel utiliza el driver de php llamado PDO y este va a permitir construir la consulta de SQL de forma mas segura y más elegante.
+
+
+
+---UserSeeder
+public function run()
+    {
+
+       $professions = DB::select('SELECT id FROM professions WHERE title =  ?', ['Back-end Developer']);
+
+       dd($professions[0]->id);
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions[0]->id,
+
+       ]);
+    }
+
+---
+
+Cone sta forma ya podemos regresar a la consola obteniendo el mismo resultado:
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	1
+
+Nuevamente se esta imprmiendo un 1, pero ahora queremos darle un solo usuario, se va utilizar un limite de SQL de la siguiente manera:
+
+
+---UserSeeder
+ public function run()
+    {
+
+       $professions = DB::select('SELECT id FROM professions WHERE title =  ? LIMIT 0,1', ['Back-end Developer']);
+
+       dd($professions);
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions[0]->id,
+
+       ]);
+    }
+
+---
+
+Si ahora se imprime nuevamente el resultado que se obtiene en la variable "$professions" de vualta a la consola nuevamente obtendremos un array con un objeto.
+
+
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	array:1 [
+	  0 => {#569
+	    +"id": 1
+	  }
+	]
+
+
+Con la rpopiedad "id" y el valor 1, y esto va a suceder incluso aunque se quite el condicional "where":
+
+
+---UserSeeder
+	public function run()
+	    {
+
+	       $professions = DB::select('SELECT id FROM professions LIMIT 0,1');
+
+	       dd($professions);
+
+	       DB::table('users')->insert([
+	            'name' => 'Klvst3r',
+	            'email' => 'klvst3r@email.com',
+	            'password' => bcrypt('laravel'),
+	            'profesion_id' => $professions[0]->id,
+
+	       ]);
+	    }
+
+---
+
+
+Ejecutamos nuevamente:
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	array:1 [
+	  0 => {#569
+	    +"id": 1
+	  }
+	]
+
+
+
+Se omite pasar el array en la consulta, obteniendo exactamente el mismo resultado a pesar de que quiero una sola columna, o un solo resultado de nuevo se obtiene un array con un objeto y con una propiedad.
+
+
+Constructor de consultas SQL
+-----------------------------
+
+
+Ahora se vera el ejemplo utilizando el contructor de Consultas SQL de Laravel.
+
+
+Vamos a comentar el ejemplo anterior de UserSeeder.php, y servira como una guia de ocmo hacerlo manualmente con SQL, paro se va a hacer más practicos utilizando el constructor de consultas SQL
+
+--- UserSeeder.php
+    public function run()
+        {
+
+           //$professions = DB::select('SELECT id FROM professions LIMIT 0,1');
+
+           //dd($professions);
+           
+           $professions = DB::table('professions')->select('id')->take(1)->get();
+
+           dd($professions);
+
+
+           DB::table('users')->insert([
+                'name' => 'Klvst3r',
+                'email' => 'klvst3r@email.com',
+                'password' => bcrypt('laravel'),
+                'profesion_id' => $professions[0]->id,
+
+           ]);
+        }
+---
+
+De nuevo se trabaja con la tabla de profesiones, donde se quiere seleccionar unicamente el campo id y luego queremos obtener un solo resultado, esto se puede lograr con Laravel con el metodo "take()".Llamando al metodo get para obtener los resultados. Asiganodo todo a una variable que sera renderizada en pantalla.
+
+
+Guardamos y ejecutamos en consola:
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    Illuminate\Support\Collection {#560
+      #items: array:1 [
+        0 => {#570
+          +"id": 1
+        }
+      ]
+    }
+
+Nuevamente podemos observar que se tiene un resultado similar, aunque en este caso, se ve por primera vez un objeto de la clase "collection", esta es una clase que se utiliza mucho en Laravel para envolver los Arrays, y al ser un objeto en lugar de ser un array plano, se va a tener una interfaz orientada a objetos con la que hay que trabajar con los resualtados y mas funciones de las que se incluyen en PHP para trabajar con arrauy por defecto.
+
+Por ejemplo ahora se puede regresar editor y para obtener la primera profesión se puede llamar al metodo "first()".
+
+--- UserSeeder.php
+
+ public function run()
+    {
+
+        $professions = DB::table('professions')->select('id')->take(1)->get();
+              
+       dd($professions->first()); 
+       
+
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions[0]->id,
+
+       ]);
+    }
+
+---
+
+Podemos observar que utilizando first() es mas legible que  utilizar
+    $professions[0]
+
+Haciendo esto y regresando a la consola se reejecuta la consulta:
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+    }
+
+Notamos que obtenemos un objeto de esta manera, por su puesto este objeto tiene la propieda id, asi que podemos obtener el id.
+
+
+--- UserSeeder.php
+
+public function run()
+    {
+
+        $professions = DB::table('professions')->select('id')->take(1)->get();
+              
+       dd($professions->first()->id); 
+       
+
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions[0]->id,
+
+       ]);
+    }
+
+---
+
+
+Reejecutamos para obtener el id
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    1
+
+
+Ahora estamo strabajando con objetos tanto en la colección de profesiones como en nuestro objeto de profesiones y no entonces como un array que contiene un listado de objetos
+
+--- UserSeeder.php
+public function run()
+    {
+
+        $professions = DB::table('professions')->select('id')->take(1)->get();
+              
+       dd($professions->first()->id); 
+       
+
+
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions->first()->id,
+
+       ]);
+    }
+
+---
+
+
+Sinb embargo otra de las limitaciones que teniamos anteriormente al escribir la consulta SQL de forma manual, es que se queria obtener un solo fresultado, ahora vemos como obtener un solo resultado y no una colección de resultados, utilizando el constructor de consultas de SQL:
+
+
+Para ello en lugar de utilizar el metodo take(1) para indicar que quiero obtener un solo resaultado y luego llamar al metodo get(), puedo llmar a otro metodo, que en este caso es el metodo first(), de esta manera se esta conrstuyendo la consulta SQL y con el metodo first se esta ejecutando para obtener un solo resultado. En este caso el primer resultado que se arroje de  la consulta.
+
+--- UserSeeder.php
+public function run()
+    {
+
+       $professions = DB::table('professions')->select('id')->first();
+       
+       dd($professions); 
+
+       
+       DB::table('users')->insert([
+            'name' => 'Klvst3r',
+            'email' => 'klvst3r@email.com',
+            'password' => bcrypt('laravel'),
+            'profesion_id' => $professions->first()->id,
+
+       ]);
+    }
+
+---
+
+
+
+Luego despues de hacer esto se utiliza
+    dd($professions); 
+
+Para imprimir el resultado de la consola podremos ver que por primera vez se obtiene un objeto, en lugar de un array o una colección con un objeto, 
+
+
+     > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+    }
+
+
+
+
+Esto es positivo, por que a onotros nos interesa en este momento trabajar con una sola profesión, por ello ahora ya no vamos a necesitar llamar a first dentro de professions, sino que vamos a utilizar unicamente, profesions->id, y como ahora tenemos una sola profesión y no un listado de profesiones ahora se va a renombrar la variable para que sea en singular. 
+
+
+---UserSeeder.php
+
+public function run()
+    {
+        $profession = DB::table('professions')->select('id')->first();
+       
+       //dd($profession); 
+
+
+        DB::table('users')->insert([
+                    'name' => 'Klvst3r',
+                    'email' => 'klvst3r@email.com',
+                    'password' => bcrypt('laravel'),
+                    'profesion_id' => $profession->id,
+
+               ]);
+    }
+
+
+
+Con esto ya se puede dejar el codigo finalmente y ejecutar los seeders y revisar la BD
+
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+
+
+Revisando la base de datos, en la tabla de usuarios, podre ver que el primer usuario esta relacionado con la profesion numero 1
+
+
+mysql> select * from users;
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+| id | name    | email             | password                                                     | remember_token | created_at | updated_at | profession_id |
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+|  1 | Klvst3r | klvst3r@email.com | $2y$10$wdsei1.EBNkxRjx7pX2vC.yC/TZSNfGxStz5rjdltiVAVfowZikoe | NULL           | NULL       | NULL       |             1 |
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+
+
+Incluso nuestro administrador de base de datos nos permite hacer click sobre el 1 del campo "profession_id" y nos enlazara a la table de "professions". Puesto que nosotros configuramos nuestras restricciones de llaves foraneas y el constructor de consultas de Laravel tambien permite por supuesto utilizar otro mestodos, como por ejemplo condicionales:
+
+
+mysql> select * from professions where id= '1';
++----+--------------------+------------+------------+
+| id | title              | created_at | updated_at |
++----+--------------------+------------+------------+
+|  1 | Back-end developer | NULL       | NULL       |
++----+--------------------+------------+------------+
+
+
+
+Podemos llamar al metodo "where()" pasando como primer argumento el nombre de la columna, como segundo argumento el operador de comparación y como tercer argumento el valor que queremos encontrar, en este caso: "Back-end developer".
+
+
+    $profession = DB::table('professions')->select('id')->where('title', '=', 'Back-end developer')->first();
+
+Si se hace esto y se regresa a la consola, rejecutando los seeders, notaremos que estan funcionando corractamente.
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+
+
+Se puede utilizar una visualización con dd para ver el resultado 
+
+    >  php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+    }
+
+
+En este caso estamo obteniendo la profesion con el id= 1. Podemos tambien seleccionar mas campos:
+
+
+
+Consultas con condicionales (WHERE)
+-----------------------------------
+
+El constructor de consultas también nos permite realizar consultas condicionales utilizando "where":
+-
+    $profession = DB::table('professions')->select('id')->where('title', '=', 'Desarrollador back-end')->first();
+-
+
+El operador = dentro del método "where" es opcional. Pasando como primer argumento el nombre de la columna, como segundo argumento el operador de comparación y como tercer argumento el valor que se quiere encontrar(en este caso Back-end developer), Laravel asumirá que quieres usar el operador de comparación de igualdad "(=)":
+where('title', 'Back-end developer')
+
+El método "where" también acepta un array asociativo, donde indicamos el nombre de la columna y el valor que esperamos encontrar:
+-
+    where(['title' => 'Desarrollador back-end'])
+-
+
+
+
+Ejecutamos los seeders y observaremos que estan funcionando correctamente
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+
+
+Tambien se puede utilizar un dd para ver el resultado que hay en este caso que estamos obteniendo la profesion con id =1 . 
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+    }
+
+
+
+>>Opcioon 8 Seleccionando mas campos en UserSeeder.php
+Nosotros tambien por spuesto podemos seleccionar mas campos
+
+---UserSeeder.php
+    $profession = DB::table('professions')->select('id', 'title')->where('title', '=', 'Back-end developer')->first();
+    dd($profession); 
+
+---    
+
+Y al ejecutar el seeder
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#569
+      +"id": 1
+      +"title": "Back-end developer"
+    }
+
+
+
+
+
+
+Métodos dinámicos
+-----------------
+
+También podemos utilizar métodos dinámicos:
+-
+    $profession = DB::table('professions')->whereTitle('Desarrollador back-end')->first();
+-
+
+
+En este caso "whereTitle" es lo equivalente a escribir "where('title', '=', 'Desarrollador back-end')".
+
+
+
+Omitir el método select de DB::table
+------------------------------------
+
+Opción 9
+
+Omitiendo el método "select()" al utilizar "DB::table" podemos retornar todas las columnas:
+
+
+---UserSeeder.php
+    $profession = DB::table('professions')->where('title', '=', 'Back-end developer')->first();
+    dd($profession); 
+
+---  
+
+Se ejecutan los Seeders:
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+      +"title": "Back-end developer"
+      +"created_at": null
+      +"updated_at": null
+    }
+
+
+Variaciones del metodo Where() de varias maneras
+-----------------------------
+
+Ademas podemos utilizar el metodo "where()" de Laravel de muchas maneras, por ejemplo:
+
+- Se puede omitir el segundo parametro (operador).
+
+
+---UserSeeder.php
+    $profession = DB::table('professions')->where('title', 'Back-end developer')->first();
+    dd($profession); 
+
+---  
+
+Si se regresa a la consola y se ejecutan los seeder, se obtiene el mismo resultado:
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#570
+      +"id": 1
+      +"title": "Back-end developer"
+      +"created_at": null
+      +"updated_at": null
+    }
+
+
+Opcion 11
+
+- Se puede pasar un array, en este caso un array asociativo donde las llaves seran los nombres de las columnas
+
+
+---UserSeeder.php
+    $profession = DB::table('professions')->where(['title' => 'Back-end developer'])->first();
+    dd($profession); 
+---
+
+y las columnas van a ser os valores de busqueda, asociados a cada columna, al ejecutarse se obtendra el mismo resultado. 
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    {#571
+      +"id": 1
+      +"title": "Back-end developer"
+      +"created_at": null
+      +"updated_at": null
+    }
+
+
+Por supuesto al utilizar el constructor de consultas de SQl de Laravel, no se tiene que preocupar de inyección de SQL a menos que se utilice:
+
+    //DB:row
+
+Pero esto será tema de otra sección.
+
+
+La intención no es mostrar todos los metodos del constructor de consultas sino dar una idea general de como se puede utilizar y como sacarle provecho y cual es su diferencia bvs utilizando SQL plano.
+
+
+Por cierto, cuando se esta encadenando metodo en PHP, se pueden dividirlos en diferentes lineas de la siguiente manera
+
+
+---UserSeeder.php
+    $profession = DB::table('professions')
+    ->where(['title' => 'Back-end developer'])
+    ->first();
+    dd($profession); 
+---
+
+
+Opcion 12.
+Por ultimo solamente se necesita obtener el id de la profesión. En este caso se puede hacer si se llama al metodo "value()", en vez del metodo "fisrt()". Pasando como argumento el nombre de la columna de la cual queremos obtener su valor, en este caso es un id.
+
+
+
+---UserSeeder.php
+
+     $profession = DB::table('professions')
+               ->where(['title' => 'Back-end developer'])
+               ->value('id');
+               
+                dd($profession); 
+
+---
+
+Ejecutamos:
+    >  php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+    1
+
+
+Opcion 13:
+
+
+Observamos que obtenemos el 1, de manera muy simple. Por lo cual ahora puedo renombrar la variable a "professionId" y tambien se debe hacer en la inserción del usuario en la tabla de usuarios. No se va a trabajar con un objeto sino el Id directamente. Se puede simplificar un poco el condicional:
+
+---UserSeeder.php
+
+      $professionId = DB::table('professions')
+           ->where('title', 'Back-end developer')
+           ->value('id');
+           
+            //dd($profession); 
+---
+
+
+Ya que no se utiliza el array sino que se pasan los valores de la forma anterior y en la seecion del mismo seeder en la insercion de valores a la table de usuarios
+
+
+
+---UserSeeder.php
+...
+      DB::table('users')->insert([
+        'name' => 'Klvst3r',
+        'email' => 'klvst3r@email.com',
+        'password' => bcrypt('laravel'),
+        'profession_id' => $professionId
+...
+---
+
+
+Regresando a la consola y ejecutando los Seeders>
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+
+Se obtiene el mismo resultado.
+
+mysql> select * from professions where id = '1';
++----+--------------------+------------+------------+
+| id | title              | created_at | updated_at |
++----+--------------------+------------+------------+
+|  1 | Back-end developer | NULL       | NULL       |
++----+--------------------+------------+------------+
+1 row in set (0.00 sec)
+
+
+
+
+Nuevamente en la table 'professions', podemos ver que se esra enlazando al nuevo usuario a la profesión 1
+
+mysql> select * from users;
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+| id | name    | email             | password                                                     | remember_token | created_at | updated_at | profession_id |
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+|  1 | Klvst3r | klvst3r@email.com | $2y$10$34NgaBADe040MWqoN49jIOGuoyUKZDdJOI/6Kq2G5E6iwnS5H10pW | NULL           | NULL       | NULL       |             1 |
++----+---------+-------------------+--------------------------------------------------------------+----------------+------------+------------+---------------+
+1 row in set (0.00 sec)
+
+
+
+Metodos Magicos
+---------------
+
+Opcion 14:
+
+Laravel tiene la posibilidad de utilizar los metodos dinamicos, es decir metodos magicos como se llaman en PHP, por ejemplo aunque el metodo "whereTitle()", no esta definido si se ejecuta de la siguiente manera, Laravel entendera que title es el nombre de la columna y entonces el primer argumento va a ser su valor.
+
+---UserSeeder.php
+   $professionId = DB::table('professions')
+           ->whereTitle('Back-end developer')
+           ->value('id');
+
+---
+
+
+Tambien se puede pasar el codigo a una sola linea sin utilizar en el metodo insert el registro de usuarios. 
+
+
+---UserSeeder.php
+   $professionId = DB::table('professions')->whereTitle('Back-end developer')->value('id');
+---
+
+
+Como se muestra acontinuación:
+
+---UserSeeder.php
+    // opción 15
+             DB::table('users')->insert([
+                        'name' => 'Klvst3r',
+                        'email' => 'klvst3r@email.com',
+                        'password' => bcrypt('laravel'),
+                        'profession_id' => DB::table('professions')->whereTitle('Back-end developer')->value('id')
+                        
+                   ]);
+---
+
+
+Obteniendo el mismo resultado en la ejecuacion de los seeders>
+
+    > php artisan db:seed
+    Seeding: ProfessionSeeder
+    Seeding: UserSeeder
+
+Laravel provee de muchas maneras de lograr el mismo resultado para que se pueda utiliar una dependiendo de la situación y dependiendo del estilo de programación.
+
+
+
+
+
+
+
+Ejercicio:
+==========
+
+
+- Para esta lección inserta un usuario usando SQL de forma manual con `DB::insert`.
+- Mueve la columna profession_id para que esté luego de la columna id.
+- Utilizando el método DB::delete elimina una profesión.
+
+
+
+Inserción de registros
+---------------------- 
+
+Para insertar un nuevo usuario con SQL manual me funcionó:
+
+DB::insert('INSERT INTO users (name, email, password, phone, profession_id)
+VALUES (:name, :email, :password, :phone, :profession_id)',[
+'name' => 'Ada Lovelace',
+'email' => 'alove@gmail.com',
+'password' => bcrypt('laragon'),
+'phone' => '6622134589',
+'profession_id' => $professionID
+]);
+
+2. La columna profession_id en la migración agregué el metodo after() de la siguiente manera:
+$table->unsignedInteger('profession_id')->nullable()->after('id');
+
+luego "php artisan migrate:fresh" para hacer los cambios (con refresh me marcaba un error "Method dropForgein does not exist"...)
+y por ultimo php artisan db:seed para cargar nuevamente la base.
+
+3.Para el ejercicio "Utilizando el método DB::delete elimina una profesión." a mi me funcionó lo siguiente:
+
+DB::delete('DELETE FROM professions
+WHERE (title) = (:title)',[
+'title' => 'Diseñador web'
+]);
+
+
+Eliminación e insersión:
+------------------------
+
+---
+...
+ public function run()
+    {
+
+	//dd($profession_id[0]->id);
+
+	$profesionId = $this->id_profession_users('Back-end Developer');
+	$id_delete	 = $this->id_profession_users('Diseñador Web');
+
+	DB::table('users')->insert([
+            'name' => 'Ramón Martínez Cruz',
+            'email' => 'ramon_martinez_cruz@mail.com',
+            'password' => bcrypt('123'),
+            'profession_id' => $profesionID,
+
+       ]);
+
+       DB::table('users')->insert([
+            'name' => 'Juan Daniel Gómez',
+            'email' => 'juan_daniel_gomez@mail.com',
+            'password' => bcrypt('321'),
+            'profession_id' => $profesionID,
+
+       ]);
+
+       //Eliminar profesión
+
+       $query = BD::table('profession')->where('id', $id_table)->delete();
+       dd($query);
+
+       }
+
+       public function id_profession_users( $title ){
+
+       	$tipo = DB::table('professions')->where('title', $title)->value('id');
+       	return $tipo;
+       }
+---
+
+
+Mover columna 
+-------------
+
+1)Para: "Mueve la columna profession_id para que esté luego de la columna id."
+
+	se utilizo el siguiente codigo en la migracion donde agregamos el id de profesiones a la tabla users:
+
+	-
+		$table->unsignedInteger('profession_id')->nullable()->after('id');
+	-
+
+	luego se actualizo en la consola para que el cambio tenga efecto:
+
+		> php artisan migrate:refresh
+
+	y luego doy a los seed para insertar nuevamente los datos:
+
+		> php artisan db:seed
+
+
+
+2)Para "Utilizando el método DB::delete elimina una profesión."
+
+	elimine la profesion previamente creada,utilize el constructor de consultas de laravel:
+
+	-
+		DB::table('professions')->delete([
+
+			'title'=> 'Especialista de marketing'
+		]);
+	-
+
+Insertar Un usuario de manera manual
+------------------------------------
+
+estar pendiente en la consola de que el id cuando utilizamos dd sea un numero(2):
+
+-
+	C:\laragon\www\curso-stde (master)
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	2
+-
+y no un array
+
+-
+	C:\laragon\www\curso-stde (master)
+	> php artisan db:seed
+	Seeding: ProfessionSeeder
+	Seeding: UserSeeder
+	array:1 [
+	0 => {#569
+	+"id": 2
+	}
+	]
+-
+
+
+//============inserta un usuario manual==============//
+
+$profession = DB::select('SELECT id FROM professions WHERE title = ?', ['Desarrollador front-end']);
+
+//dd($profession[0]->id);
+
+DB::insert('INSERT INTO users (name,email,password,profession_id) VALUES (:name,:email,:password,:profession_id)', [
+'name' => 'hanssel Labrador',
+'email' => 'hanseel@gmail.com',
+'password' => bcrypt('12345'),
+'profession_id' => $profession[0]->id
+]);
+
+
+
+
+Posible error en la insersión
+-----------------------------
+No funcionaba el comando(DB::insert (INSERTO...) tal cual como se explicaba, me funciono de esta forma:
+	DB::insert('insert into professions (name) values (?)', ['Obrero_Tipo_1']);
+
+Derivado del ejemplo:
+	DB::insert('INSERT INTO professions (title) VALUES (?)', ['Desarrollador back-end']);
+
+
+---------------------
+Se explica al principio el INSERTO de SQL con el sigueinte comando: DB::insert('INSERT INTO professions (title) VALUES ("Desarrollador back-end")');.....Ese fue el comando que a mi no me funcionó.
+Luego ya cuando se cambia o mejora con los parámetros VALUES (?) o tambien VALUES (:name) funciona correctamente.
+
+¿quizás son las comillas o el motor de DB que estás usando? Igual como se explico en las practica, no se debe enviar valores de esa forma, especialmente si provienen del usuario.
+
+ las comillas pueden ser derivadas de un error con el PG de hecho me ocurre lo mismo con el $variable = DB::select('SELECT id FROM professions WHERE name = "Desarrollador Front-end" '); 
+
+ Funcionando de la siguiente manera:
+ 	$variable= DB::select("SELECT id FROM professions WHERE name = 'Desarrollador Front-end'");
+
+ es decir intercambiando las comillas dobles y simples
+ 
+
+ Se menciona que usando los constructores de consulta te protege de inyeccion sql, o si se utiliza las consultas directamente, no debes meter las variables
+directamente en el query, sino que debes hacer lo siguiente, usar placeholdes como :title y pasar la variable aparte, o usar ? para cada
+valor. e.g.
+-
+	DB::select('SELECT id FROM professions WHERE title=:title LIMIT 0,1', ['title' => 'Desarrollador back-end']);
+-
+
+
+Teniendo un ejemplo con un sistema de encuestas realizado con Laravel, donde visualizo los datos de cada encuesta excepto los totales, cómo podría generar los totales de la suma de todas las encuestas?
+
+Obtener los totales con SQL es fácil. Si lo quieres conseguir con los objetos de datos de Laravel te tendrá que contestar otro, pero seguro que se puede. Con SQL:
+
+-
+	SELECT SUM(Valor) AS TotalValor FROM TuTabla;
+-
+
+En las siguientes secciones se explicará Eloquent, sobre cuando usar el constructor, se sabrá cuando haga falta, la recomendación es usar Eloquent el resto del tiempo.
+

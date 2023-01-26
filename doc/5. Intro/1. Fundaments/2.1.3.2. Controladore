@@ -1,0 +1,258 @@
+4. Controladore
+
+Al crear una aplicacion en PHP puro sabremos que todas las consultas SQL se hayan incluido en el mismo archivo HTMl que se muestra al usuario, esto genera un conflicto por el codigo duplicado, y la aplicación es dificil de mantener.
+
+laravel se basaen un patron de diseño llamado MVC - Modelo Vista controlador
+
+1. el usuario utiliza un controlador.
+2. Manipula un modelo.
+3. El modelo notifica al controlador.
+4. el controlador actualiza la vista
+5. La vista Muestra resultados al usuario.
+
+
+ Usuario
+	o 	1. Utiliza						2. Manipula	
+  -----    ------>   [CONTROLADOR]		------------>   [Modelo]
+  	|					|	∧								|
+    ∧					|	|------		3. Notifica		   <-
+    					|
+    ∧					V  4. Actualiza
+    |				 [Vista]
+    |--------------
+    		5. Muestra
+
+  Esta patron muestra que uno debe separar los archivos html que ahora se llamaran vistas del codigo PHP, encargado de hacer las consultas a la BD que desde ahora a esta parte se llamara Modelo, la idea de este modelo es tener separado el codigo HTMl del codigo PHP.
+
+  Para unificar estos codigos enra en juego los controladores.
+
+  Cuando un usuario hace una peticion medinate una URL el controlador va  aver lo que el usuario necesita y le va a dar la orden a un modelo para que este modelo retorne cierta información de la BD, una vez que se retorno la información al controlador, este a su vez el controlador deriva los datos a la vista y la vista mostrara los datos al usuario.
+
+  La vista se encarga de llenar con codigo HTML, con esos datos y terminado con el proceso se lo envia al usuario. El usuario vera los datos.
+
+  Un controlador es un archivo PHP creado dentro de la ruta
+
+  App/Http/Controllers
+
+  Se pude crear manualmente y escribir la estructura del codigo para que funcione ese codigo o crearlo desde la terminal y se creara un archivo con el codigo necesario para funcionar.
+
+  una vez dentro de la carpeta del proyecto dentro de la raiz del mismo, podremos escribir el siguiente codigo.
+
+  	Para crear controladores
+
+  		php artisan make:controller <Nombre>Controller
+
+  Ej.
+
+  $ php artisan make:controller HomeController
+
+   INFO  Controller [Q:\XAMPP\htdocs\dev\blog\app/Http/Controllers/HomeController.php] created successfully.
+
+
+Aora signaremos una ruta a un controlador 
+
+
+Para crear un controlador desde la terminal de Visual Studio code
+
+CTRL + Ñ
+
+
+Creando desde aca un nuevo controlador.
+
+	php artisan make:controller CursoController
+
+
+Solucion al error presentado
+	php : The term 'php' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify  that the path is correct and try again.
+
+Esto siginifica que no se tiene añadida la ruta destino del archivo ejecutable PHP dentro del PATH del sistema.
+
+Para ello
+--------------
+Try adding your PHP.exe's folder to your System PATH variables, so PHP can be accessed via terminal.
+
+For example; C:\wamp\bin\php\php5.4.3
+
+To add new PATH variable, follow this:
+
+Right click on My Computer, select Properties
+Select Advanced System Settings
+In the System Properties window click the Environment Variables button.
+Select System Variables -> PATH and click Edit.
+Enter the folder where your PHP.exe is located.
+If you did this correctly, restart your terminal and type php --version to check if it works.
+
+Note: Don't forget to seperate paths by using ; seperator.
+
+-------------
+
+Referencia:
+
+https://maheshwaghmare.com/php/how-to/not-recognized-as-an-internal-or-external-command/
+
+
+La forma de asignar un controlador a una ruta varia en la versión de Laravel 8 a sus versiones 9
+
+Para sisgnar un controlador en la version 8 y posteriormente si se asigna con la version 9
+
+Lo primero que hay que hacer es especificar que vamos a utilizar ese controlador
+
+
+en web.php
+
+---
+use App\Http\Controllers\HomeController
+
+---
+
+Copiando el namespace del HomeController
+
+
+Una vez realizado esto.
+
+
+---web.php
+
+Route::get('/', HomeController::class);
+
+---
+
+
+Para hacer uso del controlador tengo que escribir, y en la funcion del controlador se escribe
+
+---Homecontroller
+
+public function __invoke(){
+        return "Welcome to the Home Page";
+    }
+
+---
+
+
+Como es una sola ruta se utiliza el metodo __invoke()
+
+Dentro se utiliza el codigo necesario.
+
+
+
+Para el controlador que administrara tres rutas no llamremos al metodo invoke(), ya que solo se utiliza este metodo cuando queremos administrar una unica ruta.
+
+Para este caso son 3 rutas distintas, para ello se crearan tres metodos.
+
+
+Para definir los controladores en Laravel 9 posterior a la creación del controlador con tres metodos.
+
+Indicamos la ruta del controlador de la siguiente manera;
+
+En el archivo
+  web.php
+---
+Route::get('/', HomeController::class);
+
+Route::get('cursos', [CursoController::class, 'index']);
+
+Route::get('cursos/create', [CursoController::class, 'create']);
+
+
+route::get('cursos/{curso}', [CursoController::class, 'show']);
+---
+
+y en el controlador
+CursoController.php
+---
+class CursoController extends Controller
+{
+    public function index(){
+        return "Welcome to courses page";
+    }
+
+    public function create(){
+        return "In this page you can create a course";
+    }
+
+    public function show($curso){
+        return "Bienvenido al curso de: $curso";
+    }
+}
+---
+
+
+Para versiones anteriores como Laravel 7 Para dar mantenimiento.
+
+Anteriormente si queriamos llamar a un controlador
+
+Se ponia el nombre del controlador entre comillas simples
+
+
+Route::get('/', 'HomeController');
+
+Por convencion al metodo encargado de mostrar la pagina principal suele llamarsele 'index', al metodo de encargado de mostrar el formulario para crear un curso suele ponerse 'create', y al metodo encargado de ostrar un elemento en particular, en este caso un curso en particular se le suele llamar 'show'.
+
+son convenciones a la hora de programar.
+
+
+Si un controlador recibe un parametro lo hace a traves del metodo en cuestion, Por ejemplo para mostrar un dato con el identificador determinado.
+
+
+En la ruta se define el parametro.
+
+
+---web.php
+route::get('cursos/{curso}', [CursoController::class, 'show']);
+---
+
+Y en el controlador se procesa y se utiliza como una variable.
+
+---HomeController
+use App\Http\Controllers\CursoController;
+
+public function show($curso){
+        return "Bienvenido al curso de: $curso";
+    }
+---
+
+Es importante indicar que se quiere hacer uso del controlador CursoController.
+
+Aunque se puede hacer de manera manual, es importante poder hacerlo a traves de una nueva extensión que facilitara enormemente esta tarea.
+
+En Visual Studio Code, en la pestaña de Extensiones buscamos
+
+php Intelephense
+
+
+    PHP Intelephense    Si encuentra un error lo marca, lo segundo, si necesitamos un controlador
+
+        Al escribir por ejemplo si qiuero hacer uso de este controlador escribimos:
+
+        Curso
+
+        Se desplegara dentro de las opiones para poder seleccionarse.
+        Quedando:
+
+            use App\Http\Controllers\CursoController;
+
+
+En la ruta si quiero hacer uso del conttrolador escribiria.
+
+Route::get('cursos', CursoController::class]);
+
+Si dejamops esta ruta asi, va a buscar el metodo __invoke() dentro del controlador, sin embargo no existe ningun metodo llamado invoke, existe un llamado index, reate y show.
+
+Entonces para poder indicar que el metodo que se encarge de administrar esta ruta es el metodo index, es colocarlo en un array, con dos elementos.
+
+El primer parametro es el nombre del controlador y el segundo es el metodo que se encargara de administrar esta ruta.
+
+Para la primera ruta sera a traves del metodo index.
+
+Entonces se hace los mismo para los otros metodos, para create y para show
+
+Quedando de la siguiente manera:
+
+---
+Route::get('cursos', [CursoController::class, 'index']);
+
+Route::get('cursos/create', [CursoController::class, 'create']);
+
+route::get('cursos/{curso}', [CursoController::class, 'show']);
+---
+

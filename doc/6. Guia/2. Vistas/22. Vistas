@@ -1,0 +1,717 @@
+22. Vistas
+
+
+Notas:
+======
+En esta segunda parte de la guia aprenderemos a crear plantillas completas usando Laravel y su motor de plantillas Blade. Veremos también la diferencia entre escribir plantillas con PHP plano VS Blade, así como los temas de rendimiento y de seguridad para prevenir ataques XSS.
+
+
+Laravel también nos permite separar la lógica de presentación (es decir cómo vamos a «presentar» el contenido al usuario) de la lógica de nuestra aplicación (por ejemplo cómo vamos a obtener el contenido de la base de datos, validar datos de la petición, etc.) a través de la capa de «vistas» como veremos en la presente sección:
+
+
+
+Practica
+========
+
+Porsupuesto nuestra aplicación en ves de retornar y mostrar simples cadenas de texto tipicamente va a retornar plaginas completas con HTML, y  esto con Laravel es muy sencillo, por que Laravel nos proveeo de otra capa llamada la capa de vistas, nuestras vistas tipicamente van a estar dentro del directorio "views", en el el directorio "resources" en la caprte aprincipal de nuestro proyecto y crear una vista con Laravel es muy sencillo.
+
+
+Ruta de las vistas
+--------
+	/resources/views
+
+
+
+1. Podemos hacerlo creando un nuevo archivo simplemente como:
+	<nombre_archivo.php>
+	Ej.
+		/resources/views/users.php
+
+	Y dentro vamos a poner el contenido HTML necesario
+
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Listado de Usuarios - Klvst3r</title>
+</head>
+<body>
+	<h1>Usuarios</h1>
+</body>
+</html>
+---
+
+Para llamar a esta vista es muy sencillo, en "/app/Http/controllers/":
+	UserController.php
+En vez de retornar la cadena de texto
+---UserController.php
+class UserController extends Controller
+{
+    public function index()
+    {
+        return 'Usuarios';
+    }
+...
+---
+Llamamos a la fuincion "vies", pasando como primer argumento el nombre de la vista, en este caso el nombre de la vista va a ser relativo a la carpeta vies dentro de Resources en el directorio principal
+---
+
+class UserController extends Controller
+{
+    public function index()
+    {
+        return view('users');
+    }
+...
+---
+No necesitamos colocar la extensión.
+
+Asi que solamente vamos a llamar a la función  helper "view" con una cadena con el nombre de la vista relativo a la cadena views y sin la extensión.
+
+Exho esto regresamos al Navegador,
+	http://127.0.0.1:8000/usuarios
+
+Veremos nuevamente el titulo.
+
+Como la pagina esta cargando correctamente y muestra el titulo de usuarios, quiere decir que las pruebas deberian estar pasando:
+
+		> alias t=vendor/bin/phpunit
+
+y posteriores a ello
+			> t		
+
+Y las pruebas deberian estar coprriendo sin ningun error
+
+Recordemos que nuestra prueba en:
+	C:\AppServ\www\dev\CRUDLaravel5.5\tests\Feature\UserModuleTest.php	
++++
+	class UserModuleTest extends TestCase
+	{
+	    /** @test */
+	    function test_it_loads_the_users_list_page()
+	    {
+	       // $this->assertTrue(true);
+	         $this->get('/usuarios')
+	            ->assertStatus(200)
+	            ->assertSee('Usuarios');
+	    }
++++
+
+Estamos comprobando que la pagina cargue correctamente y que podamos ver el texto "Usuarios".
+
+
+Paso de valores en forma de arreglos del controlador hacia las vistas - Forma 1
+-------------------------------------------------------------------------------
+
+ahora, tipicamente en nuestros controladores vamos a querer pasar datos a nuestra vista y esto  comunmente lo vamos a obntener de la base de datos y para ello vamos a utililzar el ORM de Laravel. Aunque por ahora nos vamos a enfocar en las vistas.
+
+---UserModuleTest.php	
+
+class UserController extends Controller
+{
+    public function index()
+    {
+
+    	//$users = User::all();
+
+    	$users = [
+            'Bill',
+            'Ellie',
+            'Joel', 
+            'Tess',
+            'Tommy',
+        ];
+
+
+        return 'Usuarios';
+    }
+
+...
+---
+
+Pero en ves de comunicarme con un modelo de la Base de datos y tener que configurarl la base de datos, por ahora solo vamos a utilizar un arreglo estatico, pero que nos dara la pauta para trabajar con ello posteriormente.
+
+
+Si yo quiero mostrar estos datos, en la vista, por ejemplo en un ciclo. utilizando un foreach, utilizando la sintaxis alternativa de PHP, imprimiendo el listados de los usuarios en etiquetas list item.
+
+Todo dentro de una etiqueta de lista desordenada:
+
+--
+...
+	<body>
+		<h1>Usuarios</h1>
+
+		<ul>
+			<?php foreach ($users as $user): ?>
+				<li><?php echo $user ?></li>
+			<?php endforeach; ?>
+		</ul>
+	</body>
+...
+--
+
+Si recargamos la página en el navegador, obtendremos un error, ya que no existe la variable users, indicando que la variable no esta definida, y esto sucede por que aunque se declaro la variable #¿$users dentro del controlador UserController.php, la funcion index(), nunca se paso a la vista.
+
+Si se quieren pasar datos a la vista, por ejemplo el listado de usuarios, se debe hacer de forma explicita. Por ejemplo como segundo argumento, de la funcion helper view, se pasa un arreglo asociativo, donde las llaves van a ser las variables que se van a querer pasar a la vista y como valor se van a  pasar los datos, en este caso el arreglo que se encuentra dentro de la varieble $users, que contiene este listado de nombres.
+
+---UserController.php
+...
+	 public function index()
+	    {
+	 	        
+	        $users = [
+	            'Bill',
+	            'Ellie',
+	            'Joel', 
+	            'Tess',
+	            'Tommy',
+	        ];
+
+	        return view('users', ['users' => $users]);
+	    }
+...	    
+---
+
+
+Al hacer esto ya puedo regresar al navegador, recargar la pagina y ver el listado de usuarios, y por supuesto tambien se puede probar esto de forma automatizada si regreso a la prueba y en cada  metodo "asserSee", se puede enviar los nombres cuando se carga la pagina de usuarios.
+
+---UserModuleTest.php
+...
+	 function test_it_loads_the_users_list_page()
+	    {
+	       // $this->assertTrue(true);
+	         $this->get('/usuarios')
+	            ->assertStatus(200)
+	            ->assertSee('Usuarios')
+	            ->assertSee('Joel')
+	            ->assertSee('Ellie');
+
+	    }
+...    
+---
+
+Con esto puedo probar que ya se cargan los nombres:
+
+	> $ alias t=vendor/bin/phpunit
+	> t
+
+Desde los usuarios, cimplemente reejecutar la prueba, sin embargo que estos usuarios sean los que estamos cargando desde una base de datos y que nosotros permitimos a cualquier usuario registrarse en nuestra aplicación, aqui tendriamos un grave problema de seguridad por que un usuario de forma malintencionada, en vez de colocar su nombre, podria colocar codigo de JavaScriopt.
+
+
+--- UserController.php
+ ...
+	 public function index()
+	    {
+	        
+	        $users = [
+	            'Bill',
+	            'Ellie',
+	            'Joel', 
+	            'Tess',
+	            'Tommy',
+	            '<script>alert("Clicker")</script>' 
+	        ];
+
+	        return view('users', ['users' => $users]);
+	        
+	    }
+...
+---	
+
+Al recargar
+	http://127.0.0.1:8000/usuarios
+
+Podemos ver el mensaje de alerta, quiere decir que un usuario maltintencionado va a lograr insertar codigo de Jabvascript el cual se va a reejecutar cada vez que un usuario recargue la pagina. y Si permitimos que cualquier usuario puede inyectar codigo de JavaScript en nuestra aplicación, estamos en graves problemas, este es un simple alert pero el usuario podria utilizar este codigo de Javasccript para distraer información de otros usuarios del sitio.
+
+Afortunadamente hay varios formas para evitar este problema, Laravel por ejemplo nos ofrece un helper que se llama simplemente "e" esta es una funcion helper.
+--- Vista: users.php
+<ul>
+		<?php foreach ($users as $user): ?>
+			<li><?php echo e($user) ?></li>
+		<?php endforeach; ?>
+	</ul>
+---
+
+ Se puede explorar la funcionalidad de la funcion desde
+
+	C:\AppServ\www\dev\CRUDLaravel5.5\vendor\laravel\framework\src\Illuminate\Support\helpers.php
+
+ ---helpers.php
+...
+if (! function_exists('e')) {
+    /**
+     * Escape HTML special characters in a string.
+     *
+     * @param  \Illuminate\Contracts\Support\Htmlable|string  $value
+     * @param  bool  $doubleEncode
+     * @return string
+     */
+    function e($value, $doubleEncode = false)
+    {
+        if ($value instanceof Htmlable) {
+            return $value->toHtml();
+        }
+
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
+    }
+}
+...
+ ---
+
+Para ver de que manera Laravel va a escapar el HTML, en el caso de que exista algo de HTML, o de codigo de Javascript, Laravel lo va a escapar automaticamente. Asi que si regresamos al navegador. Para verificar que el texto ya ha sido escapado y ya no se muestra como codigo de Javascript si no como texto plano.
+
+http://127.0.0.1:8000/usuarios
+
+
++++
+	Usuarios
+	Bill
+	Ellie
+	Joel
+	Tess
+	Tommy
+	<script>alert("Clicker")</script>
++++
+
+ 
+Como en el controlador 
+
+
+---Usercontroller.php
+...
+	 return view('users', ['users' => $users]);
+...
+
+---
+
+Se tiene un arreglo asociativo simplemente vamos a colocar otro par de valores, por ejemplo la llave title y se va a psar directamente el valor, sin utilizar una variable, para imprimir por ejemplo ell istado de usuarios.
+
+
+
+
+---Usercontroller.php
+...
+	 return view('users', [
+            'users' => $users,
+            'title' => 'Listado de usuarios'
+
+
+        ]);
+...
+
+---
+
+Si ahora nos vamos a la vista de listado de usuarios
+---users.php
+<body>
+	<h1><?php echo e($title)  ?></h1>
+
+	<ul>
+		<?php foreach ($users as $user): ?>
+			<li><?php echo e($user) ?></li>
+		<?php endforeach; ?>
+	</ul>
+</body>
+---
+
+En este caso el titulo va a ser dinamicos que provengan de la base de datos, se deberan escapar de esta forma. si hacemos esto y regresamos al navegador veremos el titulo "Listado de usuarios"
+
+Si vamos al navegador:
+	http://127.0.0.1:8000/usuarios
+
++++
+	Listado de usuarios
+	Bill
+	Ellie
+	Joel
+	Tess
+	Tommy
+	<script>alert("Clicker")</script>
++++	
+
+
+Veremos el titulo "Listado de usuarios", sin embargo la prueba va a fallar, puesto que la prueba va a estar buscando, el titulo usuarios con la U mayuscula y se esta cambiando el titulo. Asi o se puede cambiar el titulo o cambiar la prueba, en este caso se cambia la prueba.
+
+A proposito nosotros podemos utulizar una sintaxis mas corta para imprimir vairable con PHP
+
+---users.php
+...
+<body>
+	<h1><?= e($title)  ?></h1>
+
+	<ul>
+		<?php foreach ($users as $user): ?>
+			<li><?= e($user) ?></li>
+		<?php endforeach; ?>
+	</ul>
+</body>
+...	
+---
+
+sin embargo en el siguiente capitulo se aprendera sobre Blade, el motor de plantillas de Laravel que va a simplificar aun mas, esta sintaxis y va a ser que nuestras vistas queden mucho mas limpias, pero antes de pasar a Blade se va mostrar otras formas en que se pueden pasar datos del controlador a la vista.
+
+
+
+
+
+Paso de valores en forma de arreglos del controlador hacia las vistas - Forma 2
+------------------------------------------------------------------------------
+
+
+En ves de esta vez pasar un array asociativo como segundo argumento tambien podemos pasarlo tambien con el metodo with, que podemos encadenar al metodo view de la siguiente manera.
+
+---UserController.php
+ return view('users')->with([
+            'users' => $users,
+            'title' => 'Listado de usuarios'
+        ]);
+--
+Con esto deberiamos de lograr el mismo resultado de antes, con esto tambien podemos pasar las varables a with de manera individual.
+
+Por ejemplo:
+
+---UserController.php
+   return view('users')
+         ->with('users', $users) 
+         ->with('title', 'Listado de usuarios');
+--
+
+notemos que estamos encadenando un metodo tras otro y esta es una tecnica que se utiliza bastante en Laravel, luego despues de hacer esto podemos regrear a la consola y garantizar que el proyecto aun funciona ejecutando la prueba.
+
+ 	> alias t=vendor/bin/phpunit
+ 	> t
+
+
+Paso de valores en forma de arreglos del controlador hacia las vistas - Forma 3 - Variables locales
+------------------------------------------------------------------------------
+
+Hay otras formas en que podemos pasar datos a la vista en la que yo utilizo generalmente es la del array asociativo por que parece mas sencilla, ahora, en caso de que los datos que quiera pasar a la vista esten todos en variables locales, por ejemplo la variable users que tenga otra variable $title.
+
+---userController.php
+ return view('users', [
+         'users' => $users, 
+         'title' => $title
+        ]);
+---
+
+en este caso puedo utilizar la funcion de phpcompact(), y va aceptar como argumentos los nombres de las variables y las va a convertir en un array asociativo.
+
+---UserController.php
+ $title = 'Listado de usuarios';
+
+   //var_dump(compact('title', 'users')); die();
+
+        dd(compact('title', 'users')); 
+
+        return view('users', compact('title', 'users'));
+---
+
+Puedo utulizar el helper de Laravel dd(), que es similar a ejecutar var dump y luego die. Esta es una forma sencilla y rapida de comprobar el resultado a una llamada a una funcion o los datos que tenemos en una variable.
+
+En la consola  al ejecutar la prueba
+	> t
++++	
+	.array:2 [
+  "title" => "Listado de usuarios"
+  "users" => array:6 [
+    0 => "Bill"
+    1 => "Ellie"
+    2 => "Joel"
+    3 => "Tess"
+    4 => "Tommy"
+    5 => "<script>alert("Clicker")</script>"
+  ]
+]
+
++++
+
+Y en el navegador
+	http://127.0.0.1:8000/usuarios
++++
+array:2 [▼
+  "title" => "Listado de usuarios"
+  "users" => array:6 [▶]
+]
++++	
+
+al recargar la pagina que tenemos un array asociativo, en vez de declararlo de forma manual, entonces lo hacemos utilizando compact(), y como el resultado de compact() nos devuelve un array asociativo, entoncees, podemos utilizar la sintaxis, patra pasar nuestrso datos a la vista.
+
+Asi que en la consola si reejecutamos laspruebas, las peurbas estan pasando con el resultado en la consola.
+
+
+
+
+Ejercicios
+==========
+
+Crear una vista
+---------------
+Las vistas generalmente se encuentran en el directorio /resources/views de la carpeta principal de nuestro proyecto. Crear una vista con Laravel es muy sencillo, simplemente necesitamos crear un archivo .php (o .blade.php como veremos a continuación) en el directorio  /views. Dentro de este archivo escribimos el HTML de la vista.
+
+
+Retornar una vista
+-----------------
+Para retornar una vista retornamos el llamado a la función helper view pasando como argumento el nombre de la vista. El nombre del archivo es relativo a la carpeta resources/views y no es necesario indicar la extensión del archivo:
+---
+	public function index()
+	{
+	    return view('users');
+	}
+--
+
+Pasar datos a la vista
+--------------
+Podemos pasar datos a la vista mediante un arreglo asociativo, donde las llaves son el nombre de las variables que queremos pasar a la vista y el valor son los datos que queremos asociar:
+---
+	$users = [
+	    'Joel',
+	    'Ellie',
+	    'Tess',
+	    //...
+	];
+	return view('users', [
+	    'users' => $users
+	]);
+---
+
+
+También podemos usar el método with encadenándolo al llamado a la función view para pasar datos a la vista en formato de array asociativo:
+---
+	return view('users')->with([
+	    'users' => $users
+	]);
+---
+
+
+Con with también podemos pasar las variables de forma individual:
+---
+	return view('users')
+	    ->with('users', $users)
+	    ->with('title', 'Listado de usuarios');
+---
+
+
+Si los datos que queremos pasar a la vista se encuentran dentro de variables locales podemos utilizar la función compact,  la cual acepta como argumentos los nombres de las variables y las convierte en un array asociativo:
+---
+	$users = [
+	    ...
+	];
+	$title = 'Listado de usuarios';
+	return view('users', compact('users', 'title'));
+---
+
+
+Escapar código HTML
+------------------
+Laravel nos ofrece un helper llamado "e" que nos permite escapar HTML que podría ser insertado por los usuarios de nuestra aplicación, de manera de prevenir posibles ataques XSS:
+---
+<li><?php echo e($user) ?></li>
+---
+
+
+
+
+
+Referencias
+===========
+
+Combinar HTML y PHP 
+----------------------------------------
+
+
+Todos amamos las sintaxis que nos provee el motor de plantillas Blade para escribir nuestras vistas, y no es el único, hay otros motores de plantillas geniales como Twig o Smarty, escritos en y para PHP.
+
+Pero imaginemos por un momento que tienes un proyecto que no está usando ningún framework: quizás nos toque escribir código para WordPress, o editar algo de «legacy code» de un proyecto, e instalarle Smarty o algún otro template engine no es una opción viable.
+
+
+¿Qué hacer cuando debemos editar y mezclar PHP y HTML?
+------------------------------------------------------
+Nos hemos acostumbrado a escuchar que usar «echo» es malo y que mezclar HTML y PHP es horrible, es verdad que no va a ser la «mejor sintaxis del mundo», pero tampoco tiene que ser tan malo, verá, cuando se encuentre con código como el siguiente:
+---
+	<div><?php if($pager->has_previous) { ?>
+	        <button class="page_left" />
+	    <?php } 
+	    echo "<span>{$pager->current_page}</span>";
+	?>
+	    <?php if($pager->has_next) { ?>
+	        <button class="page_right" />
+	    <?php } ?>
+	</div>
+---
+
+
+El culpable no es PHP, sino lo que está entre el teclado y la silla, como se suele decir.
+
+Voy a dar algunos tips que le permitirán mezclar PHP y HTML sin producir un resultado terrible:
+
+1. Utilice la sintaxis alternativa de PHP, es decir:
+----------
+---
+	<?php if($something): ?>
+	  // Prefiere esto
+	<?php endif; ?>
+	<?php if($something) { ?>
+	 // A esto
+	<?php } ?>
+--
+
+
+2. Siempre utilice la sintaxis multi línea para estructuras de control, es decir:
+-----------
+---
+	<?php if($something): ?>
+	  <strong>Usa esto</strong>
+	<?php endif; ?>
+	<?php if($something)
+	    echo "<del>En vez de esto</del>" ?>
+---
+
+
+3. Esto nos lleva al punto 3, el hecho de que use etiquetas de HTML y PHP en un mismo archivo, no quiere decir que deba escribir HTML dentro de las sentencias de PHP, en otras palabras:
+---
+	<strong>Usa esto <?= $variable ?></strong>
+	<?php echo "<del>Nunca esto</del>" ?>
+---
+
+
+4. Y esto nos lleva al punto 4, 
+	- utiliza la etiqueta corta <?= $var ?>  para imprimir (es equivalente a <?php echo $var ?> )
+
+
+
+5. Por la misma lógica del punto 3, llegamos a la conclusión del punto 5, no mezcles lógica de programación con lógica de vista, no tiene porqué hacerlo, incluso aunque esté trabajando en un mismo archivo, puede colocar la lógica de la aplicación (operaciones, llamadas a la base de datos etc.) en la cabecera del archivo, y la lógica de la vista (imprimir variables, HTML) al final, por ejemplo, esto está muy mal:
+---
+	<?php $result = mysql_query("SELECT * from users"); ?>
+	<h1>Usuarios</h1>
+	<ul>
+	<?php while ($user = mysql_fetch_obj($result)): ?>
+	    <li><?php echo $user->name ?></li>
+	<?php endwhile; ?>
+	</ul>
+---
+
+
+Mientras que lo siguiente está mejor:
+---
+	<?php
+	    // Logica de mi aplicacion:
+	    $result = mysql_query("SELECT * from users");
+	    $users = array();
+	    while ($user = mysql_fetch_obj($result)) {
+	        $users[] = $user;
+	    } 
+	    // Logica de la vista:
+	?>
+	<h1>Usuarios</h1>
+	<ul>
+	<?php foreach ($users as $user): ?>
+	    <li><?php echo $user->name ?></li>
+	<?php endforeach; ?>
+	</ul>
+---
+
+
+Por supuesto, a estas alturas debería usar PDO para conectarte a la base de datos y no mysql_query, pero el ejemplo ilustra simplemente cómo puede separar la lógica de la aplicación (base de datos, etc.) de la lógica de la vista (HTML)
+
+
+6. Procure abrir y cerrar las etiquetas de PHP en una misma línea, esto es, escribir una sola línea de PHP a la vez, en otras palabras:
+---
+	// Use esto:
+	<?php if ($something): ?>
+	    <?= yo_prefiero_esto(); ?>
+	<?php endif; ?>
+	
+	// En vez de:
+	<?php if ($something):
+	    echo esto_no_me_gusta();
+	endif; ?>
+---
+
+Lo primero es más fácil de modificar, a la hora de que necesite agregar HTML o líneas extras.
+
+
+Con todos estos tips, podemos convertir el primer ejemplo de esta sección 
+De esto:
+---
+	<div><?php if($pager->has_previous) { ?>
+	        <button class="page_left" />
+	    <?php } 
+	    echo "<span>{$pager->current_page}</span>";
+	?>
+	    <?php if($pager->has_next) { ?>
+	        <button class="page_right" />
+	    <?php } ?>
+	</div>
+---
+
+A esto:
+---
+	<div>
+	<?php if($pager->has_previous): ?>
+	    <button class="page_left" />
+	<?php endif; ?>
+	    <span>
+	        <?= $pager->current_page; ?>
+	    </span>
+	<?php if($pager->has_next): ?>
+	    <button class="page_right" />
+	<?php endif; ?>
+	</div>
+---
+
+O si quieres indentar un poco más:
+---
+	<div>
+	    <?php if($pager->has_previous): ?>
+	        <button class="page_left" />
+	    <?php endif; ?>
+	    <span>
+	        <?= $pager->current_page; ?>
+	    </span>
+	    <?php if($pager->has_next): ?>
+	        <button class="page_right" />
+	    <?php endif; ?>
+	</div>
+---
+
+¿Nota la diferencia?
+
+Veamos el mismo ejemplo con Blade:
+---
+	<div>
+	    @if($pager->has_previous)
+	        <button class="page_left" />
+	    @endif
+	    <span>
+	        {{ $pager->current_page }}
+	    </span>
+	    @if($pager->has_next)
+	        <button class="page_right" />
+	    @endif
+	</div>
+---
+
+O con Smarty:
+---
+	<div>
+	    {if $pager->has_previous}
+	        <button class="page_left" />
+	    {/if}
+	    <span>
+	        {$pager->current_page}
+	    </span>
+	    {if $pager->has_next}
+	        <button class="page_right" />
+	    {/if}
+	</div>
+---
+
+Por supuesto que las sintaxis de Blade y de Smarty son mucho más limpias y cortas que nuestro ejemplo en PHP mejorado ¡Pero ya la diferencia no es tan radical! Como ve entonces el problema no estaba con PHP o con «echo» sino entre la silla y el teclado.
+
+Conclusión
+----------
+1. Siempre tenemos la oportunidad de mejorar (o arruinar) nuestro código, no importa si estamos trabajando con un framework como Laravel, con PHP plano, con WordPress, con Ruby o Python, etc.
+
+2. Debemos culpar menos a las herramientas que usamos y ser más activos en buscar mejoras y soluciones en cualquier proyecto o tecnologías con las que estemos trabajando.
