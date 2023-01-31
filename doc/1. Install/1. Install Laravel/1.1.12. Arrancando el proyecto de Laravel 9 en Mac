@@ -1,0 +1,76 @@
+1.1.11. Arrancando el proyecto de Laravel 9 en Mac
+
+Tomando en consideración que hemos instalado lo necesario para correr nuestro proyecto en MAc, este no es visible desde la carpeta del proyecto utilizando XAMPP
+
+Ya que corriendo los servicios de XAMMP y habiendo configurado lo necesario nuestro poryecto simplemente no se visualiza,
+
+Esto es derivado posiblemente por que nuestro poryecto lo hemos impoortado desde otra plataforma o sistema operativo, podemos hacer la referencia al apartado:
+
+	1.1.3. Importando un proyecto de Plataforma
+
+Tomando en consideracion que tenemos instalado PHP 8.1.
+
+
+Nuestro archivo de configuración de PHP esta en la siguiente ruta:
+
+	/usr/local/etc/php/8.1/php.ini
+
+
+Al abrir para verificar la seccion de despliegue de errores en su directiva:
+
+---
+	; display_errors
+	;   Default Value: On
+	;   Development Value: On
+	;   Production Value: Off
+---
+
+El archivo nos indica que el despliegue de errores esta por default encendido, por lo que podria resultar confuso nuevamente la razon del por que no nos visualiza el contenido del proyecto.
+
+
+Simplemente no visualiza ningun contenido, ni muestra ningun error en el proyecto iniciado.
+
+Recordando los pasos a realizar ejecutamos los siguientes comandos desde la raiz del proyecto es decir:
+
+	/Applications/XAMPP/xamppfiles/htdocs/laravel-fundamentals
+
+
+Desde aca debemos recordar que como es cambio de otra plataforma debemos instalar composer para nuestro poryecto en si.
+
+	composer install
+
+Ahora ganeramos una copia de nuestro archivo de configuración del proyecto:
+	cp .env.example .env
+
+Ahora generamos nuestra llave para el proyecto
+	php artisan key:generate
+
+
+Visualizo el proyecto desde mi navegador y ahora hay respuesta, solo que se visualiza errores por los permisos de storage.
+
+---
+	UnexpectedValueException
+
+	PHP 8.2.0
+	9.48.0
+	The stream or file "/Applications/XAMPP/xamppfiles/htdocs/dev/laravel-fundaments/storage/logs/laravel.log" could not be opened in append mode: Failed to open stream: Permission denied The exception occurred while attempting to log: The ...
+---
+
+Por lo que debemos cambiar los permisos a esta carpeta:
+
+Ejecutamos
+
+	% sudo chmod -R 775 storage
+		Password:
+	% sudo chmod -R ugo+rw storage 
+
+
+Ahora volvemos a arrancar el proyecto con php artisan serve y verificamos en el navegador
+
+Si todo ha resultado bien debemos visualizar nuestra plantilla inicial del proyecto.
+
+
+
+
+
+
