@@ -1,0 +1,4 @@
+1.2.5 Creando un Virtual Host con XAMP en MAC
+
+Tengo el proyecto laravel en un mac con macOS Monterey con php artisan. El proyecto se ejecuta sin problema, pero por motivos personales quiero utilizar el apache de XAMPP en lugar de artisan server entonces cuando trato de cargar el index.php 
+
