@@ -1,0 +1,624 @@
+1.1.10. Instalando composer, Valet, MariaDB, Redis en Mac
+
+Pagina Oficial
+
+	https://getcomposer.org/download/
+
+copiar las siguientes lineas de codigo en la terminal, previa verificación de la instalación de PHP en MAC
+
+------
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+-----
+
+En  Para realizar la instalación de de PHP via Brew
+---------------------------------------------------
+Página Oficial
+	https://brew.sh/
+
+Copiar el siguiente codigo en la terminal
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+
+
+Esperamos que termine la instalación
+
+Hasta esperar confirmación de instalación, 
+
+Para confirmar que esta instalado tecleamos el siguiente comando
+Clear
+
+
+Ahora si escribimos brew
+
+Vemos que esta listo.
+
+---
+	Installation successful!
+
+	==> Homebrew has enabled anonymous aggregate formulae and cask analytics.
+	Read the analytics documentation (and how to opt-out) here:
+	  https://docs.brew.sh/Analytics
+	No analytics data has been sent yet (nor will any be during this install run).
+
+	==> Homebrew is run entirely by unpaid volunteers. Please consider donating:
+	  https://github.com/Homebrew/brew#donations
+
+	==> Next steps:
+	- Run brew help to get started
+	- Further documentation:
+	    https://docs.brew.sh
+
+
+	Example usage:
+	  brew search TEXT|/REGEX/
+	  brew info [FORMULA|CASK...]
+	  brew install FORMULA|CASK...
+	  brew update
+	  brew upgrade [FORMULA|CASK...]
+	  brew uninstall FORMULA|CASK...
+	  brew list [FORMULA|CASK...]
+
+	Troubleshooting:
+	  brew config
+	  brew doctor
+	  brew install --verbose --debug FORMULA|CASK
+
+	Contributing:
+	  brew create URL [--no-fetch]
+	  brew edit [FORMULA|CASK...]
+
+	Further help:
+	  brew commands
+	  brew help [COMMAND]
+	  man brew
+	  https://docs.brew.sh
+---
+
+
+En nuestro caso vamos a trabajar con PHP 8 para ello vamos a buscar php 8 
+
+---
+	brew search php
+	==> Formulae
+	brew-php-switcher      php-cs-fixer           php@8.0                phplint                phpstan                pup
+	php                    php-cs-fixer@2         php@8.1                phpmd                  phpunit
+	php-code-sniffer       php@7.4                phpbrew                phpmyadmin             pcp
+---
+
+Como el que necesitamos es la version 8.1 Ejecutamos
+
+Si por alguna cuestion queremos instalar la version 7.0 ejecutamos:
+	$ brew install home-brew/php/php70
+
+Para la version 8.1 que es con la que trabajaremos
+
+	$ brew install php@8.1
+
+Se procede a la descarga e instalación 
+
+Tomando en consideración que la instalación del Sistema Operativo es macOS Monterey
+
+---
+	To enable PHP in Apache add the following to httpd.conf and restart Apache:
+	    LoadModule php_module /usr/local/opt/php@8.1/lib/httpd/modules/libphp.so
+
+	    <FilesMatch \.php$>
+	        SetHandler application/x-httpd-php
+	    </FilesMatch>
+
+
+	El archivo de configuración de Apache2 con XAMPP en Mac se encuentra en:
+		/Applications/XAMPP/xamppfiles/apache2/conf
+
+	Finally, check DirectoryIndex includes index.php
+	    DirectoryIndex index.php index.html
+
+	The php.ini and php-fpm.ini file can be found in:
+	    /usr/local/etc/php/8.1/
+
+	php@8.1 is keg-only, which means it was not symlinked into /usr/local,
+	because this is an alternate version of another formula.
+
+	If you need to have php@8.1 first in your PATH, run:
+	  echo 'export PATH="/usr/local/opt/php@8.1/bin:$PATH"' >> ~/.zshrc
+	  echo 'export PATH="/usr/local/opt/php@8.1/sbin:$PATH"' >> ~/.zshrc
+
+	For compilers to find php@8.1 you may need to set:
+	  export LDFLAGS="-L/usr/local/opt/php@8.1/lib"
+	  export CPPFLAGS="-I/usr/local/opt/php@8.1/include"
+
+
+	To restart php@8.1 after an upgrade:
+	  brew services restart php@8.1
+	Or, if you don't want/need a background service you can just run:
+	  /usr/local/opt/php@8.1/sbin/php-fpm --nodaemonize
+	==> Summary
+	🍺  /usr/local/Cellar/php@8.1/8.1.14_1: 513 files, 80.2MB
+	==> Running `brew cleanup php@8.1`...
+	Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+	Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`).
+	==> Caveats
+	==> php@8.1
+	To enable PHP in Apache add the following to httpd.conf and restart Apache:
+	    LoadModule php_module /usr/local/opt/php@8.1/lib/httpd/modules/libphp.so
+
+	    <FilesMatch \.php$>
+	        SetHandler application/x-httpd-php
+	    </FilesMatch>
+
+	Finally, check DirectoryIndex includes index.php
+	    DirectoryIndex index.php index.html
+
+	The php.ini and php-fpm.ini file can be found in:
+	    /usr/local/etc/php/8.1/
+
+	php@8.1 is keg-only, which means it was not symlinked into /usr/local,
+	because this is an alternate version of another formula.
+
+	If you need to have php@8.1 first in your PATH, run:
+	  echo 'export PATH="/usr/local/opt/php@8.1/bin:$PATH"' >> ~/.zshrc
+
+	  echo 'export PATH="/usr/local/opt/php@8.1/sbin:$PATH"' >> ~/.zshrc
+
+
+	Para nuestro caso debemos utilizar  lo siguiente en nuestra terminal
+	  echo 'export PATH="/usr/local/opt/php@8.1/bin:$PATH"'
+
+	  echo 'export PATH="/usr/local/opt/php@8.1/sbin:$PATH"'
+
+
+	For compilers to find php@8.1 you may need to set:
+	  export LDFLAGS="-L/usr/local/opt/php@8.1/lib"
+	  export CPPFLAGS="-I/usr/local/opt/php@8.1/include"
+
+
+	To restart php@8.1 after an upgrade:
+	  brew services restart php@8.1
+	Or, if you don't want/need a background service you can just run:
+	  /usr/local/opt/php@8.1/sbin/php-fpm --nodaemonize
+	klvst3r@iKlvst3r ~ % 
+---
+
+
+Para poder tener acceso a lo instalado recientemente, debemos cerrar nuestra consola y volver abrir una nueva.
+
+Una vez instalado PHP ejecutamos, para comprobar nuestra instalación:
+
+	$ php -v 
+
+
+
+Composer
+————————
+Como se explico anteriormente a manera de resumen
+
+Ahora procedemos a instalar composer, para ello vamos a la pagina oficial:
+
+	https://getcomposer.org/download/
+
+Para instalar rápidamente Composer en el directorio actual, ejecute el siguiente script en su terminal. Para automatizar la instalación, use:
+
+---
+	php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+	php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+	php composer-setup.php
+	php -r "unlink('composer-setup.php');"
+---
+
+
+
+Salida en la terminal
+---
+		klvst3r@iKlvst3r ~ % php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+		php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+		php composer-setup.php
+		php -r "unlink('composer-setup.php');"
+		Installer verified
+		All settings correct for using Composer
+		Downloading...
+
+		Composer (version 2.5.1) successfully installed to: /Users/klvst3r/composer.phar
+		Use it: php composer.phar
+
+		klvst3r@iKlvst3r ~ % sudo mv composer.phar /usr/local/bin/composer
+---
+
+
+Este script de instalación simplemente verificará algunas php.iniconfiguraciones, le advertirá si están configuradas incorrectamente y luego descargará la última composer.pharen el directorio actual. Las 4 líneas anteriores serán, en orden:
+	•	Descargar el instalador al directorio actual
+	•	Verifique el instalador SHA-384, que también puede verificar aquí
+	•	Ejecute el instalador
+	•	Eliminar el instalador
+Lo más probable es que desee colocarlo composer.pharen un directorio en su RUTA, por lo que simplemente puede llamar composerdesde cualquier directorio ( instalación global ), usando, por ejemplo:
+
+Opciones de instalación notables
+--install-dir
+	Puede instalar Composer en un directorio específico utilizando la --install-diropción y proporcionando un directorio de destino. Ejemplo:
+		php composer-setup.php --install-dir=bin
+
+--nombre del archivo
+	Puede especificar el nombre del archivo (predeterminado: composer.phar) usando la --filenameopción. Ejemplo:
+		php composer-setup.php --filename=composer
+
+--versión
+	Puede instalar Composer en una versión específica utilizando la --versionopción y proporcionando una versión de destino. Ejemplo:
+		php composer-setup.php --version=1.0.0-alpha8
+
+--vista previa, --instantánea, --1 (EOL), --2, --2.2 (LTS)
+	Seleccione un canal de versión específico en lugar del último estable predeterminado. Consulte "Descargar canales" a continuación para obtener más detalles. Ejemplo:
+		php composer-setup.php --2.2
+
+--ayudar
+	El instalador proporciona más opciones para entornos específicos, utilice la --helpopción para verlas todas.
+
+
+Descargar canales
+
+De forma predeterminada, el instalador composer self-updatedescargará solo la última versión estable. Sin embargo, puede seleccionar un canal de descarga diferente. 
+
+Si desea ayudar a probar las versiones preliminares, puede usar la --previewmarca en el instalador o en la actualización automática. 
+
+Para compilaciones de instantáneas, que se realizan a partir de la última confirmación de Composer, puede usar la --snapshotmarca. 
+
+Para instalar mediante programación versiones principales específicas, puede usar el indicador --1o . --2Para seleccionar la última versión 2.2 LTS, puede usar --2.2.
+
+Para verificar que tenemos instalado Composer ejecutamos:
+	composer 
+
+Valet
+-----
+Instalar Valet
+Para instalar Valet tienes que usar el gestor de paquetes de Mac "Homebrew". Comenzamos actualizando la lista de repositorios de estos paquetes con el comando:
+	brew update
+
+Luego tendrás que instalar PHP, si es que no lo has instalado ya en tu sistema. También es muy sencillo gracias a Homebrew, aunque este proceso ya lo realizamos, no esta de mas repasarlo
+	brew install php
+
+Ahora, si no tienes Composer (el gestor de dependencias de PHP) instalado, tendrás que Instalar composer con el script de la propia página de Composer. Tienes más información en el artículo de instalación de Composer
+Para facilitarte la vida en el uso de Composer es una buena idea mover el ejecutable a tu carpeta bin del usuario, para que puedas tener el comando "composer" desde cualquier localización de tu terminal.
+	mv composer.phar /usr/local/bin/composer
+
+Así Composer quedará instalado de manera global y lo podrás usar en tu ordenador, lanzando el comando composer desde el terminal, estando situado en cualquier carpeta del sistema.
+Si quieres más información sobre el gestor de dependencias de PHP la tienes en el Manual de Composer
+
+
+Instalar Valet vía composer también este proceso ya lo ejecutamos:
+----------------------------------------------------------------
+El siguiente paso consiste en instalar el propio Valet, lo que hacemos mediante Composer. Lo realizaremos de manera global a nuestro sistema, para que puedas usar Valet desde cualquier carpeta del disco. Estando en el terminal ejecutamos:
+	
+	composer global require laravel/valet
+
+
+Una vez instalado composer ejecutamos el siguiente comando:
+	composer global require laravel/valet
+
+Con esto se instalara valet, si no hay ningún problema podemos continuar utilizando valet
+
+Comprobamos con:
+	$ valet
+
+
+Valet es un software perteneciente al ecosistema de Laravel que sirve para crear de manera cómoda un servidor capaz de ejecutar las aplicaciones PHP. Es excelente por que resulta muy ligero y sencillo de funcionar, pero sobre todo por que trabaja mediante la creación de Virtual Host.
+
+Tener un host virtual para cada proyecto permite que cada uno se encuentre dentro de un dominio independiente. Gracias a tener ese dominio especifico para la web, se podrá ser capaz de servir un proyecto de manera similar a ocho estaría sirviendo en su propio dominio, en lugar de tenerlos en una carpeta llamada localhost.
+
+Gestionar posibles problemas con el Path y los globales de Composer
+En este punto deberías asegurarte que tienes en el path la ruta del binario de composer ~/.composer/vendor/bin porque la necesitarás, para que los ejecutables que hemos instalado de manera global los tengas disponibles en cualquier carpeta de tu terminal.
+Podemos comprobar el estado del Path en nuestro sistema con el comando.
+	echo $PATH
+
+Si no aparece el path que se vería a la carpeta :~/.composer/vendor/bin lo puedes introducir tú mismo. Para eso ejecutamos el siguiente comando:
+	export PATH=$PATH:~/.composer/vendor/bin
+
+Lo unico malo de valet es que esta disponible solamente para Mac, los usuarios de Windows tendrán que utilizar Homestead o Laragon.
+
+Comprobación de instalarón:
+---
+	klvst3r@iKlvst3r ~ % valet
+	Password:
+	Laravel Valet 3.3.0
+---
+
+
+Correr el script de instalación de Valet
+Después de tener el proyecto Valet instalado, aún tenemos que correr el script de instalación de Valet, mediante el comando.
+	valet install 
+
+
+Este comando solo lo debemos ejecutar una vez, en adelante ya no debemos preocuparnos por esto.
+---
+	valet install
+	Installing nginx...
+	[nginx] is not installed, installing it now via Brew... 🍻
+	Installing nginx configuration...
+	Installing nginx directory...
+	Installing and configuring phpfpm...
+
+	In Brew.php line 264:
+	                                                                         
+	  Homebrew PHP appears not to be linked. Please run [valet use php@X.Y]  
+	                                                                         
+
+	install
+
+---
+
+Hay una pequeña advertencia, el cual indica que no esta vinculado a nuestra version de php instalada, para ello ejecutamos entonces el siguiente comando:
+
+---
+	$ valet use php@8.1
+	Linking new version: php@8.1
+	Stopping php@8.1...
+	Installing and configuring phpfpm...
+	Updating PHP configuration for php@8.1...
+	Restarting php@8.1...
+	Restarting nginx...
+	Valet is now using php@8.1.
+
+	Note that you might need to run composer global update if your PHP version change affects the dependencies of global packages required by Composer.
+---
+
+Al final se necesitara correr el command:
+---
+	composer global update
+	Changed current directory to /Users/klvst3r/.composer
+	Loading composer repositories with package information
+	Info from https://repo.packagist.org: #StandWithUkraine
+	Updating dependencies
+	Nothing to modify in lock file
+	Installing dependencies from lock file (including require-dev)
+	Nothing to install, update or remove
+	Generating autoload files
+	17 packages you are using are looking for funding.
+	Use the `composer fund` command to find out more!
+	No security vulnerability advisories found
+---
+
+Ahora podemos continuar creando una carpeta para crear todos nuestros proyectos:
+
+En mi caso esta carpeta es /dev y se encuentra dentro del directorio de XAMPP, aunque como ya instalamos Valet pude ser fuera o un alguna otra carpeta elegida.
+
+Por ejemplo:
+	mkdir ~/dev
+
+Esto significa que estará en mi directorio /home
+
+
+Para efectos prácticos en mi caso los colocare dentro de mi carpeta de desarrollo del servidor local con XAMPP, es decir:
+
+	/Applications/XAMPP/htdocs/dev
+
+Entrando a esta carpeta y vamos a ejecutar otro comando de Valet, 
+
+	$valet park
+
+Este comando sirve para que se registre esta carpeta y así acceder a una URL por cada proyecto creado.
+
+Mostramos
+
+Si estando en nuestra carpeta cualquiera ejecutamos un nuevo proyecto de Laravel:
+
+	laravel new blog
+
+Y creado nuestro proyecto de Laravel, podremos ir al navegador desde
+	blog.dev
+
+Automáticamente tenemos acceso al proyecto que se acaba de crear
+
+
+Creation de un nuevo proyecto utilizando Composer
+
+Simplemente ejecutando el comando:
+	$ composer create-project laravel/laravel blog
+
+En este caso podremos ver que Laravel se instalara en la ultima versión
+
+Hasta el momento es la version 9.48.1 con PHP 8.2.0 para Mac
+
+Al verificar en el navegador nos genera un error de permisos para Storage, para darle solución a esto ejecutamos:
+	$ sudo chmod -R 775 storage
+
+Y comprobamos el funcionamiento de nuestro proyecto en el navegador.
+
+
+O bien continuar instalando lo necesario en caso faltante ya que dentro de los proyectos seguramente utilizaremos MySQL o MariaDB, 
+
+Para ello buscamos
+
+	$ brew search mysql
+
+
+Si lo encuentra basta con ejecutar brew install mysql o una version especifica por ejemplo
+
+	brew install mysql@5.7
+
+Podemos buscar también 
+
+	$ brew search maridan
+
+
+Instalar MariaDB (Si no se tiene instalado)
+----------------
+Valet no instala MariaDB o MySQL por nosotros. Solamente sirve como servidor web instalando Nginx y permitiendo trabajar al crear cómodamente los host virtuales. De modo que, si queremos usar estos SGBD los tendremos que instalar por nosotros mismos.
+
+Podría parecer una desventaja que no instale un sistema de bases de datos, pero en realidad es una buena idea, porque no siempre necesitas uno, ya que podrías usar simplemente SQLite, o bien necesitas un sistema gestor en especial o una versión concreta. Por lo tanto, es en realidad una ventaja tenerlos por separado.
+
+Vamos a ver cómo instalar MariaDB, que generalmente lo prefiero a MySQL por estar más alineado con las políticas de software libre. En Mac, lo conseguimos con un par de comandos de Homebrew.
+	brew install mariadb
+
+Para gestionar el auto-arranque de MariaDB cada vez que el sistema se reinicia, tenemos que lanzar otro comando, que hace uso de una de las utilidades de Homebrew para la gestión de servicios que tienen que permanecer activos.
+	brew services start mariadb
+
+Si no necesitas tener MySQL / MariaDB continuamente ejecutándose en tu máquina y deseas simplemente iniciar el sistema gestor de base de datos puntualmente, puedes usar este otro comando:
+	mysql.server start
+
+Sin embargo, recuerda que cada vez que reinicies tu ordenador y necesites MySQL o MariaDB de nuevo funcionando, necesitarás volverlo a arrancar.
+
+
+Instalar Redis (Opcional)
+-------------
+Si piensas usar Redis en local para tus aplicaciones Laravel con Valet tendrás que instalarlo de manera adicional, igual que hemos tenido que hacer con Mysql/mariadb. Para ello usaremos Homebrew, ya que es el método más sencillo. Lanzamos los siguientes comandos:
+	brew update
+	brew install redis
+
+A continuación necesitas arrancar Redis en tu ordenador. Esto lo tendrás que hacer la primera vez que lo uses y cada vez que reinicies la máquina. Si has instalado redis con Homebrew, para arrancarlo usa el comando:
+	brew services start redis
+
+Luego tendrás que seguir los pasos de configuración de Redis de la documentación de Laravel.
+
+Uso de Valet en Mac
+-------------------
+Ahora se trata de aprender a usar Valet, lo que es bastante sencillo. Básicamente se trata de crear los dominios que sean necesarios, uno para cada proyecto generalmente.
+
+Para ello tendrías dos opciones:
+	•	Comando park: permite registrar un directorio de tu ordenador que contenga varias aplicaciones. Para cada uno de esos directorios se creará un nombre de aplicación a la que puedes acceder desde el navegador con el dominio "nombre_de_directorio.test". Esto se consigue con el comando "valet park" desde donde tengamos todas las aplicaciones que queremos servir.
+	•	Comando link: este comando permite asociar a valet un único directorio como una aplicación. Para ello entramos en la aplicación que tengamos, y estando en la carpeta de esa aplicación concreta lanzamos el comando "valet link". Con ello tendremos el nombre de la aplicación (el directorio donde estábamos) enlazado en el dominio "nombre_de_aplicacion_o_directorio.test"
+
+Como nota personal, yo prefiero usar "valet link" para cada aplicación o carpeta unitaria que voy necesitando servir con Valet.
+
+Es tan sencillo como meterse en la aplicación:
+	cd mi_aplicacion
+
+Luego lanzar el comando:
+	valet link
+
+Y acceder al dominio http://mi_aplicacion.test para ver lo que hay en esa carpeta concreta.
+
+El comando "valet park" puede resultar de utilidad para servir muchas aplicaciones que tengas juntas en subdirectorios de una misma carpeta, pero generalmente no tengo todos los sitios web en la misma carpeta raíz, sino que me organizo por proyectos.
+
+
+Operativas con Valet y gestión de proyectos
+---
+Para ver todos los sitios que tienes linkados a Valet puedes ejecutar:
+	valet links
+
+Para eliminar un proyecto de Valet y dejar de servirlo en un dominio dado, te metes en la carpeta de ese proyecto y ejecutas el comando "valet unlink".
+	cd mi_proyecto
+	valet unlink
+
+
+Exponer públicamente un desarrollo local
+---
+Si quieres compartir hacia fuera (por ejemplo para que un cliente pueda ver el estado de un proyecto que tienes en local) puedes lanzar el comando "valet share".
+
+Si no has usado nunca Ngrok necesitarás configurarlo. Te explicamos cómo hacerlo un poco más abajo.
+	cd mi_proyecto
+
+valet share
+Este mismo comando te mostrará la ruta que tienes que comartir con tu cliente, el cual accederá usando un túnel ssh seguro y temporal. Tendrás que mantener el comando activo por el tiempo que desees que esté abierto ese túnel ssh.
+
+
+Cómo configurar Ngrok para crear el túnel SSH
+----
+El sistema que nos ofrece Ngrok requiere desde hace poco un token para la configuración del servicio. Ese token lo obtienes de la página de ngrok. Para ello te tienes que registrar en su página y tendrás un dashboard donde encontrarás el token en la sección "Your Authtoken".
+
+Posteriormente ese token lo debes de guardar en un archivo con la ruta ~/.ngrok2/ngrok.yml
+
+Y con el contenido siguiente:
+	authtoken: ____AQUI_TU_TOKEN____
+
+Servir los proyectos con HTTPS
+-----
+Aún te permite servir un dominio con su certificado de seguridad, para tener https en tu servidor de desarrollo local.
+	valet secure laravel
+
+Parar Valet si no lo necesitas
+Valet nos ha instalado y puesto en marcha un servidor web como es Nginx, por lo que el puerto 80 lo tendrás ocupado en un Mac. Si lo necesitas liberar para cualquier motivo, como poner en marcha otro servidor, puedes hacerlo con el siguiente comando:
+	valet stop
+
+Esto liberará el puerto 80, pero recuerda que la instalación del sistema gestor de base de datos, como MySQL / MariaDB la has realizado de manera independiente, por lo que detener MySQL lo tendrás que hacer también de manera independiente.
+
+Puedes detener MySQL o MaríaDB en MacOS con el siguiente comando:
+	mysql.server stop
+
+
+Cómo cambiar la configuración de PHP instalado por Valet
+---
+Cuando trabajas con Laravel Valet tienes una configuración de PHP bastante estándar, es decir, con unos valores muy comunes. Pero si necesitas personalizar el funcionamiento de PHP debes saber dónde están los archivos de configuración cuyos valores debes de editar.
+
+La principal dificultad es que los valores de configuración, al menos en la instalación actual de Valet, están repartidos en varios archivos, por lo que a veces no se trata simplemente de editar el php.ini de turno, porque esos valores pueden estar sobreescritos en otros archivos.
+
+Lo mejor es que crees un archivo PHP con la llamada a la función phpinfo(), para ver cuál es la configuración actual de tu instalación de PHP, puesto que estas configuraciones pueden cambiar con el tiempo.
+
+El código del archivo para mostrar la configuración de PHP sería el siguiente:
+---
+	<?php
+	phpinfo();
+	?>
+---
+Luego ejecutas ese archivo y verás el típico listado de información. Encontrarás el lugar donde aparecen los archivos de configuración usados en esta instalación de PHP en el bloque representado de la siguiente manera:
+
+
+Cnfiguration File (php.ini) Path			|	/opt/homebrew/etc/php/8.1
+Loaded Configuration File 					|	/opt/homebrew/etc/php/8.1/php.ini
+Scan this dir for additional .ini files 	|	/opt/homebrew/etc/php/8.1/conf.d
+Additional .ini files parsed 				|	/opt/homebrew/etc/php/8.1/conf.d/error_log,ini,
+/opt/homebrew/etc/php/8.1/conf.d/ext-opcache.ini,
+/opt/homebrew/etc/php/8.1/conf.d/php-memory-limits.ini
+
+￼
+Ten en cuenta que los archivos del php.ini se sobreescriben por los que se carguen después, que están señalados en "Additional .ini files parsed".
+Recuerda siempre que hagas cambios en la configuración de PHP que debes reiniciar Valet, con el siguiente comando en la consola.
+	valet restart
+
+Una cosa interesante de Valet es lo siguiente, si entramos a una carpeta de proyecto y ejecutamos:
+
+	$ valet share
+
+Vemos que da una url global con la cual podremos acceder a nuestro proyecto desde cualquier, parte del mundo, mientras en la computadora se este ejecutando este comando, cualquier persona con esta url podrá ingresara nuestro proyecto blog
+
+
+Es importante tener una cuenta de registro 
+
+Please register for an ngrok account at: https://dashboard.ngrok.com/signup and install your authtoken.
+
+
+Nos autenticamos y podremos generar un token de autenticación.
+
+
+Conclusión
+--------
+Con todo esto tienes suficiente para sacarle todo el partido a Valet, una herramienta excelente no solo para desarrollar con Laravel, sino con cualquier herramienta, como Symfony, WordPress, o cualquier sitio estático. Es muy ligera y fácil de usar.
+Hemos visto en este artículo toda la información necesaria para instalar, usar y configurar Valet, pero supuesto, encontrarás más información en la documentación de Laravel Valet.
+Si tienes Mac, Valet es una buena opción. Si quieres algo mejor todavía, entonces Homestead es estupendo, ya que permite virtualizar un Linux y acercarse más aún al entorno que vas a tener en producción.
+
+
+Editores de código.
+
+Es importante tener un editor de código, el que tenemos para utilizar es sublime text o bien podemos utilizar PHPStorm.
+
+Para la administración de la base de datos podremos utilizar Sequel Pro que es una administrador e base de datos la desventaja que corre solamente en esta platform de la que estamos configurando.
+
+	Sequel Pro
+
+Desde:
+	sequel pro.com
+
+
+
+Referencias:
+https://joseacat.io/instalar-laravel-en-tu-mac/
+https://dev.to/nahuelsegovia/como-instalar-laravele-en-mac-os-2489
+https://todoxampp.com/como-instalar-laravel-en-xampp/
+https://www.youtube.com/watch?v=JPNRPCff4Gs
+https://desarrolloweb.com/articulos/crear-proyecto-laravel-composer.html
+https://styde.net/instalacion-de-laravel-9/
+https://desarrolloweb.com/articulos/instalar-usar-vale-mac
+
+Https://sequelpro.com
+
+
+
+Links
+Homestead
+https://laravel.com/docs/9.x/valet
+https://desarrolloweb.com/articulos/instalar-homestead-para-laravel5.html
+
+Laragon
+https://desarrolloweb.com/articulos/laragon.html
+
+
+
