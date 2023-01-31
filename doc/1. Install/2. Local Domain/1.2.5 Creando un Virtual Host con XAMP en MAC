@@ -1,4 +1,4 @@
-1.2.5 Creando un Virtual Host con XAMP en MAC
+1.2.5 Creando un Virtual Host con XAMPP en MAC
 
 Tengo el proyecto laravel en un mac con macOS Monterey con php artisan. El proyecto se ejecuta sin problema, pero por motivos personales quiero utilizar el apache de XAMPP en lugar de artisan server entonces cuando trato de cargar el index.php 
 
@@ -10,7 +10,7 @@ Puede crear un virtual host en XAMPP en Mac siguiendo los siguientes pasos:
     Abra el archivo /Applications/XAMPP/xamppfiles/etc/extra/httpd-vhosts.conf
     Agregue las siguientes líneas al final del archivo:
 
-less
+
 
 <VirtualHost *:80>
   ServerName [nombre_del_host]
@@ -26,7 +26,7 @@ less
     Guarde los cambios y cierre los archivos.
     Agregue el nombre de host en su archivo hosts local, que se encuentra en /private/etc/hosts:
 
-css
+
 
 127.0.0.1 [nombre_del_host]
 
