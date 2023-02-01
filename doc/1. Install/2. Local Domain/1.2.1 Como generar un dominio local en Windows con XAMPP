@@ -105,3 +105,45 @@ El listado de directorio en tu virtualhost se consigue incluyendo una línea de 
 </Directory>
 
 Con esto ya lo tienes todo configurado. Realmente tardas más en leerte el artículo que en realizar los cambios en tu sistema.
+
+
+Ejemplo de configuración con el Dominio laravel-fundaments.io
+---------------------------------------------------------------
+
+
+1. El primer paso es configurar el archivo "hosts" de Windows, está en la carpeta C:\Windows\System32\drivers\etc. Allí verás diversos archivos y   
+    tendrás que editar el llamado "hosts".
+      C:\Windows\System32\drivers\etc\hosts
+
+2. Simplemente le diremos el nombre del host que deseamos crear virtualmente y la IP a la que solicitar los servicios. 
+
+      127.0.0.1      laravel-fundaments.io      #XAMP Laravel 9
+
+3.   Configurar Apache para aceptar virtualhost
+
+      Editar  archivo está en esta ruta en mi Xampp.
+
+        Q:\XAMPP\apache\conf\extra
+
+    El nombre del archivo es: httpd-vhosts.conf. Por tanto, la ruta completa es 
+        Q:\XAMPP\apache\conf\extra\httpd-vhosts.conf
+
+
+    Agregar las siguientes lineas
+    -----
+    <VirtualHost *>
+      DocumentRoot "Q:\XAMPP\htdocs\dev\laravel-fundaments\public"
+      ServerName laravel-fundaments.io
+      <Directory "Q:\XAMPP\htdocs\dev\laravel-fundaments\public">
+        Options All
+        AllowOverride All
+        Require all granted
+      </Directory>
+    </VirtualHost>
+    -----
+
+4. Después de cualquier cambio en los archivos de configuración de Apache, debes de reiniciar el servidor Apache para que tengan efecto.
+
+5. Ahora ya solo te queda acceder a través de tu navegador. al dominio local creado.
+
+    http://laravel-fundaments.io/
