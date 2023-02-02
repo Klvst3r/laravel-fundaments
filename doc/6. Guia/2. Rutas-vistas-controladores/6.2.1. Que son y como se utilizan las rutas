@@ -127,3 +127,9 @@ Ahora no habra necesidad de modificar estas referencias para demostrar supongamo
 	Route::get('contactame', ['as' => 'contactos', function(){
 			return "Seccion de contactos";
 		}]);			
+
+Ya que se hace referencia al nombre de la ruta, y no a la URL.
+
+Retornando cadenas de caracteres, no es la forma en que se hacen sitios web, entonces para retornar páginas HTML cuando se acceda a determinadas rutas, se hace retornando vistas en la siguiente sección.
+
+		

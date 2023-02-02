@@ -20,14 +20,23 @@ use Illuminate\Support\Facades\Route;
 /* Route::get('/', function(){
     return "Hola desde la página de inicio";
 }); */
-Route::get('/', function(){
+/*Route::get('/', function(){
     echo "<a href=". route('contactos') .">contacto</a></br>";
     echo "<a href=". route('contactos') .">contacto</a></br>";
     echo "<a href=". route('contactos') .">contacto</a></br>";
     echo "<a href=". route('contactos') .">contacto</a></br>";
     echo "<a href=". route('contactos') .">contacto</a></br>";
+});*/
+
+// 6.2.2
+//------
+Route::get('/', function () {
+    return view('home');
 });
 
+
+// 6.2.1
+//------
 /* Route::get('contato', function(){
 	return "Hola desde la página de contacto";
 });	 */

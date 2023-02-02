@@ -1,0 +1,41 @@
+6.3.2. Como mostrar HTML con las vistas
+
+Las vistas como su nombre lo indica son la parte visual de nuestra aplicación, es decir es la que ve el usuario final.y contienen el HTML de nuestra Aplicacion se ecnuantran en
+
+	/resources/views
+
+Laravel trae por defecto una vista llamada
+	welcome.blade.php
+
+Vamos a eliminarla y vamos crear una vista llamada home.php 
+
+Generando la estructura basica del codumento	
+	<!DOCTYPE html>
+		<html>
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title>Home</title>
+		</head>
+		<body>
+			<h1>Home</h1>
+		</body>
+		</html>
+
+Ahora vamos al archivo de rutas 
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+La funcion retornada view retorna el nombre de la vista y omo parametro el nobre del archivo en este caso home, omitiendo la extensión
+
+Laravel provee de funciones muy utiles, como esta, pero no quiere decir que Laravel este hecho de funciones globales.
+
+si revisamos esta funcion, vemos que crea una nueva instancia de la clase ViewFactory
+
+Para dar seguimiento a la ruta de cada uno de las definiciones de las funciones utilizadas sera necesario 
+
+Existe un archivo de referencia para poder configurar nuestro editor Sublime Text que es el que utilizamos para el presente proyecto.
+
+	
