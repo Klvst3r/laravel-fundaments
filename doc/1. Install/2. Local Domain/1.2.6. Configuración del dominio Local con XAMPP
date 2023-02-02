@@ -1,0 +1,112 @@
+1.2.6. Configuración del dominio Local con XAMPP
+
+Crearemos un host virtual en su computadora local para que pueda acceder al dominio "virtual" de cada proyecto desde el navegador. Esta práctica permitirá que el servidor web Apache local use varios nombres de host, por lo que se puede acceder a cada proyecto a través de una URL separada, en lugar de que todos los proyectos locales estén en diferentes carpetas "localhost". ".
+
+Para ello, comenzaremos a trabajar desde el servidor web Apache instalado con XAMPP, pero de manera similar, este proceso podría funcionar perfectamente para Wamp o cualquier otro programa que se utilice para instalar un entorno de desarrollo en PHP.
+
+Nota: Esto puede ser útil por varias razones. Lo más importante es mantener la estructura de carpetas del proyecto localmente, ya que una vez publicado el proyecto, estarán en el servidor remoto.en nuestro caso, lo vinculamos a una carpeta de Dropbox que comparto con varias computadoras. De esta manera, puedo acceder a mis archivos de desarrollo local desde cualquiera de mis computadoras, incluso desde diferentes sistemas operativos.
+
+El proceso consta de dos pasos principales:
+
+   1. Creando un host virtual en Windows editando el archivo "hosts"
+   2. Configurando Apache para aceptar un VirtualHost y asociarlo con la carpeta de Dropbox
+
+ 1) Crear tu host local en Windows
+
+El primer paso es configurar el archivo "hosts" de Windows, que mantiene una lista de nombres de dominio que se pueden asignar a direcciones IP. Utilizará el nombre de host que deseamos y se asociará con ls IP local.
+
+El archivo de hosts en Windows se encuentra en la carpeta C:\Windows\System32\drivers\etc. Allí verás varios archivos, tendrás que editar el que se llama "Hosts".
+
+Editar archivo de hosts en modo administrador
+
+Ahora fíjate en un detalle importante. El archivo "hosts" está protegido contra escritura, debe ejecutar el Bloc de notas como administrador para guardar los cambios. 
+
+Los cambios que tenemos que introducir en este archivo hosts son muy sencillos. Simplemente indicamos el nombre del host que vamos a virtualizar y la IP desde la que solicitar servicios. 
+
+127.0.0.1 laravel.fundaments.io
+
+
+2) Configurar Apache para aceptar hosts virtuales
+
+El segundo paso es un poco más complicado, pero en realidad lo hemos resuelto copiando y pegando. Esto abre el archivo de configuración de Apache para el host virtual "vhost". El archivo se encuentra en esta ruta en mi Xampp.
+
+
+En nuestro caso particular lo tenemos instalado en el disco Q, por lo que nuestra ruta sera:
+	Q:\XAMPP\apache\conf\extra
+
+El nombre del archivo es: httpd-vhosts.conf. Por tanto, la ruta completa es 		
+	Q:\XAMPP\apache\conf\extra\httpd-vhosts.conf
+
+ Podemos ver que se tiene una descripción de la sintaxis utilizada para configurar hosts virtuales en Apache. Agregaremos algunas líneas al final.
+
+---
+	NameVirtualHost *
+
+	<VirtualHost *>
+	  DocumentRoot "Q:\XAMPP\htdocs\"
+	  ServerName localhost
+	</VirtualHost>
+
+	<VirtualHost *>
+	  DocumentRoot "Q:\XAMPP\htdocs\dev\laravel-fundaments\public"
+	  ServerName laravel-fundaments.io
+	  <Directory "Q:\XAMPP\htdocs\dev\laravel-fundaments\public">
+	    Options All
+	    AllowOverride All
+	    Require all granted
+	  </Directory>
+	</VirtualHost>
+
+---
+
+Las primeras líneas le dicen a Apache que el host virtual localhost sigue siendo la carpeta "htdocs" de Xampp Q:\xampp\htdocs. Es mejor mantenerlo de esta manera para que pueda conservar los archivos que tiene actualmente en su host local y tener acceso a las aplicaciones que ya tiene instaladas localmente, como PhpMyAdmin.
+
+Luego tenemos un segundo host virtual, que está asociado con el que acabamos de crear. Allí veremos algunos datos que se tienen que editar. 
+
+Primero, la ruta Q:\myproject\httpdocs debe cambiarse a la ruta de la carpeta en nuestra computadora, donde se encuentran los archivos del proyecto. Luego, también debe cambiar myproject.local.com por el nombre del host virtual que acaba de definir en su archivo de hosts de Windows.
+
+En nuestro caso seta referida en la segunda seccion de las directivas de configuración desccritas.
+
+
+Arreglar "¡Acceso prohibido!" Error 403
+
+Un problema típico que te puedes encontrar en este punto es recibir un error 403 "Acceso prohibido" con el mensaje "No tienes permiso para acceder al directorio solicitado..." (en inglés encontrarás este error como "Acceso prohibido" Esto sucede porque Apache rechaza las conexiones debido a su configuración de Virtualhost.
+
+ Nota: Encontré este error en la nueva versión 1.8.1 de Xampp, pero en la versión 1.8.0 que estoy usando en otra computadora funciona bien sin arrojar ningún error 403. De todos modos, con la configuración especificada debería funcionar para usted, pero si encuentra algún problema, puede intentar configurar su directorio de una manera más detallada.
+
+En resumen, cambiará algunas líneas en el bloque "Contenidos". Con otras configuraciones me ha desaparecido el error 403.
+
+<Directory "Q:\XAMPP\htdocs\dev\laravel-fundaments\public">
+    Options All
+    AllowOverride All
+    Require all granted
+  </Directory>
+
+En muchos sitios web, resuelven el mismo problema y brindan varias otras variantes de configuración que puede probar si encuentra este error de acceso. Le sugiero que consulte el enlace Agregar VirtualHost falla: Error de acceso prohibido 403 (XAMPP) (Windows 7) que tiene muchas variaciones y configuraciones que han funcionado para muchos otros desarrolladores.
+Abriendo el virtual host recién configurado
+
+Ahora todo lo que tienes que hacer es crear un archivo "index.html", "index.php" o lo que quieras y será accesible desde tu navegador.
+
+http://laravel-fundaments.io
+
+Accederá a "index.php" o "index.html" en esa carpeta.
+
+Eso es todo, tiene hosts virtuales configurados en XAMPP y puede comenzar a desarrollar en un entorno más avanzado, similar a cuando pone su proyecto en producción. 
+
+
+Permitir el listado de directorio
+
+Opcionalmente, otra cosa que resulta útil en algunos casos es permitir la lista de directorios en el host virtual (para que le muestre una lista de carpetas y archivos que tiene al acceder a un directorio que no tiene un documento predeterminado).
+
+Nota: Este error lo he encontrado en un Xampp más actual, la versión 1.8.1, pero en la versión 1.8.0 que tengo en otro ordenador me había funcionado sin arrojar ningún error 403. En cualquier caso, con la configuración indicada debería funcionarte, pero si encuentras algún problema puedes probar a configurar tu directorio de una manera más detallada.
+
+Las listas de directorios en su host virtual se implementan al incluir una línea de configuración en el elemento "directory".
+
+<Directory "Q:\XAMPP\htdocs\dev\laravel-fundaments\public">
+    Order allow,deny
+    Allow from all
+    Options Indexes FollowSymLinks
+</Directory>
+
+Con esto ya lo tienes todo configurado. 
+
