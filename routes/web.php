@@ -13,6 +13,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/* Route::get('/', function () {
     return view('welcome');
+}); */
+
+/* Route::get('/', function(){
+    return "Hola desde la página de inicio";
+}); */
+Route::get('/', function(){
+    echo "<a href='contactos'>contacto</a></br>";
+    echo "<a href='contactos'>contacto</a></br>";
+    echo "<a href='contactos'>contacto</a></br>";
+    echo "<a href='contactos'>contacto</a></br>";
+    echo "<a href='contactos'>contacto</a></br>";
 });
+
+Route::get('contato', function(){
+	return "Hola desde la página de contacto";
+});	
+
+Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+	return "Saludos $nombre";
+})->where('nombre',"[A-Za-z]+");	

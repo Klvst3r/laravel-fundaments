@@ -1,0 +1,111 @@
+6.3.1. Que son y como se utilizan las rutas
+
+
+Todas las rutas estan definidas en el archivo con versiones anteriores
+	app/Http/routes.php
+
+Ahora se encunetran en 
+	routes/web.php
+
+Este archivo se carga autoamticamente con el proyecto, y son las url de entrada a nuestra aplicación.
+
+Si queremos definir una ruta que responda cuando un usuario ingrese al sitio:
+
+
+// www.misitio.com = Route::get('/'');
+
+Ahora si queremos
+
+// www.misitio.com/contacto = Route::get('contacto');
+
+]El segundo parametro es una funcion anonima conocida como clousure, y lo que sea que se retorne de aui es lo que el usuario vera en el navegador.
+
+Ej.
+
+Route::get('/', function(){
+	return "Hola desde la página de inicio"
+});
+
+Podemos hacer 
+	$php artisan serve
+
+
+Ejemplo contacto;
+
+Route::get('contato', function(){
+	return "Hola desde la página de contacto"
+});	
+
+De esta manera se define una URL y respondemos con una funcion.
+
+Hay ocaciones que se necesita pasar parametros por la URL.
+
+Ej. Saludos a un nombre de usaurio
+
+Route::get('saludos/{nombre}', function($nombre){
+	return "Saludos $nombre";
+});	
+
+Que sucede si no hay parametros.
+Al definir la ruta de esta forma, estamos diciendo es obligatorio. Para ello hacemos:
+
+
+Route::get('saludos/{nombre?}', function($nombre = "Inivitado"){
+	return "Saludos $nombre";
+});	
+
+Asi se definen los parametros obligatorios y opcionales.
+
+Validaciones
+
+Queremos evitar el el usuario escriba numeros, ya que los nombres reales no llevan numeros
+
+Agregamos:
+
+	Route::get('saludos/{nombre?}', function($nombre = "Inivitado"){
+	return "Saludos $nombre";
+	})->where('nombre',"[A-Za-Z]+");	
+
+Ahora que son las rutas con nombre:
+
+Suponiendo que tenemos una seccion para la seccion de contactos, retornando:
+
+		Route::get('contactos', function(){
+			return "Seccion de contactos";
+		});	
+
+Suponiendo tambien que se tienen 5 lugares en el proyecto donde se ha hace referencia a esta URL agregando los links a la URL de Contacto.
+
+		Route::get('/', function(){
+			echo "<a href='contactos'>contacto</a></br>";
+			echo "<a href='contactos'>contacto</a></br>";
+			echo "<a href='contactos'>contacto</a></br>";
+			echo "<a href='contactos'>contacto</a></br>";
+			echo "<a href='contactos'>contacto</a></br>";
+		});
+
+Entonces por alguna razon el dueño del sitio nos pide que cambiamos la url de contactos por "contactanos"		.
+
+A primera vista seria cambiar la ruta, luego ir a cada uno de los archivos,donde se hara referencia a los contactos y cambiarla por contactanos.
+
+
+		Route::get('/', function(){
+			echo "<a href='contactanos'>contacto</a></br>";
+			echo "<a href='contactanos'>contacto</a></br>";
+			echo "<a href='contactanos'>contacto</a></br>";
+			echo "<a href='contactanos'>contacto</a></br>";
+			echo "<a href='contactanos'>contacto</a></br>";
+		});
+
+Aca hay cinco enlaces y no parace muy complejo la situacion, pero al tener un mayor nuero de url de contacto y cambiar uno por uno a contactanos.
+
+Se tendrian que actualizasr uno a uno.
+
+
+Para eviar este problema le damos los nombres a las rutas, para hacerlo seleccionamos la funcion y la encerramos entre [] Agregando un alias con la palabra as y el nombre que se quiere dar. 
+
+quedando:
+
+	Route::get('contactos', ['as' => 'contactos', function(){
+			return "Seccion de contactos";
+		}]);	
