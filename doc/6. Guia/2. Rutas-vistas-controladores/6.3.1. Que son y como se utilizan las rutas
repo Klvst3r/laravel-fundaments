@@ -109,3 +109,21 @@ quedando:
 	Route::get('contactos', ['as' => 'contactos', function(){
 			return "Seccion de contactos";
 		}]);	
+
+laravel-fundaments.io/contactos		
+
+Laravel tiene una funcion llamada route que recibe como parametro el nombre de la ruta y devuelve la url.
+
+	Route::get('/', function(){
+	    echo "<a href=". route('contactos') .">contacto</a></br>";
+	    echo "<a href=". route('contactos') .">contacto</a></br>";
+	    echo "<a href=". route('contactos') .">contacto</a></br>";
+	    echo "<a href=". route('contactos') .">contacto</a></br>";
+	    echo "<a href=". route('contactos') .">contacto</a></br>";
+	});
+
+Ahora no habra necesidad de modificar estas referencias para demostrar supongamos que nuevamente el dueño nos vide cambiar la url ahora si ha quedado solo y quiere que la URL diga contactame
+
+	Route::get('contactame', ['as' => 'contactos', function(){
+			return "Seccion de contactos";
+		}]);			
