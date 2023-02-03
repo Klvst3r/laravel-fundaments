@@ -1,6 +1,8 @@
 0.5.1.0. Temario Git
 ---------------
 
+https://styde.net/aprende-git/
+
 Git es el software de control de versiones más utilizado en la actualidad, totalmente imprescindible para crear proyectos en equipo y de igual forma muy recomendado aunque trabajes solo.
 
 Git permite que varios desarrolladores trabajen en un mismo proyecto y se encarga de unir el aporte de todos, prevenir conflictos y pérdidas de código, mantener un historial de cambios al código, dividir el proyecto en «branches» (ramas) y mucho más.
