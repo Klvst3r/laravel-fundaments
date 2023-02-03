@@ -1,0 +1,106 @@
+0.5.1.3 Clone y Fork con git y GitHub
+
+
+Una de las grandes ventajas de usar con git mas allá del control de versiones es la posibilidad de compartir el código para trabajar de forma colaborativa. Gracias a esta funcionalidad GitHub se ha convertido en la red social de programadores mas grande del mundo por excelencia.
+
+De esta forma podemos compartir proyectos y clonar otros existentes para ayudar a mejorarlos y contribuir de manera activa con ellos.
+
+
+Clonar repositorios con Git
+---
+
+Con este comando podemos copiar a nuestra máquina local cualquier repositorio público, git clone hace una copia exacta del último estado el proyecto alojado en un repositorio.
+
+Para este ejemplo he creado un repositorio con un template html de google para presentaciones online. Vamos a tratar de clonar dicho repositorio.
+
+Iniciamos creando una carpeta en local
+
+	$ mkdir presentacion
+
+Dentro del directorio iniciamos git
+
+	$ cd presentacion
+
+	$ git init
+
+Con esto ya podemos proceder a clonar el repositorio de la siguiente manera
+
+	$ git clone https://github.com/jeffer8a/html5slides.git
+
+		git-clone
+
+Con esto ya tendremos el código del proyecto copiado en nuestra carpeta local.
+
+
+
+Guardando cambios de un repositorio clonado
+---
+
+Desde ahora cada cambio realizado a nivel local será seguido por git, por lo cual podremos realizar commits, crear nuevas ramas, y llevar un control de versiones del código.
+
+Pero ocurre algo al querer enviar los cambios de vuelta al repositorio remoto, en este caso solo hemos hecho una copia en local. Si intentamos hacer git push tendremos un error ya que no hemos definido ningún origen remoto para este directorio.
+
+Para guardar en forma remota (usando GitHub) debemos crear un repositorio, conectarlo a nuestra carpeta local con git add origin y de esa forma estaremos habilitados para guardar los cambios en remoto.
+
+Puedes hacerlo siguiendo los pasos de la guia Primeros pasos con git y GitHub.
+
+
+Hacer Fork de un repositorio existente
+---
+El fork que nos permite hacer GitHub es muy similar a lo descrito anteriormente con la ventaja de que en lugar de clonar el repositorio de forma local, podremos crear una copia en remoto del proyecto que queremos y quedara almacenada en nuestra cuenta personal de GitHub
+
+En tal caso, si ingresamos a https://github.com/jeffer8a/html5slides veremos lo siguiente.
+
+git-fork
+
+en la parte superior derecha de la pantalla podemos hacer click en el botón FORK y así de simple se creará un repositorio en nuestra cuenta de GitHub que será una copia del repositorio anterior.
+
+Trabajando en local con un repositorio Fork
+
+El comportamiento de este nuevo repositorio sera el mismo de cualquier otro que hayamos creado, puede ser clonado, se pueden hacer cambios, registrar commits, etc. Ya que contamos con el repositorio remoto podemos crear una carpeta en local, iniciar git y hacer pull de los cambios, recuerda usar la url de tu nuevo proyecto.
+
+	git-url
+
+	$ mkdir presentacion-fork
+
+	$ cd presentacion-fork
+
+	$ git init
+
+	$ git add origin master url_de_tu_repo_en_GitHub
+
+	$ git pull origin master
+
+De esta forma todos los cambios commits que realicemos podrán ser enviados al repositorio remoto sin ningún problema.
+
+Nota: los cambios enviados serán almacenados en nuestra copia del repositorio y no afectarán de ninguna forma el repositorio original que hemos clonado.
+
+
+
+Aclarando diferencias entre Clone y Fork
+---
+
+Con git clone podemos copiar el código de un repositorio de forma local, pero no estará conectado al repositorio de origen.
+
+Con Fork podremos crear una copia en remoto de un repositorio git en nuestra cuenta de GitHub y de esa forma sera mas fácil clonar de forma local para hacer pull y push de los cambios realizados.
+
+Para mas informacion puedes verificar la documentacion oficial
+
+	Github Fork :  https://help.github.com/articles/fork-a-repo/
+
+	Git Clone : http://git-scm.com/docs/git-clone
+
+
+Reference:
+
+	Slides
+			https://github.com/skaegi/html5slides
+
+			https://github.com/petrhosek/html5slides
+
+			https://github.com/heldinz/html5slides
+
+			https://gist.github.com/ordinaryegi/f385e80656d860f6713c
+
+			https://github.com/google/pagespeed-inslides
+
