@@ -1,0 +1,97 @@
+0.5.1.6 Exclusión de ficheros en un repositorio Git
+
+
+Cuando creamos un repositorio git dentro de un directorio, inicialmente se incluyen todos los archivos de dicho directorio dentro del control de versiones de git, para así poder seguir los cambios que se van realizando en el proceso de desarrollo.
+
+Hoy veremos como excluir archivos o directorios para que no sean tomados en cuenta por git y no se incluyan en cada commit que se realice al repositorio.
+
+
+
+Archivos .gitignore
+---
+
+Es en estos archivos donde se incluyen las rutas de todos los directorios y ficheros que queremos excluir de git, es decir, que no queremos que sean rastreados.
+
+Básicamente git hace una lectura en todos los directorios dentro de la carpeta del proyecto, y cada vez que encuentre un archivo .gitignore lo lee para saber que otros archivos debe excluir.
+
+La ubicación del .gitignore depende de ti, puedes tener un único archivo global en el directorio principal o uno independiente dentro de cada carpeta que quieras configurar.
+
+
+
+Creando un archivo .gitignore
+--
+
+Esto es muy sencillo, básicamente es un archivo de texto plano donde debes escribir las rutas que deseas excluir del repositorio
+
+    |	Esto no quiere decir que los ficheros van a ser borrados, simplemente los cambios que hagas allí no se van a ver 
+    |   reflejados en ningún commit mientras la ruta se encuentre definida en el .gitignore.
+
+Es importante que el nombre sea exactamente «.gitignore» sin preposiciones, símbolos o cualquier otro caracter diferente a esto.
+
+Supón que tienes el siguiente directorio
+
+	    index.php
+	    assets
+	        css
+	            main.css
+	            variables.css
+	        js
+	            sidebar.js
+	            main.js
+	    contact.php
+	    config.php
+	    server_config.php
+
+Digamos que en tu archivoserver_config.php tienes información delicada sobre conexiones a tu servidor que no quieres incluir en el repositorio para compartirlo con tus colaboradores, ese tal vez sea el primer archivo que quieras excluir, para ello creas el archivo .gitignore y agregas la siguiente linea.
+
+	server_config.php
+
+Ahora git incluirá todo el directorio menos ese archivo
+
+	    index.php
+	    assets
+	        css
+	            main.css
+	            variables.css
+	        js
+	            sidebar.js
+	            main.js
+	    contact.php
+	    config.php
+	    server_config.php
+	    .gitignore
+
+
+Bien, tal vez la carpeta assets/js se haya creado para hacer algunas pruebas de forma local y aun no quieras incluirla en el commit:
+
+	server_config.php
+	/assets/js
+
+
+Cuando referencias a una carpeta, todo lo que está dentro de ella se incluye como parte de los archivos sin seguimiento.
+
+	    index.php
+	    assets
+	        css
+	            main.css
+	            variables.css
+	        js
+	            sidebar.js
+	            main.js
+	    contact.php
+	    config.php
+	    server_config.php
+	    .gitignore
+
+Finalmente puedes agregar tantos archivos y carpetas como desees para que dejen de ser seguidos por git para el control de versiones. Algunas cosas a tener en cuenta :
+
+    - Si deseas usar más de un archivo .gitignore incluye uno solo por carpeta
+    - Para que git reconozca estas reglas el nombre del archivo debe ser .gitignore
+    - Al incluir las rutas en este archivo, no se eliminarán del repositorio bien sea local o remoto (si ya fueron   
+      incluídas previamente), solo dejarán de ser seguidas por el control de versiones.
+    - Los archivos .gitignore, no se almacenan únicamente de forma local, se envían en cada commit, por lo cual cada 
+      cambio que realices será incluido en el repositorio.
+    - Una vez creado y configurado tu archivo .gitignore, ya puedes ejecutar git add . y tener la certeza que no se 
+      agregarán los archivos o directorios ignorados.
+
+
