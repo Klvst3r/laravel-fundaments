@@ -1,0 +1,143 @@
+0.5.1.2. Crear alias de comandos con git
+
+Si usas Git desde la línea de comandos, y quieres evitar que te dé una deditis de tanto teclear, puedes crearte alias que son ‘nombres cortos’ o ‘nombres fáciles’ para llamar a comandos largos o difíciles de recordar.
+
+Mis alias están en inglés porque las palabras técnicas no suelo traducirlas. Pero puedes crearte los tuyos con las palabras que prefieras. La sintaxis de un alias es muy simple, sólo tiene dos elementos: el alias y el comando. El alias es la palabra que escribirás después de git y el comando, el comando que se ejecutará en su lugar.
+
+Por ejemplo, si para el comando git init definimos el alias n (de ‘nuevo repositorio’), cuando tecleemos git n en la línea de comandos, se ejecutará en realidad git init.
+
+Lista de algunos comandos y abreviaturas
+
+Comandos
+
+	git alias..................Muestra los alias.
+	git lost...................Muestra todos los objetos que se han 'perdido'.
+	git broken.................Muestra todos los objetos que se han 'soltado' y no son alcanzables.
+	git last...................Mostrar el último commit.
+	git lg.....................Muestra el log en formato gráfico.
+	git lgc....................Muestra el log en formato gráfico con colores.
+	git lgb....................Muestra el log en formato gráfico con colores y ramas.
+	git pusho..................Hacer un push de master a origin.
+
+	Abreviaturas
+
+	git b.......................branch
+	git ci......................commit
+	git co......................checkout
+	git cob.....................checkout -b
+	git d.......................diff
+	git l.......................log
+	git st......................status
+	git ri ....................rebase --interactive
+	git rc......................rebase --continue
+	git rs......................rebase --skip
+	git rf......................reflog
+
+Crear un alias desde la linea de comandos
+
+Los alias se pueden crear desde la línea de comandos con
+
+	git config --global alias.[alias] "[comando]"
+
+Dónde [alias] es el alias que queremos usar y [comando] el comando a sustituir.
+
+    | Si quieres configurar el alias sólo para el repositorio actual, quita –global.
+    | Y recuerda colocar los comandos entre comillas.
+
+
+Comandos
+
+	git alias
+	git config --global alias.alias "config --get-regexp ^alias\."
+
+	git lost
+	git config --global alias.lost "fsck --full"
+
+	git broken
+	git config --global alias.broken "fsck --unreachable"
+
+	git last
+	git config --global alias.last "log -1 HEAD"
+
+	git lg
+	git config --global alias.lg "log --pretty=format:'%h - %an, %ar : %s' --graph
+
+	git lgc
+	git config --global alias.lgc "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit --date=relative"
+
+	git lgb
+	git config --global alias.lgb "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit --date=relative --branches"
+
+	git pusho
+	git config --global alias.po "push origin HEAD:refs/for/master"
+
+Abreviaturas
+
+	git b
+	git config --global alias.b "branch"
+
+	git ci
+	git config --global alias.ci "commit"
+
+	git co
+	git config --global alias.co "checkout"
+
+	git cob
+	git config --global alias.cob "checkout -b"
+
+	git d
+	git config --global alias.d "diff"
+
+	git l
+	git config --global alias.l "log"
+
+	git st
+	git config --global alias.st "status"
+
+	git ri
+	git config --global alias.ri "rebase --interactive"
+
+	git rc
+	git config --global alias.rc "rebase --continue"
+
+	git rs
+	git config --global alias.rs "rebase --skip"
+
+	git rf
+	git config --global alias.rf "reflog"
+
+	Crear comandos editando el archivo .gitconfig
+
+La otra opción para definir los alias es editar el fichero .gitconfig con un editor de texto y añadirlos tú mism@.
+
+    | 	En windows el fichero .gitconfig global suele estar en el directorio del perfil de usuario. Puedes teclear 
+    | 	%userprofile% en la barra de direcciones del explorador de windows o en Inicio, Ejecutar o Inicio, Buscar para 
+    |	acceder a él.
+    |
+    |	En Linux no sé dónde está. Pero si alguien nos lo dice en los comentarios, actualizo la información encantado :)
+
+ Crear los alias en el fichero gitconfig
+
+Puedes copiar y pegar directamente estos alias en tu fichero .gitconfig:
+
+	[alias]
+	    b = branch
+	    ci = commit
+	    co = checkout
+	    cob = checkout -b
+	    d = diff
+	    l = log
+	    lg = log --pretty=format:'%h - %an, %ar : %s' --graph
+	    lgc = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit --date=relative
+	    lgb = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)%Creset' --abbrev-commit --date=relative --branches
+	    st = status
+	    ri = rebase --interactive
+	    rc = rebase --continue
+	    mt = mergetool
+	    rf = reflog
+	    last = log -1 HEAD
+	    alias = config --get-regexp ^alias\\.
+	    lost = fsck --full
+	    broken = fsck --unreachable
+	    po = push origin HEAD:refs/for/master
+	    rs = rebase --skip
