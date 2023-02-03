@@ -1,0 +1,37 @@
+0.4.3. GitGutter para Sublime Text
+
+GitGutter.
+
+Estoy seguro que debido a que eres todo un profesional, o estas en camino a serlo utilizas «Git» en todos tus proyectos y has seguido todos nuestros tutoriales al respecto en nuestra serie de Git y Github en los temas 0.5.1. Guia GIT  ¿Te ha pasado que alguna vez haces un cambio en algún bloque del código por equivocación ? y además de eso ¿se te olvido revisar los cambios antes de enviarlos al repositorio del proyecto? bueno, a todos nos ha pasado. Seguro ha sido algo muy fácil de solucionar, pero toma algo de tiempo revertir los cambios, crear un nuevo commit, etc.
+
+Tal vez la mejor opción sea tener la posibilidad de identificar en tiempo real cuáles son las líneas que estamos cambiando con respecto al último commit realizado. Esto es justamente lo que hace GitGutter, este plugin nos muestra directamente en el editor de texto (Sublime Text) cuales líneas han sido modificadas o agregadas en un archivo, comparando el estado actual con el último commit realizado.
+
+
+Instalación y configuración de GitGutter
+----------------------------------------
+
+Este plugin funciona para las versiones 2 y 3 de Sublime Text. Por supuesto es indispensable que tengas el editor de texto instalado en tu máquina, si no es asi, puedes descargarlo desde la página oficial.
+
+Debes activar posteriormente el controlador de paquetes de Sublime, esto lo puedes hacer ingresando desde el menú del editor a 
+
+menu > view > show console
+
+verás que se abre una consola en la parte inferior del editor copia y pega el siguiente código y luego presiona «enter»
+
+---
+import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)
+
+--
+
+Una vez hecho esto verás una nueva opción del menú en Preferences > Package Control, cuando se abra la nueva ventana escribe «Install» y selecciona la opción «Install Package», allí podrás buscar los paquetes disponibles para Sublime.
+
+	Package control: Install Package
+
+Escribe 
+
+	GitGutter 
+
+Y presiona «enter» nuevamente. Espera unos momentos hasta que finalice la instalación.
+
+
+Desde ahora tendrás un amigo en tu editor de texto que te alertará sobre los cambios en tus archivos.
