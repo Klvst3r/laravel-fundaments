@@ -1,0 +1,26 @@
+0. Temario Git
+---------------
+
+Git es el software de control de versiones más utilizado en la actualidad, totalmente imprescindible para crear proyectos en equipo y de igual forma muy recomendado aunque trabajes solo.
+
+Git permite que varios desarrolladores trabajen en un mismo proyecto y se encarga de unir el aporte de todos, prevenir conflictos y pérdidas de código, mantener un historial de cambios al código, dividir el proyecto en «branches» (ramas) y mucho más.
+
+A través de los siguientes tutoriales de esta serie, te enseñaremos a utilizar este sistema de control de versiones de manera gratuita.
+
+Temas
+
+    1. Primeros pasos con git y GitHub 
+    2. Crear alias de comandos en git 
+    3. Clone y Fork con git y GitHub 
+    4. Flujos y zonas por las que pasa un fichero en un repositorio git 
+    5. Deshacer y recuperar cambios con git 
+    6. Sistema de ramificaciones en git 
+    7. Exclusión de ficheros en un repositorio Git 
+    8. Pull request en GitHub 
+    9. Creación de un pull request al framework Laravel 
+    10.Eliminar un archivo de un repositorio Git 
+    11.Deshaciendo cosas en Git 
+    12.Etiquetando en Git 
+    13.Ramas y resolución de conflictos en git 
+
+
