@@ -1,0 +1,241 @@
+0.5.1.4. Flujos y zonas por las que pasa un fichero en un repositorio Git
+
+Ya conocemos los principios básicos de git. Hoy aprenderemos que pasa exactamente con nuestros ficheros cuando utilizamos un sistema de control de versiones como lo es Git. De esta forma, manejar con mayor fluidez el control de cambios en nuestra aplicación. Para ello vamos a comenzar con unos conceptos básicos:
+
+
+
+Zonas en un repositorio GIT
+---
+Cuando estamos trabajando en ficheros que están dentro de un respositorio GIT, existen en todo momento tres zonas o áreas:
+
+	Repositorio GIT (HEAD)
+
+(En algunos programas se le llama HEAD)
+
+Es la ‘base de datos’ propia de GIT. Es decir, dónde están almacenadas todo el historial y todas las versiones de nuestros ficheros.
+
+	Índice (Index o Staged Files)
+
+(En algunos programas se le llama Index y en otros Staged Files)
+
+Es la zona de ‘preparación’ o zona temporal para almacenar en el Repositorio GIT o HEAD. Cuando hagamos un commit, se almacenará únicamente lo que haya en esta zona.
+
+	Área o Zona de Trabajo (Working Tree o Unstaged Files)
+
+(En algunos programas se le llama Working Tree y en otros Unstaged Files)
+
+Es la zona en la que están nuestros ficheros fuentes con todas sus modificaciones actuales.
+
+Ahora bien, vamos a estudiar los flujos de estados por los que pasa un fichero en un repositorio:
+
+
+
+Flujo de estados y ‘zonas’ por las que pasa un fichero cuando lo añadimos a un proyecto que está en un repositorio Git.
+
+1. Vamos a crear un nuevo repositorio llamado PruebasGit.
+
+Desde un programa gráfico Git, vamos a la opción: Create, New o Nuevo, indicamos el directorio donde queremos que se cree el repositorio (por ejemplo c:\PruebasGit) y, si nos pregunta por un bookmark o nombre, podemos escribir PruebasGit.
+
+Si usamos la línea de comandos de git, estos serían los comandos:
+	mkdir PruebasGit
+	cd PruebasGit
+	$ git init
+
+Con esto, se ha creado una carpeta .git dentro de la carpeta PruebasGit. En esa carpeta se almacenará todo el Repositorio o Base de datos de git. Ver: Primeros pasos con git y GitHub.
+
+2. Vamos a añadir nuestro primer fichero: hola_mundo.php
+
+Con nuestro editor preferido, creamos el fichero: hola_mundo.php dentro de la carpeta de nuestro proyecto con el siguiente contenido
+	<html>
+	    <head>
+	        <title>Prueba de PHP</title>
+	    </head>
+	    <body>
+	        <?php echo '<p>Hola Mundo</p>'; ?>
+	    </body>
+	</html>
+
+El estado de este fichero ahora mismo es: Untracked o Not tracked.
+
+Esto quiere decir que el fichero no esta siendo seguido y no se ha incluido en la lista de archivos que formarán parte del siguiente commit.
+
+Ahora mismo, el fichero hola_mundo.php sólo existe en la zona Zona de Trabajo.
+
+3. Preparamos el fichero para añadirlo al repositorio.
+
+Desde el programa gráfico Git, seleccionamos el archivo y vamos a la opción Stage o Add.
+
+Si usamos la línea de comandos de git, estos sería:
+	$ git add hola_mundo.php
+
+El estado del fichero pasa a ser: Added o Staged. Ese estado quiere decir que los cambios en este fichero serán almacenados en el siguiente commit y formaran parte del historial de versiones. El fichero hola_mundo.php existe ya en dos zonas, en la zona Zona de Trabajo y en el Indice. Y, en estos momentos ambas copias son idénticas. Pero, aún no hemos guardado nuestro fichero en el repositorio
+
+4. Añadimos el fichero al repositorio.
+
+Desde el programa gráfico Git, vamos a la opción Commit. Y nos preguntará por el mensaje del commit.
+
+Cada commit es una ‘versión’, ‘foto’ o ‘snapshot’ de nuestro código fuente. (En este caso, únicamente de nuestro primer fichero hola_mundo.php). Y para distinguir cada ‘foto’, podemos añadir un mensaje explicando en qué momento hicimos esa foto o qué tiene esa foto de particular. Por ejemplo, podemos escribir: ‘Añadido el fichero hola_mundo.php al repositorio’.
+
+Si usamos la línea de comandos de git, estos serían los comandos:
+	$ git commit -m "Añadido el fichero hola_mundo.php al repositorio"
+
+El estado del fichero pasa a ser: Unchanged o Committed, y si usas un programa gráfico Git, es posible que el fichero haya desaparecido de la pantalla. Ya que sólo suelen mostrar los ficheros que han tenido cambios desde la última vez que se añadieron al repositorio. Este estado quiere decir que la copia actual del fichero está almacenada en el repositorio y no ha habido cambios desde entonces.
+
+El fichero hola_mundo.php existe ahora en las tres zonas del repositorio: En la zona Zona de Trabajo, en el Indice y en el Repositorio. Y las tres copias son idénticas.
+
+5. Modificamos el fichero.
+
+Vamos a editar el fichero hola_mundo.php, para que el título de la página html sea también ‘Hola Mundo’:
+		<html>
+		    <head>
+		        <title>Hola Mundo</title>
+		    </head>
+		    <body>
+		        <?php echo '<p>Hola Mundo</p>'; ?>
+		    </body>
+		</html>
+
+Automáticamente el estado del fichero pasa a ser: Modified o Unstaged. Este estado quiere decir que un fichero que está incluído en el repositorio ha sido modificado y esas modificaciones no han sido incluídas en el repositorio ni lo serán en el próximo commit. Seguimos teniendo tres versiones del fichero hola_mundo.php: Las versiones en el Indice y en el Repositorio no se han modificado y son copias idénticas. Y en la zona Zona de Trabajo, está el fichero con esta nueva modificación.
+
+6. Preparamos el fichero para añadirlo al repositorio.
+
+Desde el programa gráfico Git, vamos a la opción Stage. Si usamos la línea de comandos de git, este sería el comando:
+	$ git add hola_mundo.php
+
+El estado del fichero pasa a ser: Added o Staged. Como vimos anteriormente, quiere decir que está preparado para almacenarse en el respositorio con el próximo *commit. Seguimos teniendo tres versiones del fichero hola_mundo.php: la versión en el Repositorio aún no se ha modificado y las versiones en la Zona de Trabajo e Indice son copias idénticas con esta nueva modificación.
+
+7. Creamos un nuevo fichero.
+
+Antes de hacer el commit del fichero hola_mundo.php, podemos crear un segundo fichero. Para ser originales, lo llamaremos: adios_mundo.php.
+	<html>
+	    <head>
+	        <title>Adios Mundo</title>
+	    </head>
+	    <body>
+	        <?php echo '<p>Adios Mundo</p>'; ?>
+	    </body>
+	</html>
+
+Estos son los estados de cada fichero y el contenido de las zonas de trabajo:
+
+Fichero hola_mundo.php: Added o Staged
+
+Fichero adios_mundo.php: Untracked o Not tracked.
+
+    Zona Zona de Trabajo:
+        Fichero hola_mundo.php: Con el cambio en el Title.
+        Fichero adios_mundo.php
+    Zona Índice:
+        Fichero hola_mundo.php: Con el cambio en el Title. (Copia idéntica a la de la Zona de Trabajo)
+    Zona Repositorio:
+        Fichero hola_mundo.php: Sin el cambio en el Title.
+
+8. Hacemos un commit.
+	$ git commit -m "hola_mundo.php, cambios en el Title"
+
+Estos son los estados de cada fichero y el contenido de las zonas de trabajo:
+
+Fichero hola_mundo.php: Unchanged o Committed
+
+Fichero adios_mundo.php: Untracked o Not tracked.
+
+    - Zona Zona de Trabajo:
+       -  Fichero hola_mundo.php: Con el cambio en el Title.
+       -  Fichero adios_mundo.php
+
+    - Zona Índice:
+       -  Fichero hola_mundo.php: Con el cambio en el Title. (Copia idéntica a la de la Zona de Trabajo)
+
+    - Zona Repositorio:Fichero hola_mundo.php: Con el cambio en el Title. (Copia idéntica a la de la Zona de Trabajo)
+
+9. Preparamos el segundo fichero para añadirlo al repositorio
+	$ git add adios_mundo.php
+
+Ahora que pasa si modificamos ambos ficheros de modo que queden así:
+
+Fichero hola_mundo.php:
+---
+	<html>
+	        <head>
+	            <title>Hola Mundo</title>
+	        </head>
+	        <body>
+	            <?php echo '<p>Hola Mundo</p>'; ?>
+	            <br />
+	            Hola Universo.
+	        </body>
+	</html>
+---
+
+
+Fichero adios_mundo.php:
+---
+	<html>
+	    <head>
+	        <title>Hasta pronto Mundo</title>
+	    </head>
+	    <body>
+	        <?php echo '<p>Adios Mundo</p>'; ?>
+	        <br />
+	        <br />
+	        <hr>
+	        Nos veremos pronto.
+	    </body>
+	</html>
+---
+
+Ahora, vamos a probar un nuevo comando: git status
+	$ git status
+
+Nos muestra:
+	 On branch master
+	Changes to be committed:
+	new file: adios_mundo.php
+	Changes not staged for commit:
+	        modified:   adios_mundo.php
+	        modified:   hola_mundo.php
+
+Estos son los estados de cada fichero y el contenido de las zonas de trabajo:
+
+	Fichero hola_mundo.php: Modified o Unstaged.
+
+Fichero adios_mundo.php: Added Modified o Staged Modified.
+
+    - Zona Zona de Trabajo:
+        - Fichero hola_mundo.php: Con los últimos cambios.
+        - Fichero adios_mundo.php: Con los últimos cambios.
+    - Zona Índice:
+        - Fichero hola_mundo.php: Con el cambio en el Title. (Copia idéntica a la de la Zona de Trabajo)
+        - Fichero adios_mundo.php: Con la versión inicial.
+    - Zona Repositorio:
+        - Fichero hola_mundo.php: Con el cambio en el Title. (Copia idéntica a la de la Zona de Trabajo)
+
+
+Si ahora hiciéramos un commit sólo se almacenarían en el repositorio, las versiones de ambos ficheros que se encuentran en el Indice.
+
+Podemos añadir todos los cambios actuales al índice con este comando:
+	$ git add -A
+
+(O en el programa gráfico, seleccionando ambos ficheros y usando la opción Add o Stage)
+
+    | Nota: Si quisiéramos recuperar la versión inicial del fichero adios_mundo.php, con el ‘Title’ ‘Adios Mundo’, no 
+    | podríamos hacerlo. Ya que aunque habíamos pasado esa versión al Índice con el primer add adios_mundo.php, cuando 
+    | hicimos un git add . sin hacer un commit, sustituímos la versión que había en el Índice con la de la Zona de 
+    | Trabajo y perdimos, por tanto, cualquier cambio que tuviéramos en el Índice.
+
+
+11. Limpiando el Indice:
+
+Es preferible que los commits sean bastante ‘modulares’ e independientes entre sí. Por eso, vamos a hacer dos commits, uno para añadir el nuevo fichero adios_mundo.php y otro para añadir los cambios a hola_mundo.php, pero primero vamos a ‘resetear’ o ‘limpiar’ los cambios en el Indice con el siguiente comando:
+	$ git reset HEAD
+
+(Desde un programa gráfico Git, usaríamos la opción Unstage o Unstage from index).
+
+Y ahora, vamos a hacer ambos commits. El primero:
+	$ git add adios_mundo.php
+	$ git commit -m "nuevo fichero: adios_mundo.php"
+
+Y, para el segundo, lo vamos a hacer en una sola operación con el comando:
+	$ git commit -a -m “hola_mundo.php, nuevas lineas”
+
+	
