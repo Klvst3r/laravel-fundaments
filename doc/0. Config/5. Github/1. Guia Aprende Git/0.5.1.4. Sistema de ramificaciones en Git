@@ -1,0 +1,281 @@
+0.5.1.4. Sistema de ramificaciones en Git
+
+Ramificaciones en git
+
+Una rama (branch) es una bifurcación en la línea de tiempo del proyecto que nos permite crear una copia paralela para desarrollar cambios sin afectar la versión estable (por defecto la rama master).
+
+El sistema de ramificaciones ofrece la posibilidad de crear tantas copias del código como creamos necesario.
+
+En una clase anterior sobre Primeros pasos con git y GitHub hablábamos sobre los commits, y decíamos que son algo como los cambios registrados en git durante el desarrollo del proyecto, cada rama, puede tener registrados sus propios commit, y luego pueden fusionarse con otra (como la rama master).
+
+ 
+
+Esquema de trabajo
+---
+
+Supongamos que tenemos un proyecto para desarrollar un sitio web de anuncios, si trabajamos de forma independiente el frontend y el backend, podemos crear una rama para cada sección y luego poco a poco se integrarán los cambios con la rama principal.
+
+	ramificaciones-git
+
+
+backend		  () -----> --------> --------> ()
+			/						  		  \
+		   /						           \
+master   ()-----> -------->() ----->  ()---->--() 
+		   \						 /
+		   	\   					/
+forntend	  ()-----> () ------> ()
+
+
+
+Pensemos en cada nodo como un commit realizado.
+
+
+
+Crear una nueva rama
+---
+
+Entramos desde la consola de comandos a la carpeta raíz del proyecto. 
+
+
+Como mencionaba anteriormente git crea por defecto una rama llamada master, para comprobarlo podemos escribir el comando
+
+	$ git branch
+
+de esa forma puedes ver la rama en la que está ubicado actualmente
+
+*master
+
+Si ejecutas ls puedes ver la lista de archivos creados hasta el momento
+
+	$ ls
+		index.html  README.md
+
+Manos a la obra!!!, comenzaremos a trabajar con el frontend agregando algo de diseño, para ello empezaremos creando una rama llamada frontend que será nuestro espacio de desarrollo
+
+	$ git branch frontend
+
+si ejecutamos nuevamente git branch podemos ver que se ha creado la nueva rama pero aun estamos posicionados en master
+
+	$ git branch
+		 frontend
+		 * master
+
+Recordemos que cada rama es una copia independiente por lo tanto los cambios que se hagan en una, no se verán en la otra hasta el momento de la fusión.
+
+Con el comando checkout podemos movernos entre ramas y commits
+
+	$ git checkout frontend
+
+Hasta ahora todo se ve igual, pero podemos comprobar que hemos pasado a la rama frontend ejecutando nuevamente
+
+	$ git branch
+
+	* frontend
+	  master
+
+ 
+
+Realizando cambios en la nueva rama
+---
+
+ Vamos a descargar bootstrap desde la pagina oficial http://getbootstrap.com/ e incluimos los archivos dentro de la carpeta del proyecto
+
+
+
+ Cambiemos un poco el index.html
+---
+	<!DOCTYPE html>
+	<html lang="en">
+	   <head>
+	      <meta charset="utf-8">
+	      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	      <meta name="viewport" content="width=device-width, initial-scale=1">
+	      <title>Aprende git desde cero</title>
+
+	       <!-- Bootstrap -->
+	       <link href="css/bootstrap.min.css" rel="stylesheet">
+	   </head>
+	   <body>
+	    <br>
+	    <div class="container">
+	       <div class="jumbotron">
+	          <h1>Hola mundo</h1>
+	          <p>Aprendiendo git en el blog de styde.net</p>
+	          <p><a class="btn btn-primary btn-lg" href="https://styde.net" role="button">link</a></p>
+	       </div>
+	    </div>
+
+	 
+
+	   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	   <script src="js/bootstrap.min.js"></script>
+	</body>
+	</html>
+---
+
+
+deberían verse los cambios en el navegador
+
+
+
+Guardar cambios realizados mediante commit
+---
+
+Hemos agregado nuevos archivos y carpetas, realizamos unas modificaciones al código, y ahora decidimos que esta bien por hoy, todo funciona correctamente y queremos guardar los cambios realizados.
+
+Recuerda que para hacer commit debes indicarle a git que archivos quieres incluir. Para ver las modificaciones usa
+
+	$ git status
+
+ deberias tener algo como esto
+
+		En la rama frontend
+		Cambios no preparados para el commit:
+
+		(use «git add <archivo>...» para actualizar lo que se ejecutará)
+		(use «git checkout -- <archivo>...« para descartar cambios en le directorio de trabajo)
+
+		 
+		modificado: index.html
+
+		Archivos sin seguimiento:
+		(use «git add <archivo>...» para incluir lo que se ha de ejecutar)
+
+		css/
+		fonts/
+		js/
+
+Se pueden agregar los archivos de uno en uno pero si deseamos podemos agregarlos todos al mismo tiempo
+
+		$ git add -A
+
+		$ git status
+
+
+En la rama frontend
+Cambios para hacer commit:
+(use «git reset HEAD <archivo>...«para eliminar stage)
+
+
+		new file: css/bootstrap-theme.css
+		new file: css/bootstrap-theme.css.map
+		new file: css/bootstrap-theme.min.css
+		new file: css/bootstrap.css
+		new file: css/bootstrap.css.map
+		new file: css/bootstrap.min.css
+		new file: fonts/glyphicons-halflings-regular.eot
+		new file: fonts/glyphicons-halflings-regular.svg
+		new file: fonts/glyphicons-halflings-regular.ttf
+		new file: fonts/glyphicons-halflings-regular.woff
+		new file: fonts/glyphicons-halflings-regular.woff2
+		modificado: index.html
+		new file: js/bootstrap.js
+		new file: js/bootstrap.min.js
+		new file: js/npm.js
+
+ Con esto ya tenemos todo preparado para el siguiente paso, el commit. Cada commit debe ir acompañado de un mensaje donde explicamos de forma muy corta los cambios realizados
+
+	$ git commit -m “diseño de index”
+
+Genial, git ha registrado los cambios realizados
+
+		[frontend 8906e22] diseño de index
+
+		15 files changed, 9732 insertions(+), 1 deletion(-)
+
+		create mode 100644 css/bootstrap-theme.css
+		create mode 100644 css/bootstrap-theme.css.map
+		create mode 100644 css/bootstrap-theme.min.css
+		create mode 100644 css/bootstrap.css
+		create mode 100644 css/bootstrap.css.map
+		create mode 100644 css/bootstrap.min.css
+		create mode 100644 fonts/glyphicons-halflings-regular.eot
+		create mode 100644 fonts/glyphicons-halflings-regular.svg
+		create mode 100644 fonts/glyphicons-halflings-regular.ttf
+		create mode 100644 fonts/glyphicons-halflings-regular.woff
+		create mode 100644 fonts/glyphicons-halflings-regular.woff2
+		rewrite index.html (100%)
+		create mode 100644 js/bootstrap.js
+		create mode 100644 js/bootstrap.min.js
+		create mode 100644 js/npm.js
+
+ 
+ Fusionar ramas
+---
+
+ Ahora que hemos realizado cambios importantes podemos ver realmente el poder de git sobre el control de versiones. Recapitulando un poco, hemos creado una rama llamada frontend y tenemos la rama master creada por defecto por git, aprendimos un poco sobre como movernos entre ramas con el comando checkout sabiendo que cada rama contiene una copia independiente del código.
+
+ Si pasamos a la rama master
+
+	$ git checkout master
+
+y listamos los archivos
+
+	$ ls
+		index.html  README.md
+
+Tranquilo, no entres en pánico, tus cambios no se han perdido. git te muestra el último estado o commit almacenado para la rama master, recuerda que los cambios se realizaron en la rama frontend.
+
+Digamos que los cambios fueron aprobados y queremos enviarlos a la rama master para almacenarlos posteriormente en nuestro repositorio remoto de GitHub.
+
+ Sería increíble poder hablar con git y decirle “fusiona la rama frontend con la rama master”.
+
+ En realidad si es increíble, porque lo podemos hacer. Es importante estar posicionado en la rama que va a absorber los cambios de otra, en nuestro caso master y ejecutamos una simple linea de comando
+
+		 $ git merge frontend
+
+		Updating 7aa4b93..8906e22
+
+		Fast-forward
+		css/bootstrap-theme.css                  |  476 ++
+		css/bootstrap-theme.css.map              |    1 +
+		css/bootstrap-theme.min.css              |    5 +
+		css/bootstrap.css                        | 6584 +++++++++++++++++++++++++
+		css/bootstrap.css.map                    |    1 +
+		css/bootstrap.min.css                    |    5 +
+		fonts/glyphicons-halflings-regular.eot   |  Bin 0 -> 20127 bytes
+		fonts/glyphicons-halflings-regular.svg   |  288 ++
+		fonts/glyphicons-halflings-regular.ttf   |  Bin 0 -> 45404 bytes
+		fonts/glyphicons-halflings-regular.woff  |  Bin 0 -> 23424 bytes
+		fonts/glyphicons-halflings-regular.woff2 |  Bin 0 -> 18028 bytes
+		index.html                               |   36 +-
+		js/bootstrap.js                          | 2317 +++++++++
+		js/bootstrap.min.js                      |    7 +
+		js/npm.js                                |   13 +
+		15 files changed, 9732 insertions(+), 1 deletion(-)
+		create mode 100644 css/bootstrap-theme.css
+		create mode 100644 css/bootstrap-theme.css.map
+		create mode 100644 css/bootstrap-theme.min.css
+		create mode 100644 css/bootstrap.css
+		create mode 100644 css/bootstrap.css.map
+		create mode 100644 css/bootstrap.min.css
+		create mode 100644 fonts/glyphicons-halflings-regular.eot
+		create mode 100644 fonts/glyphicons-halflings-regular.svg
+		create mode 100644 fonts/glyphicons-halflings-regular.ttf
+		create mode 100644 fonts/glyphicons-halflings-regular.woff
+		create mode 100644 fonts/glyphicons-halflings-regular.woff2
+		create mode 100644 js/bootstrap.js
+		create mode 100644 js/bootstrap.min.js
+		create mode 100644 js/npm.js
+
+En este momento ya todos los cambios han sido fusionados y podemos enviarlos al repo.
+
+ 
+
+ Enviar cambios al repositorio remoto
+
+ Siguiendo los pasos descritos en la clase anterior, una vez realizado el commit enviamos los cambios al repositorio de la siguiente manera
+
+	$ git push origin master
+
+		Counting objects: 22, done.
+		Delta compression using up to 2 threads.
+		Compressing objects: 100% (20/20), done.
+		Writing objects: 100% (20/20), 253.66 KiB | 0 bytes/s, done.
+		Total 20 (delta 3), reused 0 (delta 0)
+		To https://github.com/jeffer8a/aprendelaravel.git
+		7aa4b93..8906e22  master -> master
+
+Ahora todos los cambios estarán disponibles en el repositorio remoto de GitHub.
