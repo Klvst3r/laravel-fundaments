@@ -1,0 +1,109 @@
+0.5.1.1. Primeros Pasos con git y github
+
+Git es un sistema de control de versiones muy potente y sin duda el más usado en la actualidad que nos permite llevar un registro histórico de todos los cambios realizados en cada uno de los archivos a lo largo del desarrollo de un proyecto. A su vez, git ofrece una gran solución a la hora de trabajar de forma colaborativa como parte de un equipo de desarrollo, permitiendo que cada persona escriba código de forma independiente que puede ser integrado y compartido de manera muy fácil y rápida.
+
+
+Git y GitHub
+---
+GitHubes una plataforma web que nos permite alojar código fuente de forma gratuita en la nube haciendo uso del sistema de control de versiones Git. Funciona como una red social donde se pueden compartir proyectos con la idea de que otros usuarios colaboren con el desarrollo.
+
+El registro básico de GitHub es gratuito y nos da acceso a la creación de repositorios públicos de forma ilimitada, para repositorios privados se debe adquirir un plan de pago.
+
+
+Crear un repositorio en GitHub
+---
+Lo primero que se debe hacer es crear una cuenta de usuario ingresando al siguiente enlace
+
+	https://github.com/
+
+y configurar las variables globales de git en local, como nombre de usuario.
+
+	$ git config --global user.name "tu_usuario"
+
+	$ git config --global user.email tu@email.com
+
+Una vez hecho esto podemos proceder a nuestro primer repositorio. Desde la barra de navegación hacemos click en enlace “New repository”
+
+	menu-nuevo-repositorio
+
+En el siguiente formulario especificamos los detalles del proyecto y es recomendable siempre incluir el archivo readme.md desde el inicio donde se escribirán las instrucciones de instalación, uso e información sobre la licencia del código que contiene el repositorio, solo debemos darle check en «Initialize this repository with a REDAME».
+
+	nuevo-repositorio-git
+
+Luego de esto ya tendremos creado nuestro primer repositorio en GitHub.
+
+	vista-repositorio-github
+
+Desde esta pantalla podemos realizar varias acciones relacionadas al repo recién creado.
+
+
+
+Clonar repositorio en local
+---
+Debemos tener instalado Git en nuestra máquina local, si aun no lo tienes puedes descargarlo desde el siguiente enlace para Windows, linux o mac.
+
+	http://git-scm.com/downloads
+
+Una vez instalado abrimos la consola de comandos (si estas en windows usa el Git Bash).
+
+Si usas la consola de git desde Windos puedes pegar código haciendo click derecho en la cabecera de la ventana.
+
+Creamos un directorio que contendrá el código del proyecto y nos posicionamos dentro de él y ejecutamos git init para trabajar con el control de versiones
+
+	$ mkdir aprendelaravel
+
+	$ cd aprendelaravel
+
+	$ git init
+
+para clonar el repo hacemos uso de la url que vemos resaltada en la imagen anterior y desde la consola le indicamos a git que ese es nuestro repo remoto.
+
+	$ git remote add origin https://github.com/jeffer8a/aprendelaravel.git
+
+ahora copiamos el código que tenemos en remoto (en este caso esta únicamente el archivo readme.md) a nuestra máquina
+	
+	$ git pull origin master
+
+master es la rama principal de nuestro proyecto y es la rama en donde deben ir únicamente los cambios finales y versiones terminadas del código sin bugs. a nivel local también se crea por defecto una rama master. Hablaremos de esto con más detalle en otra publicación.
+
+Si todo sale bien podremos ver algo como esto en la carpeta del proyecto.
+
+	ls-aprende-laravel-repo-git
+
+Cambios y primer commit
+
+
+Veamos un ejemplo rápido:
+
+Podemos crear un archivo index.html y escribir dentro de él algo simple como “Hola mundo” y ver que sucede con git.
+
+	$ git status
+    	git-status
+
+Nos dice que tenemos un archivo sin seguimiento, debemos agregarlo a la lista de seguimiento para enviarlo posteriormente
+
+	$ git add index.html
+
+si queremos agregar todos los archivos pendientes podemos usar
+
+$ git add -A
+
+y verificamos nuevamente el status
+
+	git-add-all-status
+
+Los commit son básicamente los cambios que registramos a lo largo del desarrollo, cada commit debe ir acompañado de un mensaje, ya que tenemos listos nuestros cambios podemos registrar y enviar nuestro primer commit.
+
+	$ git commit -m "este es mi primer comit sobre la creacion del archivo index.html"
+
+y para enviarlo al repo remoto
+
+	$ git push origin master
+
+ahora podemos ingresar nuevamente a GitHub y ver los cambios
+
+Cada commit será un estado en la línea de tiempo del proyecto a la que podemos volver si algo sale mal, es recomendable trabajar en bloques pequeños de desarrollo y hacer commit sobre cada bloque terminado, por ejemplo puedes iniciar con “login de usuarios” y luego enviar “login terminado”.
+
+También es una buena práctica trabajar cada bloque en una rama independiente antes de fusionarlo con la rama master, hablaremos del uso de ramas más adelante.
+
+si deseas trabajar con repositorios privados pero no deseas pagar por una suscripción en GitHub puedes usar Bitbucket es muy recomendado, su funcionamiento es genial y permite crear repositorios privados de forma gratuita, el concepto es el mismo por lo que te será fácil aplicar lo que viste aquí sin ningún problema.
