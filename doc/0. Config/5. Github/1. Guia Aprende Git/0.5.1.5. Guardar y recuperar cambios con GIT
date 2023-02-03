@@ -1,0 +1,200 @@
+0.5.1.5. Guardar y recuperar cambios con GIT 
+
+
+El comando git stash permite guardar cambios realizados en el código y retomar la última versión o commit almacenado, estos cambios también pueden recuperarse en cierto momento de ser requerido, o en caso de que se hayan deshecho por error del usuario.
+
+
+Crear un repo git
+---
+Creamos una carpeta nueva, en mi caso una llamada “stash” e iniciamos git dentro del directorio. Si aun no sabes como crear un repo puedes visitar el post sobre Primeros pasos con git y GitHub.
+
+	$ mkdir stash
+	$ cd stash
+	$ git init
+
+Dentro del directorio creamos un archivo llamado index.html.
+
+
+
+Realizando cambios
+---
+
+iniciemos con una simple estructura html para realizar el primer commit del proyecto
+
+---
+		<!DOCTYPE html>
+		  <html>
+		    <head>
+		      <title>Git Stash</title>
+		    </head>
+		  <body>
+		    <h1>Clase de git stash</h1>
+		    <p>este es un ejemplo de como usar git stash para guardar cambios en un repo</p>
+		  </body>
+		</html>
+---
+Perfecto! ya podemos hacer commit de los cambios.
+
+	$ git add -A
+	$ git commit -m “primer commit”
+
+
+
+Guardando cambios con git
+--
+
+Supongamos que iniciamos con la programación dura de un proyecto, realizando funciones complejas y probando nuevos métodos, algunas veces por miedo a dañar el proyecto se crean miles de copias para pruebas, se editan, se borran  y se copia nuevamente todo el directorio, bueno, git nos va a ahorrar mucho trabajo de ahora en adelante.
+
+Digamos que por error borramos la estructura del archivo index.html dejando algo así
+---
+	<!DOCTYPE html>
+	  <html>
+	    <head>
+	      <title>Git Stash</title>
+	    </head>
+	    <body>
+	      <h1>Clase de git stash</h1>
+---
+
+
+De pronto olvidamos todo lo que hicimos, no podemos hacer Ctrl+z y queremos volver a la última versión guardada del código, en este caso al “primer commit”.
+
+Desde la consola ejecutamos
+
+	$ git status
+
+vemos que se ha modificado el archivo index.html
+
+	$ git status
+		On branch master
+		Changes not staged for commit:
+		 (use "git add <file>..." to update what will be committed)
+		 (use "git checkout -- <file>..." to discard changes in working directory)
+		       modified:   index.html
+		no changes added to commit (use "git add" and/or "git commit -a")
+
+En este caso no queremos guardar estos cambios en nuestra línea de avances, para ello solo debemos ejecutar
+
+	$ git stash
+		Saved working directory and index state WIP on master: 0c35fe6 primer commit
+		HEAD is now at 0c35fe6 primer commit
+
+y verificamos que ha pasado
+
+	$ git status
+		On branch master
+		nothing to commit, working directory clean
+
+y ahora si abrimos nuevamente el archivo index.html desde el editor de texto veremos
+
+---
+	<!DOCTYPE html>
+	  <html>
+	    <head>
+	      <title>Git Stash</title>
+	    </head>
+	  <body>
+	    <h1>Clase de git stash</h1>
+	    <p>este es un ejemplo de como usar git stash para guardar cambios en un repo</p>
+	  </body>
+	</html>
+---
+
+Gracias al poder de git hemos recuperado el ultimo commit de  nuestro proyecto, ahora no hay nada porque preocuparse.
+
+Veamos otro cambio
+
+Esta vez vamos a agregar una línea más al archivo de la siguiente forma
+
+---
+	<!DOCTYPE html>
+	  <html>
+	    <head>
+	      <title>Git Stash</title>
+	    </head>
+	    <body>
+	      <h1>Clase de git stash</h1>
+	      <p>este es un ejemplo de como usar git stash para guardar cambios en un repo</p>
+	      <p>Para usar el comando solo necesitamos ejecutar git stash dentro de un repo git y verificar con git status</p>
+	    </body>
+	</html>
+--
+
+Una vez modificado el archivo decidimos que queremos guardar temporalmente esto fuera de nuestra rama de trabajo, nuevamente ejecutamos
+
+	$ git stash
+		Saved working directory and index state WIP on master: 0c35fe6 primer commit
+		HEAD is now at 0c35fe6 primer commit
+
+
+Listando cambios guardados con stash
+---
+
+Para ver todos los “stash” que tenemos ejecutamos
+
+	$ git stash list
+		stash@{0}: WIP on master: 0c35fe6 primer commit
+		stash@{1}: WIP on master: 0c35fe6 primer commit
+
+
+Recuperando cambios guardados
+---
+
+Digamos que queremos el código guardado con git stash de vuelta en nuestra rama de trabajo.
+
+Para ver el cambio que queremos recuperar y estar seguros de ello ejecutamos
+
+	$ git stash show -p stash@{0}
+
+y veremos algo como esto
+
+---
+		diff --git a/index.html b/index.html
+		index 75e7c43..a172787 100644
+		--- a/index.html
+		+++ b/index.html
+		@@ -7,5 +7,7 @@
+		       <h1>Clase de git stash</h1>
+		       <p>este es un ejemplo de como usar git stash para guardar cambios en un repo</p>
+		+       <p>Para usar el comando solo necesitamos ejecutar git stash dentro de un repo git y verificar con git status</p>
+		+
+		</body>
+		</html>
+		\ No newline at end of file
+---
+Ya que hemos comprado que esto es lo que queremos recuperar lo hacemos con
+
+	$ git stash apply stash@{0}
+
+y vemos como nuevamente los cambios están en nuestra área de trabajo esperando para ser guardados con commit.
+
+---
+	$ git status
+	On branch master
+	Changes not staged for commit:
+	 (use "git add <file>..." to update what will be committed)
+	 (use "git checkout -- <file>..." to discard changes in working directory)
+	       modified:   index.html
+	no changes added to commit (use "git add" and/or "git commit -a")
+---
+Haciendo commit de estos cambios
+
+Si decidimos conservar estos cambios recuperados solo debemos hacer commit de ellos como lo hemos venido haciendo
+
+	$ git add -A
+	$ git commit -m “cambios recuperados”
+
+Eliminando cambios guardados
+
+Si ejecutamos
+
+	$ git stash list
+
+aún veremos los dos stash almacenados por git
+
+	stash@{0}: WIP on master: 0c35fe6 primer commit
+	stash@{1}: WIP on master: 0c35fe6 primer commit
+
+si estamos seguros que no necesitaremos esto en el futuro podemos eliminarlos del todo haciendo
+
+	$ git stash drop
