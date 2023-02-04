@@ -1,0 +1,133 @@
+0.5.1.11 Etiquetando en Git
+
+Frecuentemente mientras desarrollamos un proyecto nos interesa marcar o hacer referencia a un momento particular del código, como por ejemplo cuando hacemos una entrega a un cliente y queremos versionar el código entregado.  Con git podemos marcar o etiquetar un commit para localizarlo y manejarlo de una manera rápida. En este tutorial aprenderemos cómo en git se puede crear, listar, borrar y enviar a repositorios remotos etiquetas de nuestro código.
+
+Para empezar a trabajar debemos tener un repositorio creado: Primeros pasos con Git o clonado: Clone y fork con Git y Github.
+
+
+Crear etiquetas (tags)
+
+Git nos ofrece dos tipos de etiquetas: las anotadas y las simples.
+
+Las etiquetas simples actúan como un simple puntero a un particular commit, pues solamente almacena la suma de comprobación de un commit.  Éstas sirven para etiquetar de forma temporal o privada a un commit. Para ello,  simplemente hacemos, por ejemplo:
+
+	git tag 3.7
+
+Con ello, al hacer git show 3.7 sólo nos muestra la información del commit:
+
+	$ git show 3.7
+	commit ed66d705af38076fd368fa775a880e5d61d071e6
+	Author: Clemir <clemir@gmail.com>
+	Date:   Wed Sep 2 17:06:43 2015 -0430
+
+   		Fix missing User Class namespace
+
+En cambio, las etiquetas anotadas son aquellas que aparte de la información del commit almacenan el nombre del etiquetador, su correo electrónico y la fecha cuando se creó la etiqueta; adicionalmente tiene un mensaje y puede ser firmado y verificado con GNU Privacy Guard (GPG). Éstas son el tipo de etiquetas recomendadas para las liberaciones o release de código, por la información que contiene.
+
+Para crear una etiqueta anotada, se usa la opción -a y se agrega un mensaje con -m, como por ejemplo:
+
+	git tag -a 3.6 -m “Part 3 lesson 6”
+
+Con ello, al realizar git show 3.6 obtenemos la siguiente información:
+
+	tag 3.6
+	Tagger: Klvst3r <klvst3r@dessigual.com>
+	Date:   Wed Aug 5 22:04:55 2015 -0430
+
+	Part 3 lesson 6
+
+	commit 17e0d68746efe40c6bfad7e45151e1208df89790
+	Author: Duilio <silence@dessigual.com>
+	Date:   Wed Aug 5 21:56:56 2015 -0430
+
+	   Improving edit profile module
+
+En los dos casos de arriba se estaría creando una etiqueta para el último commit realizado, en caso de querer etiquetar un commit anterior a ese primero debemos buscar la suma de comprobación de ese commit en particular con:
+
+	git log --pretty=oneline
+
+y luego usarla para apuntar al commit que queremos etiquetar:
+
+	git tag -a <etiqueta> <suma de comprobación>
+
+
+
+Listar etiquetas
+
+Para ver un listado de todas las etiquetas disponibles en nuestro repositorio git simplemente debes hacer:
+
+	git tag
+
+Si estamos trabajando con alguna herramienta GUI para manejar el repositorio Git, también se pueden visualizar:
+
+
+( ) {master} [origin/HEAD][origin/master]
+ | 
+( ) { 3.6 }  Improving edit profile module
+ |	
+( ) { 3.5 } Edit profile feature
+ |
+( ) { 3.4 } Using database transactions instead of migrations
+ | 
+( ) Merge pull request # 2 from vnponce/master
+ |\  
+ | \
+ | ( ) Merge remote-tracking branch 'upstream/master' Update with Klvst3r main repository
+ |  /
+ | / |
+( )  |   Merge pull request #1 from vncponce/master
+ | \ |
+ |  \|
+ |   \
+ |   |\
+ |   | \
+ |  ( ) |  Set local configuration as english
+ |   |  |
+ |   | /  
+ |  ( ) Adding labels ans style to change password feature form
+ |   /
+ |  /
+ | /
+( )	{ 3.3 } Change password feature
+ |
+( ) { 3.2 } Creating out own test
+ |
+( ) { 3.1 } First commit
+
+		- Etiquetas en gitg
+
+
+
+En este caso, verás las etiquetas 3.1, 3.2, hasta 3.6 que referencian a un commit en particular.
+
+
+
+Borrar una etiqueta
+
+En caso que necesitemos eliminar una etiqueta hacemos uso de la opción -d más el nombre de la etiqueta a borrar, por ejemplo:
+
+	git tag -d 3.7
+
+
+
+Compartir las etiquetas
+
+Todas las etiquetas creadas en nuestro repositorio local no van a subir al repositorio remoto al hacer git push, para ello hay que especificarle a git que las suba, de esta manera: git push origin <nombre etiqueta> por ejemplo:
+
+	git push origin 3.7
+
+Pero si tenemos varias etiquetas pendientes por subir, no es necesario hacerlo una por una sino con el siguiente comando se envían todas:
+
+	git push origin --tags
+
+
+Etiquetas en Github
+
+Por otro último, si quieres poner en tu directorio de trabajo una versión de tu repositorio (etiqueta en particular) puedes hacer:
+
+	git checkout -b <etiqueta>
+
+Pero, también si lo que quieres es trabajar con el código justo como está en dicha etiqueta lo recomendable es crear una rama basada en la etiqueta:
+
+	git checkout -b <nuevarama> <etiqueta>
+
