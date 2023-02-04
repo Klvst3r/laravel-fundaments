@@ -1,0 +1,90 @@
+0.5.1.9. Eliminar un archivo de un repositorio Git
+
+
+Ocasionalmente por error o descuido incluimos en un repositorio algún archivo que no queremos mostrar, puede ser el caso de archivos de configuración u otro tipo de información correspondiente única y exclusivamente a nuestro entorno de trabajo, entonces el problema ocurre cuando queremos eliminar dicho archivo del repositorio remoto pero conservarlo en local.
+
+Esta tarea puede llegar a ser muy confusa, afortunadamente gracias a un simple comando de git podemos hacer este proceso en unos pocos pasos.
+
+Supongamos que nuestro directorio de trabajo esta compuesto de la siguiente manera
+
+    index.php
+    css
+        style.css
+        common.css
+    js
+        jquery.js
+        scripts.js
+    local.config.php
+    example.config.php
+
+Luego de realizar algunos cambios, ejecutar el commit y posteriormente enviar los avances al repositorio remoto, nos olvidamos de excluir el archivo local.config.php que contiene información importante como claves de acceso a la base de datos, credenciales de servicios de pago, configuración de la cuenta de email, etc.
+
+    | Si quieres saber más sobre commits y uso básico de git te recomiendo el post sobre Primeros pasos con git y GitHub.
+
+Una solución es eliminar el archivo de forma local, realizar un commit con estos cambios y posteriormente volver a crear el archivo en local teniendo en cuenta que hay que excluirlo del próximo commit. Pero ésta sería la forma incorrecta, veamos una mejor manera de solucionar esto:
+
+
+1. Eliminar un archivo del repositorio
+
+El siguiente comando nos permite eliminar ficheros dentro de un repositorio de git, pero actúa como un «soft delete», debido a que el archivo se va a borrar del repositorio pero seguirá estando disponible en nuestro entorno de trabajo.
+
+
+	$ git rm --cached ruta-de-archivo
+
+Así que si aplicamos esto al ejemplo mencionado anteriormente tendríamos algo similar a esto
+	$ git rm --cached local.config.php
+
+
+2. Agregando el archivo eliminado a .gitignore
+
+En sección 0.5.1.7 se explicaba sobre el uso de los archivos .gitignore para la Exclusión de ficheros en un repositorio Git. Probablemente si estas usando este método es por que quieres conservar este archivo de forma local, y es muy tedioso tener que excluirlo en cada commit, para ello agregamos la ruta al .gitignore y de esta forma los cambios realizados en este archivo especifico no serán seguidos por git de aquí en adelante.
+
+	.gitignore
+
+	local.config.php
+
+en este momento nuestro directorio debería así
+
+---
+    index.php
+    css
+        style.css
+        common.css
+    js
+        jquery.js
+        scripts.js
+    local.config.php
+    example.config.php
+    .gitconfig
+---
+
+
+3. Guardando los cambios en el repositorio remoto
+
+Finalmente debemos hacer commit para que se hagan efectivos de igual manera en el repositorio remoto, esto lo podemos hacer con estos simples comandos desde la consola
+
+---
+		$ git add --all
+		$ git commit -m "eliminando un archivo del repositorio"
+		//si estas en master
+		$ git push origin master 
+		//si estas en otra rama
+		$ git push origin rama-en-la-que-trabajas
+---
+
+
+Perfecto, ahora el repositorio remoto tendrá la siguiente estructura
+---
+
+    index.php
+    css
+        style.css
+        common.css
+    js
+        jquery.js
+        scripts.js
+    example.config.php
+    .gitconfig
+---
+
+y debido a que agregamos la ruta de este archivo al .gitignore de ahora en adelante no tendremos que preocuparnos por que vaya a incluirse en futuros commits.
