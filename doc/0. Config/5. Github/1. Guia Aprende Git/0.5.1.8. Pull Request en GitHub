@@ -1,0 +1,97 @@
+0.5.1.8. Pull Request en GitHub
+
+El sistema de control de versiones git, ofrece una solución muy conveniente a la hora de llevar control sobre el desarrollo de un proyecto con el cual podemos ver el progreso del trabajo solo con inspeccionar el cambio realizado en cada commit. Los pull request permiten no solo llevar de forma más ordenada las tareas en la etapa del desarrollo, sino también crear propuestas o cambios que puedan ser integrados posteriormente a dicho proyecto.
+
+Básicamente un pull request es una petición para integrar nuestras propuestas o cambios de código a un proyecto.
+
+Antes de iniciar es muy importante que tengas en cuenta cómo funciona el Sistema de ramificaciones en git.
+
+Cuando trabajas en un proyecto propio tal vez te baste con crear una nueva rama en el repositorio, hacer algunos cambios y posteriormente hacer un merge de esta rama en la rama master, por ejemplo puedes trabajar en crear el home de tu aplicación en una rama llamada «front-page» y una vez terminado, puedes incluirla en la rama master con
+$ git merge front-page
+
+Pero, cuando estás trabajando como parte de un equipo, debes ser un poco más cuidadoso, es allí donde entra en juego el uso de los pull request, cada vez que creas un cambio, es recomendable subir al repositorio central la nueva rama de trabajo, digamos «front-page» y con un pull request estarías haciendo una petición de que esta rama sea incluida en master, entonces, de esta forma puedes dar una explicación mucho más detallada de lo que hace tu código (más allá del mensaje del commit) y la persona encargada de la integración puede descargar tu rama, probar los cambios y aprobar o rechazar la petición, según sea el caso, inclusive  dejar un comentario para que hagas algún arreglo si es requerido.
+
+No te preocupes si todo esto suena un poco complicado por ahora, ya lo veremos en más detalle a continuación.
+
+
+
+1. Crear un repositorio en GitHub
+
+Lo primero que debes hacer es crear un repositorio git en GitHub, si no sabes como hacerlo te invito a leer este post sobre Primeros pasos con git y GitHub.
+
+
+
+2. Crear una nueva rama de trabajo
+
+Bien, una vez hayas clonado tu repositorio de forma local puedes proceder a crear una nueva rama de trabajo, vamos a llamarla «index-page»
+
+	$ git checkout -b index-page
+
+
+Ahora dentro de esta rama creamos un nuevo archivo llamado index.html con el siguiente código
+---
+	<!DOCTYPE html>
+	<html lang="en">
+	  <head>
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title>Bootstrap 101 Template</title>
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	  </head>
+	  <body>
+	    <h1>Hello, world!</h1>
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	  </body>
+	</html>
+---
+
+3. Enviar la rama al repositorio de GitHub
+
+Perfecto, ya hemos terminado el arduo trabajo de crear la página de inicio para nuestra app, ahora vamos a enviar la nueva rama al repositorio para crear el pull request, recuerda que para ello debes agregar los cambios, luego hacer commit y por ultimo push de esta rama, tranquilo son solo 3 simples líneas desde la consola:
+
+---
+	//para agregar los nuevos cambios
+	$ git add --all 
+	//hacer commit de estos cambios
+	$ git commit -m "página de inicio de la aplicación"
+	//hacer push de esta rama al repositorio remoto
+	$ git push -u origin index-page
+---
+
+Como puedes ver no hemos usado para nada la rama master. ¿Por qué? porque hasta ahora sólo estamos iniciando nuestra petición de integración; en vez de realizar los cambios sobre la rama «master» directamente, vamos a trabajar en ramas separadas como verás a continuación:
+
+
+4. Creando un pull request
+
+Si  vas a la página del repositorio en GitHub podrás ver algo como esto:
+
+	new-branch-github-git
+
+La nueva rama «index-page» aparece en la lista de «branches» y puedes ver como aparece un nuevo enlace a «Compare & pull request«, vamos a él.
+
+	new-pull-request-git-github
+
+Aquí puedes escribir una descripción en detalle de lo que has incluido en este cambio, algunas instrucciones para la puesta en marcha y si vas más abajo en la misma página podrás ver una comparación del código de la rama master con la rama  «index-page»
+
+	github-pull-request-compare
+
+Del lado izquierdo aparece la versión del código almacenada en la rama master y del lado derecho nuestros cambios actuales.
+
+Luego de incluir la información necesaria y hacer click en el botón «Create pull request» recibirás este mensaje:
+
+	github-pull-request-created
+
+
+5. Aprobando un pull request
+
+Luego de revisar el código, vamos a probarlo de forma local y comprobar que todo funciona correctamente, finalmente se pueden incluir los cambios en la rama master del proyecto haciendo click en «Merge pull request»
+
+	pull-request-merged-github
+
+Desde ahora el archivo index.html se encuentra disponible en la rama master del proyecto y cada persona que clone este repositorio contará con estos nuevos cambios.
+
+	github-project-page
+
+¡Genial! ¿Ves que tan fácil es hacer un pull request?
