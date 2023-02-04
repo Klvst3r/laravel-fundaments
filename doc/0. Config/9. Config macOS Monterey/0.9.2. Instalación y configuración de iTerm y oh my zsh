@@ -1,0 +1,178 @@
+0.9.2. Instalación y configuración de iTerm y oh my zsh en macOS Monterey
+
+En esta nueva serie vamos a preparar una nueva Mac con el sistema operativo macOS Monterey con diversos programas y temas para el desarrollo web principalmente con PHP, Laravel y MySQL. En esta primera lección instalaremos iTerm con oh my zsh, el tema Powerlevel10k con Material Design y varios plugins de oh my zsh para auto sugerencias y auto completado.
+
+
+La Mac ya viene con una terminal de comandos sin embargo se prefiere 
+	iTerm2
+
+Se descarga y se instala moviendo la app dentro de Applications, iTerm requiere la app develepmnt tools.
+
+Quitamos los iconos no necesarios configrados por default, con un doc limpio y funcional.
+
+Preferencias
+
+Doc, oculatr automanticamente.
+
+Trackpad, activando el tab con menso esfuerzo.
+
+Abriendo iterm, con la funcionalidad de oh my zsh.
+
+	https://ohmyzsh.sh
+
+Instalar es sencillo ejecutando el comando del sitio sin el signo $, pegando dentro de iterm.
+
+Vamos a mejrar la aparienca de iterm.
+
+Google:
+
+	power zsh
+
+Repositorio de Github
+
+	Instalar por homebrew
+
+
+Para preferncias CMD + ,
+
+La fuente tamaño y estilo.
+
+
+
+Instalar Homebrew
+
+Google
+	Homebrew
+
+Copiar el comando de instalación en la terminal.
+
+Homebrew es un sistema de manejo de paquetes opensource utilizandose en mac o linux, ejecutando un solo comando.
+
+
+
+Instalar del Tema de la terminal
+
+Desde github:
+
+	https.//github.com/romkatv/powerlevel10k#homebrew
+
+
+	ejecutar 
+		brew install 
+
+Abrir el archivo de perfil
+	~ nano ~/.zshrc
+
+Agregando la linea de codigo del tema.
+
+Este archivo se carga cada vez que se abra la terminal.
+
+Reiniciar la terminal o ejecutar del archivo de perfil
+	source ~/.zshrc
+
+Isnatar la fuente del tema, reinicando la terminal
+	CMD + Q
+
+Abrir iTerm
+
+	Para el tema reinbow
+
+Unicode
+1 para no mostrar la hora
+1
+1
+2
+1
+2 para espacio vertical
+1
+Ase apuican los cambios al archivo de perfil
+
+Completada la instalacion tenemos ya el tema
+
+en prefetrecnais indicamos nuestra ruta por defaultr
+
+Abrimos el archivo de perfil para activar y habilar git.
+
+
+
+Google 
+	oh my zsh
+
+En git
+Buscar los plugins de git.
+
+Isntaar dos plug ins
+para el resaltado de sintaxis.
+	zsh-syntax-highligting.zsh
+
+siguientdo la instalaciṕon de homebrew. pegando las instrucciones de instalación, 
+
+Para activar hay que hagregar la liena sugerida a los archivos de scripts
+
+nano ~/.zshrc
+
+Debajo de la linea del tema
+
+Guardar y salir.
+
+ejecutar source y ubicacion del archivo
+
+Se resalta el o los comandos validos.
+
+Para aghilir el flujo de trabajo el archivo de scripts.
+
+al final configurar unos alias.
+
+	alias zshconfig="nano ~/.zshrc"
+
+Y un archivo para recargar la configuración
+	alias zshreload="source ~/.zshrc"		
+
+Cerramos y guardamos.
+
+Recargamos ejecutando
+
+	source ~/.zshrc	
+
+
+Instalar otro plugin
+
+	Google
+
+		oh my zsh sugesstions
+
+		Pagian de github de instalación.
+
+Conando el repositorio en el directorio de oh my zsh
+
+Agregamos al listado de plugins con el alias
+
+	zshconfig
+
+colocand el nonmbre del pligin en la sección correspondiente.
+
+plugins=(git zsh=autosuggestions)			
+
+Guardar y salir.
+
+Alias para recargar la configuración de zsh con esto tendremos las sugerencias en zsh
+
+Preferencias de iterm
+
+En el perfil se puede ir a la pastaña de colors.
+
+Color presets
+
+	Visit on line galery y escoger el tema de preferencia.
+
+Ej. MaterialOcean en un XML en Descargas y en iterm
+
+Seleccionar.
+
+Importar el archivo descargado .xml
+
+Cone sto ya se tiene una cofiguración con git e iterm
+
+	
+
+
