@@ -1,0 +1,217 @@
+0.9.3. Instalación de PHP, Composer, Valet y Laravel en macOS Monterey.
+
+En la sección anterior se instalo iTerm, Homebrw y oh my zsh. Para continuar con la configuración de un macOS Monterey, vamos ainstalar PHP  con Homebrew, composer, Laravel Valet, el Instalador de Valet y Crearemos un par de Proyectos de Ejemnplo con la versión más actual o especifica del Framework de Laravel.
+
+
+Ya que una maquina con macOs no cuenta con PHP, vamos a instalarlo utilizando Homebrew, mientra se completa la instyalación vamos a a ir al archivo de configuracion de ho my szh (oh my see shell).
+
+	/Users/klvst3r/.zshrc
+
+Para desactivar el plugin de sugerencias, para evityar confusion.
+
+Se quita simplemente de la lista de plugins, guardamos y cerramos.
+
+Si gusta podemos quitar el tema de iTerm, en apearence seleccionando el tema minim, para que la barra superior desaparezca.
+
+Ademas de instalar PHP vamos a instalar Composer y Laravel Valet.
+
+composer es el manejador de dependencias y pauqtes de PHP asi como con Homebrew nosotros manejamos dependencias para macOs y Linux.
+
+Con composer vamos a manejar las dependencias de cada proyecto de PHP, por otro lado Laravel Valet es un entorno de desarrollo minimalista para macOs que funciona genial si se esta trabajando en uno o dos poryectos o si en los poryectos que se esta trabajando son sencillo o reuiqren de la misma version de PHP y mas o menos de las mismas dependencias. cuando se trabaa con multiples proyectos que requieren diferentes versiones del leguaje y diferentes dependencias en ese caso es conveniente trabajar con Docker o con Homestead.
+
+Por ahora Valet es suficiente,  y para instalarlo. podemos ir a la documenmtacion:
+
+	https;//laravel.com/dics/8.x/valet
+
+Por supuesto debemos instalar PHP
+
+Para iniciar debemos instalar
+	brew update
+
+Lo siguiente que se debe de hacer es usar Homebrew para instalar PHP
+
+	brew install php
+
+Despues de instalar PHP, estamos listos para instalar el manejador de dependencias Composer, ademas de que debemos de asegurarnos que la ruta
+
+Para instalar composer debemo ir a la pagina oficial
+
+	https;//getcomposer.org
+
+
+Vamos a la seccion de descargas y desde aca copiamos el script para instalarlo 
+
+---
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"	
+---
+
+De vuelta a la terminal ya ha fiunalizado la instalacion de PHP 
+
+Pegamos el script de descarga de composer 
+
+Este sfript va a descargar composer a nuestro directorio actual por ejemplo
+
+	~/Code
+
+
+Pero para que sea mas practico nosotros debemos ejecutar desde cualquier lugar de nuestro sistema, asi que vamos a mover este archivo al directorio siguiente:
+
+	
+	sudo mv composer.phar /usr/local/bin/composer
+
+
+Ahora ejecutando el comando, vamos a colocar la constraseña. 
+
+Tal vez indique que el directrorio no existe por lo que se va a crear
+
+mkdir /usr/local/bin
+
+Con los permisos de administrador.
+
+
+ ~/.composer/vendor/bin 
+
+
+Ahora somos capaces de ejecutar composer, desde cualquier direcorio de nuestro sistema.
+
+
+Por ahora solo vamos a instalar Laravel Valet.
+
+Composer maneja las dependencias de PHP, nosotros podemos manejar las dependencias de PHP para cada proyecto de forma individual o se pueden instalar dependenias de phop de manera global en nustrop sistema.
+
+
+Se encuentre enb la ruta o PATH. Despues de que Composer ha sido instalado, podemos ahora si instalar Laravel Valet como un 
+paquete global.
+
+Ejecutando 
+	
+	composer global require laravel/valet
+
+
+Esto va a descargar Laravel Valet lo cual va tomar algun tiempo.
+
+
+Finalmente podemos ejejcutar el comando de instalación install. Esto configura e instala Valet y DnsMasq ademas de las dependencias del demonio que seran configuradas para lanzarse cuando el sistema arranque.
+
+Aahora podemos instalar los comandos de Valet sin embvardo nos va a indicar que el comando valoet no fue encintrado
+
+	valet install
+
+Para qu fundione debemos agregar el directorio a nuestro PATH, estro se va al ograr con el archivo de script de oh my zsh
+
+	Editamos	/Users/klvst3r/.zshrc
+
+Desde aca se debe agragr lo siguiente desde la primera linea del archivo:
+
+	export PATH=$HOME/.composer/vendor/bin
+
+Finalemnte nostros no deseamos perder lo que ya se encuntra en nuestra vairable PATH por lo que solamente vamos a concatenarla o separarla de la siguiente manera:
+	
+	export PATH=$HOME/.composer/vendor/bin:$PATH
+
+Guardamos y salimos
+
+Para recargar la configuracicon:
+	zshconfig
+
+	zshreload
+
+
+Ya deberiamos tener valet disponibles 
+
+ejecutamos el comando valet disponoible
+
+	valet 
+
+ahora necesitamos instalar el comando valet install 
+
+	valet install
+
+Valet requiere de varias dependencias que se instalan a travez de homebrew.
+
+Por cierto, tambien se pudo haber instalado composer a traves de Homebrew.
+
+En la documentación de Laravel se explica como utilizar valet vamos a hacer la prueba utilizando:
+
+	
+Instalador de Laravel
+
+en la documentacion:
+
+	https://laravel.com/docs/8.x/installation/#the-laravel-installer					
+
+Ahora podemos instalar 
+
+
+composer global require laravel/installer, con composer
+ 
+---
+	laravel new example-app
+	 
+	cd example-app
+	 
+	php artisan serve
+---
+
+De esta manera podes instalar el Framework de manera mas sencilla 
+
+
+simplmente 	utilizando
+	laravel new [nombnre-proyecto]
+
+Como podemos ver tenemos el comando laravel disponible en nuestro sistema, esto se debe a que agregamos el directorio 
+	
+	composer/vendor/bin
+
+a nuestro path, de lo contrario no estaria disponible.
+
+La version acvtual que se instala dependera de los ultimos paquetes, en nuestro caso se instala con la versión 9 
+
+
+El proceso sera lo mismo para versiones sucesivas.
+
+En nuestro caso podemos utilizar la ruta para instalar desde donde lo deseemos, pero al utilizar XAMPP lo haremos desde la ruta:
+
+	Applkications/XAMPP/htdocs/dev
+
+Ahora a travbes de valet vamos a regresar la documentación de valet.
+
+Podemos utilizar 
+
+	valet párk
+
+Para que los proyectos dentro de nuestra carpeta elegida, esten disponibles con un virtualhost que laravel valet va a proveer de forma automatica para cada proyecto 
+
+Con el nombre del proyecto, seguido de la xtennsion .test.
+
+Ej.
+	klvst3r.test
+
+
+Como podemos ver ern el navegador podemos ingresar a nuestro poryecto con Laravel. 
+
+Tambien adicion a esto podemos utiloizar composer para crear nuestros poryectos de la siguiente manera:
+
+	composer create-proyect laravel/laravel [nombre-proyecto]
+
+
+Esta forma tambnien nos permite identificar la versoón. por Ejemplo si queremos seguir un proyecto de Laravel en la versióin 7, podemos crear un proyecto con esta versión 
+
+	composer create-proyect laravel/laravel another-proyect "7.*"
+
+De esta forma se crea un proyecto con la versión de la rama 7, en este caso con la version mas actual.
+
+
+Podemos ir a una referencia por ejemplo para crear un panel de control con laravel.
+
+	https://styde.net/crea-un-panel-de-control-con-laravel
+
+Este proyeto inicio con la versipon 5.5 y se puede actualizar a versiones cada vez mas recientes del framevor hasta llegar a la version 8 donde se habla las novedades de la ultima versiónl ya que los fundamentos de las bases no cambian demasiado entre versiones. Por lo menos desde la versión 5.5
+
+Ahora podemos podemos inicar tyrabajando con nuestros poryectos con Laravel. Lo faltante como las base de datos y un editor de codigo. se vera posteriormente.
+
+	
+
