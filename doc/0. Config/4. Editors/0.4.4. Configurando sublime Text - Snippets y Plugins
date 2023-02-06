@@ -264,6 +264,29 @@ Route::get('/', function () {
 Nos muestra la definicion de la clase
 
 
+Configurando Sublime Text
+
+	http://jotajotavm.com/Atajos-Sublime-Text-17-temas-de-colores-.html
+
+	https://pablomonteserin.com/curso/sublime-text/
+
+	https://www.youtube.com/watch?v=ygkGGHrdeLk
+
+
+
+Configuracion de Material Theme y Mariana
+-----------------------------------------
+
+En lo Personal utilizo El tema 
+	Material Theme se activa desde 
+		Preferences > Package Settings > Material Theme > Activate
+
+Posterior a ello resetel mi the por default y aplico 
+
+	Preference > Select color Sheme	> Mariana
+
+
+
 
 
 
