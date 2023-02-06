@@ -30,6 +30,15 @@ Route::get('/', function () {
 
 La funcion retornada view retorna el nombre de la vista y omo parametro el nobre del archivo en este caso home, omitiendo la extensión
 
+
+Existen varias formas para retornar vistas, la forma mas sencillas es mediante la funcion view, que recibe como parametro el nombre de la lista.
+
+		Route::get('/', function () {
+		    return view('home');
+		});
+
+
+
 Laravel provee de funciones muy utiles, como esta, pero no quiere decir que Laravel este hecho de funciones globales.
 
 si revisamos esta funcion, vemos que crea una nueva instancia de la clase ViewFactory
@@ -38,4 +47,3 @@ Para dar seguimiento a la ruta de cada uno de las definiciones de las funciones 
 
 Existe un archivo de referencia para poder configurar nuestro editor Sublime Text que es el que utilizamos para el presente proyecto.
 
-	

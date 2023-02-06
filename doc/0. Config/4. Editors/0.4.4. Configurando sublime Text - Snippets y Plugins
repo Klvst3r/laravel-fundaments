@@ -1,0 +1,286 @@
+0.4.4. Configurando sublime Text
+
+Para mostrar la barra de archivos es mediante las teclas
+
+	CTRL + B + K
+
+Bueva pestaña
+
+	CTRL + N
+
+Nueva ventana
+	CTRL + SHIFT + N
+
+Modo fullscreen
+	F11
+
+Abrir nuevo archivo
+	CTRL + P
+
+Paleta de comandos
+	CTRL + SHFT + P
+
+Cambiar atajos de teclado
+
+	Side bar
+		Preferences > Key Bindings
+
+			 [
+				 { "keys": ["ctrl+k"], "command": "toggle_side_bar"}
+			 ]
+
+Snippets
+
+	Codigo muy repetitivo,
+
+	Encabezado HTML
+
+		Por ejemplo vamos a utilizar la pagina inicial de Bootstrap 4
+		Desde
+
+			https://getbootstrap.com/docs/4.0/getting-started/introduction/
+
+		El codigo es:
+
+		---
+		<!doctype html>
+		<html lang="en">
+		  <head>
+		    <!-- Required meta tags -->
+		    <meta charset="utf-8">
+		    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		    <!-- Bootstrap CSS -->
+		    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+		    <title>Hello, world!</title>
+		  </head>
+		  <body>
+		    <h1>Hello, world!</h1>
+
+		    <!-- Optional JavaScript -->
+		    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+		  </body>
+		</html>
+		---
+
+		Ahora
+			Tools > Developer > New Snippet
+
+	Dentro del segmento abrieto que seria como:
+
+		<snippet>
+			<content><![CDATA[
+		Hello, ${1:this} is a ${2:snippet}.
+		]]></content>
+			<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+			<!-- <tabTrigger>hello</tabTrigger> -->
+			<!-- Optional: Set a scope to limit where the snippet will trigger -->
+			<!-- <scope>source.python</scope> -->
+		</snippet>
+
+
+
+		El codigo ira sustituyendo, dentro del CDATA:
+
+			Hello, ${1:this} is a ${2:snippet}.
+
+		Pegamos el snippet
+
+		quedando:
+
+	---
+		<snippet>
+			<content><![CDATA[
+		<!doctype html>
+				<html lang="en">
+				  <head>
+				    <!-- Required meta tags -->
+				    <meta charset="utf-8">
+				    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+				    <!-- Bootstrap CSS -->
+				    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+				    <title>Hello, world!</title>
+				  </head>
+				  <body>
+				    <h1>Hello, world!</h1>
+
+				    <!-- Optional JavaScript -->
+				    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+				    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+				    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+				    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+				  </body>
+				</html>
+		]]></content>
+			<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+			<!-- <tabTrigger>hello</tabTrigger> -->
+			<!-- Optional: Set a scope to limit where the snippet will trigger -->
+			<!-- <scope>source.python</scope> -->
+		</snippet>
+
+	---					
+
+
+Ahora debemos asignar el atajo del teclado o keyboard.
+
+Descomentando la linea 
+<tabTrigger>bot4</tabTrigger>
+
+Todo este codigo se escribira cuando yo escriba la palabra "bot4" y TAB.
+
+
+Guardamos como bootstrap4-snippet
+
+
+
+ahora escribiendo bot4 + TEB en nuestro archivo HTML
+
+
+Plugin
+
+	Package control
+
+	Instalar en sublime Text
+
+
+	View > show console
+	CTRL + V
+
+	Se ejecuta y cargue el Package control
+
+	Preferences
+		Package control
+
+
+	CTRL + SHITF + P
+
+	Install Package
+		-Emmet
+
+		- AdvanceNewFile
+
+			CTRL + ALT + N
+
+
+		- Alignment	
+
+		- autofilename
+
+		- ColorPicker
+			CTRL + SHIFT + P
+
+
+		- console Wrap
+
+		Crear un nuevo archivo JS
+			main.js
+
+			var nombre = "Klvst3r";
+
+			Crear una consola a partir de la variable
+
+			Seleccionar la variable y 
+			CTRL + SHIFT + Q
+
+		- BracketHighligher
+		 	Abrir y donde se cierra los contenedores de etiquetas
+
+		 - Comment-Snippets
+
+		 	Crear comentarios con el siguiente linea en codigo html
+		 		comm-html-section + TAB
+
+		 - bootstrap4 sutocomplete
+		 - bootstrap4 snippet
+
+		 	b4:template:html5 + TAB (Plantilla de Boostrap)
+
+		 	b4:template:starter
+
+		 	b4:tempate:blog
+
+		 	b4:container
+		 		La documentaion esta dentro de 
+		 			Bootrap 4 Snippets
+
+
+PHP Companion
+--------------
+https://github.com/erichard/SublimePHPCompanion/blob/main/Default.sublime-keymap-sample
+
+
+	F5
+	agrega el use
+
+	Definition scope
+		Ir a la clase que estamos utilizando
+			SHIFT + F12		 
+
+
+
+Por ejemplo enLaravel si queremos agregar el namespace de USer en el siguiente codigo
+
+Route::get('/', function () {
+    User
+    return view('home');
+});
+
+
+Nos posicionamos sobre la funcion
+	User y presionamos F5 estyo agregara en nuestro archivo:
+		use App\Models\User;
+
+
+
+---
+
+Definition Scope 
+	Es para ir a la clase que estamos utilizando 
+
+	SHIFT + F12
+
+Si utilizamos nuevamente la clase User nuevamente y queremos ir al archivo de esa clase nos ubicamos sobre la clase y presioamos
+
+	SHFT + F12
+
+	Muestra un listado de posibles clases. al hacer click nos vamos al archivo.
+
+	Sobre todo para saber como funciona un componente de laravel y que hay detras de ello.
+
+	Par ano ir a la carpeta Vendors simplemente con la combinacion de las teclas y nos lleva al archivo.
+
+
+Route::get('/', function () {
+    User
+    return view('home');
+});
+
+Nos muestra la definicion de la clase
+
+
+
+
+
+
+References:
+
+	https://github.com/erichard/SublimePHPCompanion
+
+	https://www.shopify.com/es/blog/los-25-mejores-plugins-de-sublime-text-para-desarrolladores-front-end
+
+	https://filisantillan.com/blog/sublime-text-atajos-de-teclado/
+
+	https://eduzen.com.ar/en/post/sublime-text-3-ir-a-la-definicion-de-un-objeto-o-f/
+
+	https://didesweb.com/programacion/sublimetext-atajos-de-teclado-y-tutoriales/
+
+	https://www.drauta.com/editores-de-codigo-sublime-text-y-phpstorm
+
+	https://www.youtube.com/watch?v=_hvHfydf7G0
+
