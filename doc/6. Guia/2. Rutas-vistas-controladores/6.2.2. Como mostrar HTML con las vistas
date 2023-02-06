@@ -139,3 +139,9 @@ con esto pasamos la URL a la vista,
 Existen algunas formas de pasar variables a las vistas, 
 
 
+	Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+		return view('saludo')->with(['nombre' => $nombre]);
+	})->where('nombre',"[A-Za-z]+");    
+
+Actualziamos y veremos el mismo resultado.	
+

@@ -55,6 +55,12 @@ Route::get('/', function () {
 
 
 
-Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+/*Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
 	return view('saludo', ['nombre' => $nombre]);
-})->where('nombre',"[A-Za-z]+");	
+})->where('nombre',"[A-Za-z]+");	*/
+
+//6.2.2 
+
+Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+    return view('saludo')->with(['nombre' => $nombre]);
+})->where('nombre',"[A-Za-z]+");    
