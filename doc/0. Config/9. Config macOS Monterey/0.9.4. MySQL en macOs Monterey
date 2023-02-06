@@ -1,0 +1,70 @@
+0.9.4. MySQL en macOs Monterey
+
+Vamos a instalar un nuevo servidor de base de datos de MySQL utilizando la aplicación DBngin. Se instalara TablePlus y Sequel Ace para poder crear y administrar las bases de datos con un entorno grafico.
+
+La base de datos MySQL se puuede instalar con homebrew, pero ahora se va a realizar de la siguiente manera:
+
+Desde el sitio de Laravel se puede apreciar la recomendación con dbngin que es una herramienta de manejo de versiones de base de datos, podemos ir al sitio desde:
+
+	https://dbngin.com
+
+Permite instalar MySQL sino tambien PostgreSQL, Redis y mucho mas.
+
+Vamos a descargar la herramienta para mac.
+
+Una vez abierta la descarga, se arrastra hasta las aplicaciones. A partir odemos abrir con Spotlight o alfgred.
+
+Posiblemente indique que no hay ningun servicio y que podemos hacer clic en el simbolo de + para agregar un siervicio en este caso sera MySQL, en la version 8, vamos anombrar simplemente como MySQL 8 yt vamos a dejar el puerto por defecto.
+
+Crear
+
+DBngin permite una interfaz grafica para el servicio de MySQL.
+
+Se puiede administrrar la base de datos con Tableplus, los desarrolladores son los mismos, podemos descargar desde:
+
+	tableplus.com/?utm_source=dbngin
+
+
+Puede ser de pago el servicio.
+
+
+si se trabvahja con varias versiones de dbngin, y existe una herramienta gratuita para la admisnistracion de base de datos llamada sequelace 
+
+Es como la continuacion de sequel pro.
+
+Podemos concetarnos a la base de datos 
+
+La conexiones seran en localhost.
+
+ahora se puede crear una base de datos.
+
+En la terminal y en especifico en el directorio de Laravel que se han creado, y se abre el archivo de entorno con nano
+
+	nano .env
+
+en la linea de:
+	APP_URL=http://my-proyect.test
+
+Tambien el nombre de la base de datos:
+	BD_NAME=my_project
+
+
+Guardamos y cerramos
+
+Ahora podremos ejecutar en el proyecto de Laravel
+	$ php artisan migrate
+
+Este comando es para migrar la base de datos creando las tablas que se incluyen por defecto incluyendo la tabla de usuarios y la tabla para reinicar la contraseña.
+
+Ahora ya se pueden visualizar las tablas migradas.
+
+Ahora ya se tiene la base de datos funcionando.
+
+
+La termninal semiterminal es semi transparente si tenemos iTerm, vamos a laseccion de Profile / Windows / m]Trnasparency.
+
+Desde donde se puede controlar la transparencia.
+
+Se puede colocar tambien en esta sección el efecto de blur para que los graficos y todas las imagenes esten detras aparzcan borrosas.
+
+						
