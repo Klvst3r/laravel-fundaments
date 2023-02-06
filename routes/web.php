@@ -32,7 +32,6 @@ use Illuminate\Support\Facades\Route;
 // 6.2.2
 //------
 Route::get('/', function () {
-    User
     return view('home');
 });
 

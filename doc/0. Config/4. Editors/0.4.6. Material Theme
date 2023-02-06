@@ -1,0 +1,89 @@
+0.4.6. Material Theme
+
+https://packagecontrol.io/packages/Material%20Theme
+
+
+Al go que se tiene que considerar es que este proyecto ya no se mantiene. El autor original lo abandonó y reemplazó el repositorio con su tema para VS Code. Este repositorio es un espejo del último estado conocido públicamente.
+
+Este tema trae el lenguaje visual Material Design a su Sublime Text 3. Si tiene problemas, primero busque un problema similar y luego informe uno nuevo .
+
+Lea la sección Problemas conocidos antes de informar uno nuevo. Cualquier incidencia que no utilice la plantilla de incidencias y cualquier incidencia relacionada con la sección de incidencias conocidas se cerrará automáticamente.
+
+Fácil instalación
+Puede instalar este impresionante tema a través de Package Control .
+
+Presiona ⌘/Ctrl + ⇧ + P para abrir la paleta de comandos.
+
+
+Escribe Package Control: Install Packagey presiona enter. Luego busque Material Theme.
+
+
+
+Instalación manual
+
+Descargue la última versión , extraiga y cambie el nombre del directorio a "Tema material" .
+Mueva el directorio dentro de su Packagesdirectorio sublime. (Preferencias > Examinar paquetes…)
+
+Activa el tema
+Puede activar este tema desde: 
+
+- Paleta de comandos Tools > Command Palette(⌘/Ctrl + ⇧ + P) escribiendo Material Theme: Activate theme. 
+
+- Menú contextual (clic derecho en el editor) y elija Material Theme > Activate- Preferences > Packages Settingsy elija
+	
+	Material Theme > Activate
+
+También puede activar manualmente este tema agregando estas líneas a su configuración de usuario ( Preferencias > Configuración - Usuario ):
+
+	"color_scheme" :  "Paquetes/Material Theme/esquemas/Material-Theme.tmTheme" , 
+	"theme" :  "Material-Theme.sublime-theme" ,
+
+NOTA: reinicie Sublime Text después de activar el tema.
+
+
+Configuración
+
+Este tema proporciona una herramienta de configuración visual que le permite configurar el tema activando las opciones disponibles desde una ventana emergente en línea. Simplemente haga clic derecho en su editor y elija Material Theme > Configuration. También puede abrir el configurador desde la paleta de comandos buscando Material Theme > Configuration.
+
+
+Configuración avanzada
+
+Si le gusta la configuración de texto de texto avanzada, puede usarla con el Material Theme > Advanced configurationcomando tanto desde el menú contextual como desde la paleta de comandos.
+
+
+Problemas conocidos
+
+Consulte el problema n .° 67 si no puede ver el panel inferior (buscar/reemplazar, renombrar, mover, no puede ver las entradas del cuadro en SidebarEnhancement, etc.). aquí la solución rápida:
+
+Es importante saber que este Plug in ha ha sido deprecated por lo que ya no se mantiene por el autor, 
+
+Para saber mas detalles visite:
+
+ 	https://github.com/wbond/package_control_channel/pull/8646
+
+Para activar el tema
+
+  Desde:
+  - Paleta de comandos `Tools > Command Palette` (⌘/Ctrl + ⇧ + P) escribiendo `Material Theme: Activate theme`.
+  - Menu Contextual (Click derecho sobre el editor) y seleccione `Material Theme > Activate`
+
+
+El que elegimos nosotros es   
+  - `Preferences > Packages Settings` escogemos `Material Theme > Activate`
+
+  
+
+Tambien se puede activar maunalmente editando las siguientes lineas en las configuraciones del usuario 
+  
+  (**Preferences > Settings - User**):
+
+  ```json
+  "color_scheme": "Packages/Material Theme/schemes/Material-Theme.tmTheme",
+  "theme": "Material-Theme.sublime-theme",
+  ```
+
+Para activar debemos reiniciar nuestro editor y los cambios seran aplicados.
+
+
+
+

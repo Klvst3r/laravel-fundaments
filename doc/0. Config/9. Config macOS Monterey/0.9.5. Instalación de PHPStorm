@@ -1,0 +1,246 @@
+0.9.5. Instalación de PHPStorm 
+
+Es uno de los editores de codigo dedicados para el desarollo con PHP, PHPStorm.
+
+Es un editor Poderoso ya que tiene autocompletado, se com0lementa con el PlugIn Laravel IDEa que tambien se vera.
+
+Se descarga desde 
+
+	https://www.jetbrains.com/es-es/phpstorm/download/#section=mac
+
+Descargamos en nuestro caso para mac, descargar el archivo .dmg
+
+PHPStorm es un IDe de Paga que si se trabaja de manera profesinal, es el recomendable, si queremos algo gratuito podemos recurrir a Visual Studio code.
+
+Una vez instalado, abrimos la aplicacion aceptamos la confirmacion, y la verificación.
+
+Podemos activarlo en funcionalidad Trial.
+
+PHP Storm indexara el proyecto para saber que dependencias, clases y funciones estan disponibles.
+
+Por ejemplo la version atual sugiere la 8.1 y la aplicación tiene 7.3. entonces se puede trabajar de forma inmediata.
+
+
+Personalización de PHPStorm
+--------------------------
+Vamos a instalar los temas Material Theme UI, Atom Material Icons para personalizar la apariencia de PHPStorm, y además asegurarnos de utilizar una fuente de texto adecuada para el desarrollo.
+
+Lo primero es ir a preferencias o 
+
+	CMD + ,
+
+Apareiencia
+	Aumentar el tamaño de la fuente. se puede configurar el tema del editor, con fuente 14, si esta se ajusta a las preferencias.
+
+Aditor > Font
+	Cambiar el tamaño de la fuente del codigo.
+
+	Con intermlineado mas separado con 1.8 se sugiere.
+
+
+
+Temas
+
+	Preferencias > Plugins > Marketplace
+
+		Material theme UI
+			Instalar, Reinicar el Ide y verificar las preferencias.
+
+Apareance > Theme		
+	Material Oceanic
+
+
+
+Activar / Desactivar ligaduras de codigo
+
+	== !== != >= -> => :: y otros
+
+
+Otro Tema es
+
+	Atom Material Icons
+
+Se pueden aplicar para las carpetas.
+
+
+
+
+
+Mejorar la apariencia de PHP Storm
+---------------------------------
+
+PHP Storm incluye uina gran cantidad de opciones, si se muestran todas a la vez se crea un ruido visual y puede afectar el trabajo con codigo.
+
+Para reducir esto, 
+
+en em menu de View > Apeareance
+
+	Ocultar la barra de herramientas
+		Tool Window Bar
+
+La barra de estatus
+	status Bar
+
+Podemos desactivar la barra de navegacion superior
+	Toolbar
+
+Member Navigation Bar
+
+	Visualizar el nombre del archivo en que uno se encuentra
+
+Ocultar los numeros de linea.
+
+Se pueden ocultar los iconos de la derecha, ya que se pueden utilizar empleando los accesos directos.
+
+Preferences > Appearance & Behavior > Menu and Toolbars
+
+	Navigation Bar Toolbar
+		eliminando las opciones con el - de lap arte superior.
+
+
+Navegacion del teclado.
+	Utilando el teclado
+		CMD + SHFT 
+		Busqueda global escribiendo al archivo que se quiere dirigir.
+
+
+	Tab placement 		
+
+
+Otra es la opcion de navegadores.
+
+Ocultamos para busqueda glibal
+	Double SHIF
+	Buscar Web Browsers
+
+		Esto nos abrira
+			Tools > Web Brobsers and Preview
+
+				Desmarcar "for HTML Files"
+
+
+Se tienen unos Breadcrumbs debajo, esto no pueden ser utiles 
+
+	Buscando
+		Breadcrumbs				
+			Desactivarlos
+
+
+Se tiene tambien la opcion de expandir o contraer nuestro codigo, utilizando 
+
+	Code > Folding >  Expand
+		CMD + +
+
+	Code > Folding >  Collapse
+		CMD + -
+
+
+Bucar Code Folding
+
+	Preferencies > Editor > General > Code Folding
+
+		Desactivar
+
+
+Lineas horizontales
+	Preferences > Editor > General > appeareance
+		Desctivar Show method separator
+
+
+	Preferences > Editor > Color Scheme > General > Code > Method separator color
+		Foreground								
+
+		Veremos que las barras han desaparecido.
+
+
+
+Lineas del lado derecho junto con la opcion de Codelen
+
+Podemos ver los errores y advertencias que muestra PHP Storm en la parte superior derecha, y no hacen falta las bvarras.
+
+Para desactivarlo
+
+	Buscar > code lens 
+		Desactivar la opcion
+
+
+	BNucar ahora 
+		error stripe
+			Ahora en General > Editor > Gutter 
+				 Desactivar
+				 	Highlight modified lineas in error stripe on the scrollbar
+
+
+
+	Preferences > Editor > Solor Scheme > General > Identifier under caret
+		Buscar opciones de error stripe mark en las diferentes categorias
+
+		Denmarcarlas todas.
+
+Reinicar el editor.
+
+
+Una caracteristica de PHP Storm molesta es  cuando por ejemplo se crea un controllador y queremos generar una ruta y el texto 
+
+	route ( name: 'nombre-de-la-ruta');
+
+el nombre del paremtro 
+name:
+
+Asi que 
+Preferences > Editor > Inlay Hints > PHP
+
+	Desmarcar 
+		Show parameters hints
+
+
+
+Finalemnte vamos a abrir un archivo de vistas nuestro caso con laravel.
+
+PHP Storm brinda un par de opciones para el resaltado de sintaxis de HTMl o PHP
+
+Puede que sea util, o si distrae la dsactivamos
+
+Buscando 
+	tag tree
+
+	Preferenmces > Editor > General >Appearance >
+		Desactivar 
+			Enable HTML/XML tag tree highlighting 
+
+
+si aun se visualizan los breadcrums
+
+Buscamos
+	breadcrumbs
+
+	Descativando 
+		Breadcrumbs : dont Show.
+
+
+
+Plugins
+--------
+Con esto nuestro editor ha quedfado configurado de forma limpia y funcional sin distracciones adicioanles.
+
+si queremos instalar un plug adicioinales podriamos considerar
+
+
+
+- Laravel idea
+
+	Este plug ins genial para el desarrollo on Laravel
+
+- .env files support
+	Manejo de archivos de entorno
+
+- symfony support
+	
+
+
+
+
+
+
+
+
