@@ -47,3 +47,95 @@ Para dar seguimiento a la ruta de cada uno de las definiciones de las funciones 
 
 Existe un archivo de referencia para poder configurar nuestro editor Sublime Text que es el que utilizamos para el presente proyecto.
 
+
+Hacer "Method changing" es encadenar metodos, de la siguiente forma:
+
+	$class->method1()->method2().
+
+Laravel es un framework muy robusto aunque parezca muy simple.
+
+Volviendo al ejemplo, no es necesario poder la ruta del archivo. El directorio base de lasvistas es:
+	resources /view/home.php
+Tampoco es necesario incluir la extensión del archivo.
+
+Probamos en el navegador y debe cargar la vista home.
+
+	http://laravel-fundaments.io/
+
+Muchas veces necesitamos pasar datos a las vistas. 
+
+Las vistas
+---------
+
+Las vistas como su nombre lo indica son la parte visual de cnuestra aplicación, es decir lo que ve el usuario final, y contiene el HTMl de nuestra apicación, se encuentran en:
+
+	resources/views.
+
+Laravel tiene una vista por defecto llamada
+	welcome.blade.php
+
+Se elimina para crear una vista home.php, con la estructura basica de un documento html, agregando el titulo HOMe.
+
+En el archivo routes vamos a modificar la ruta.
+
+elimiando los links.
+
+Rotornar vistas
+--------------
+Existen varias ormas de retornar vistas, la forma mas sencilla es:
+
+	view que recibe por parametro, el nombre de la vista,
+
+		home
+
+		// 6.2.2
+		//------
+		Route::get('/', function () {
+			return view('home');
+		});
+
+
+al pasar un parametro automaticamente nos llama al metodo make al metodo que implemkenta el factory.
+
+Volviendo al ejemplio no es necesario utilizar el nombre completo y la extensión.
+
+Cargando la vista home.
+
+Muchas veces necesitamos pasar datos a las vistas. Pasamos un parametro por URL.
+
+Creamos una vista llamada saludo.php
+
+Con la estructura basic del html.
+
+En la ruta creamos la vista
+
+	
+
+Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+	return view('saludo', ['nombre' => $nombre]);
+})->where('nombre',"[A-Za-z]+");		
+
+en la vista saludo tya tenemos acceso a la variable por lo que se va a mostrardentor de un H1
+
+ <!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Saludo</title>
+</head>
+<body>
+
+	<h1>Saludos para <?php echo $nombre; ?></h1> 
+</body>
+</html>
+ 
+
+ ahora podemos ir al a URL
+	http://laravel-fundaments.io/saludos/klvstr
+
+con esto pasamos la URL a la vista,
+
+Existen algunas formas de pasar variables a las vistas, 
+
+

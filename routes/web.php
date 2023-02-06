@@ -36,6 +36,8 @@ Route::get('/', function () {
 });
 
 
+
+
 // 6.2.1
 //------
 /* Route::get('contato', function(){
@@ -54,5 +56,5 @@ Route::get('/', function () {
 
 
 Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
-	return "Saludos $nombre";
+	return view('saludo', ['nombre' => $nombre]);
 })->where('nombre',"[A-Za-z]+");	
