@@ -94,7 +94,7 @@ Route::get('/', ['as' => 'home',  function () {
 }]);
 
 Route::get('contactame', ['as' => 'contactos', function(){
-    return "Seccion de contactos";
+    return view('contactos');
 }]);
 
 Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"){

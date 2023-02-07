@@ -62,7 +62,6 @@ Ahra vamos con otro ejemplo:
 
 En la vista
 
-
 	<h1>Saludos para {{ $nombre }}</h1> 
 	{!! $html !!}
 	{{ $script }}
@@ -151,3 +150,60 @@ Se crea un espacio para mostrar el contenido, individual de cada pagina.
     layout.blade.php
 
 
+Para el contenido individual de cada pagina sera con 
+
+    @yield('[Nombre de la seccion a incluir en el contenido]') 
+
+Para el origen de los datos escribimos en nuestro caso: saludo.layout.php
+
+    @extends('layout')
+
+Lo que hara es extender una clase al nombre de la plantilla a la que queremos enviar la información o extender. Similar a cuando extendemos una clase que heredamos todos los metodos de la clase padre en este caso heredamos todo el html de la plantilla layout.    
+
+Ahora solo queda definir una sección para establecer el contenido unico de esta vista, se hace con la palabra section con el parametro el nombre del yield, en este caso contenido.
+    @section('contenido ')
+        <h1>Saludos a {{ $nombre }}</h1>
+    @stop
+
+Lo mismo se pude hacer con la vista contactos
+
+@extends('layout')
+
+@section('contenido')
+		<h1>Contactos</h1>
+@stop
+
+
+En las rutas para devolver la vista en lugar del string difinido 
+
+Route::get('contactame', ['as' => 'contactos', function(){
+    return view('contactos');
+}]);
+
+Ahora podremos verificar que todos los links funcionan 
+
+Ahora solo resta la vista home
+
+@extends('layout')
+
+@section('contenido')
+	<h1>Home</h1>
+@stop
+
+De ahora en adelante, 
+
+Para la vista de saludos.
+
+@section('contenido')
+ 	<h1>Saludos a {{ $nombre }}</h1>
+ @stop
+
+ Ahora solo es necesario modificar la vista layout y esto se aplicara en cada una de las plantillas de Blade.
+
+ Por ejemplo en la navegación vamos a cambiar de contacto a contactos
+
+ El cambio se ve reflejado en todas las paginas.
+
+
+
+ 
