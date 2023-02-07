@@ -61,6 +61,12 @@ Route::get('/', function () {
 
 //6.2.2 
 
-Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+/*Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
     return view('saludo')->with(['nombre' => $nombre]);
+})->where('nombre',"[A-Za-z]+");    */
+
+// Metodo compact
+Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+    //siempre y cuando la variable nombre exista
+    return view('saludo', compact('nombre'));//Devolvera un array con la llave nombre y el valor nombre 
 })->where('nombre',"[A-Za-z]+");    

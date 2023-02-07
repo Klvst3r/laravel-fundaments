@@ -145,3 +145,16 @@ Existen algunas formas de pasar variables a las vistas,
 
 Actualziamos y veremos el mismo resultado.	
 
+
+Funcion "compaq"
+---------------- 
+Otra forma de hacerlo y es la que se utilizara de ahora en adelante es utilzando la funcion compac, lo que hace es devolver un array asociativo con el nombre que se le pase como llave y el valor de una variable existente del mismo nombre. Es decir
+
+
+---
+	Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+		//siempre y cuando la variable nombre exista
+		return view('saludo', compact('nombre'));//Devolvera un array con la llave nombre y el valor nombre 
+	})->where('nombre',"[A-Za-z]+");    
+---
+
