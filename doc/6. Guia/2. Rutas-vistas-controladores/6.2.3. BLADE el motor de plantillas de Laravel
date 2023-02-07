@@ -204,6 +204,12 @@ Para la vista de saludos.
 
  El cambio se ve reflejado en todas las paginas.
 
+ Volviendo al archivo routes
+
+ Y se puede observar que se han sobrepasado las 20 lineas de codigo y apenas se ha escrito tres rutas. Cabe recalcar que si tenemos pensado escalar nuestra aplicación y hacerla mas grande, tener el codigo en el mismo archivo puede ser una bomba de tiempo.
+
+ Por esto vamos a limpier en la siguiente sección el archivo utilizando controllers.
+
 
 
  
