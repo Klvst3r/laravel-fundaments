@@ -210,6 +210,15 @@ Para la vista de saludos.
 
  Por esto vamos a limpier en la siguiente sección el archivo utilizando controllers.
 
+Referencia sobre le Motor de plantillas de Blade
+    https://desarrolloweb.com/articulos/sintaxis-laravel-blade
 
+    https://laravel.com/docs/9.x/blade
+
+    https://styde.net/introduccion-a-blade-el-motor-de-plantillas-de-laravel-9/
+
+    https://es.stackoverflow.com/questions/85889/como-se-interpreta-el-forelse-en-laravel-y-para-que-sirve
+
+    
 
  
