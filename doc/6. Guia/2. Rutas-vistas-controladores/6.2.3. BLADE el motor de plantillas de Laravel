@@ -1,0 +1,153 @@
+6.2.3. BLADE, el motor de plantillas de Laravel
+
+BLADE es el motor de plantillas que viene con Laravel, permite escribir codigo HTML de forma Elegante, divertida.
+
+Para utilizar Blade en Laravel, basta con agregar la extensión .blade dentro de la ruta:
+
+    resources/views/
+
+Para comenzar al archivo "saludo.php" -> saludo.blade.php
+
+El funcionamiento sera el mismo ya que no obliga a autilizar la sintaxis. Permite utilizar PHP plano cuando se requiera.
+
+Para hacer un echo de una variable o de otro codigo de PHp dentro de HTML
+
+Ejemplo de PHP
+
+    <h1>Saludos para <?php echo $nombre; ?></h1> 
+	
+Mismo ejemplo con Blade
+    <h1>Saludos para {{ $nombre }}</h1> 
+
+
+Esto no afecta el rendimiento, ya qye si vamos a la carpeta storage/framework/views podemos ver que la vista se compila y se guarda en un archivo aparte, este proceso de compilación sucede una sola vez y solamente se compila nuevamente si se detecta un nuevo cambio en la vista, es decir si no cambia el archivo saludo.blade.php, blade no volvera a ejecutarse y en su lugar tomara este archivo ya compilado.
+
+En su lugar se utiliza el archivo con el siguiente codigo ya compilado 
+
+    <h1>Saludos para <?php echo e($nombre); ?></h1> 
+
+En la linea mostrada anteriormente que es la procesada por Blade que la variable esta encerrada en una funcion e(). Esta funcion es un helper que viene con Laravel detras de escena pasa la variable por la fucnion nativa de PHP llamada 
+    htmlentities($nombre)
+
+Para proteger a lo que se le conoce como 
+
+    XSS Cross Site Scripting
+
+O inyección de codigo malisioso, esto evita que personas malinitencionadas ejecuten scripts que causen comportamientos no deseados dentro de la aplicación, sin embargo hay ocaciones en que se da el permiso al usuario de ingresar estructuras html CSS o Js a traves de un formulario.
+
+Ej.
+ En web.php
+
+    Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"){
+        $html = "<h2>Contenido HTML</h2>";
+        return view('saludo', compact('nombre', 'html'));
+    }])->where('nombre',"[A-Za-z0-9]+");    
+
+
+Pasamos contenido HTMl y se pasa a la vista com la funcion compact, esto es algo se ingreso por un usuario mediante un formulario.
+
+Ahora queremos esta estructura como h1, como parte del html de la pagina, si se usan dobles llaves, el contenido es mostrado como una cadena de caracteres y no es lo que se quiere.
+
+El contenido se pasa como parte de la pagina, los signos de admiración son para alertarnos de que codigo no esta siendo escapado, y que puede ser peligroso
+
+
+<h1>Saludos para {{ $nombre }}</h1> 
+	{!! $html !!}
+
+
+Ahra vamos con otro ejemplo:
+     Donde pasamos un archivo con funcion Js
+        $script = "<script>alert('Problema XSS - Cross Site Scripting!')</script>";
+
+
+En la vista
+
+
+	<h1>Saludos para {{ $nombre }}</h1> 
+	{!! $html !!}
+	{{ $script }}
+
+
+No hay ningun problema, pero si utilizamos los signos de admiración, el script es ejecutado, por ello es de vital cuidado que solo se debe utilizar la sintaxis con signos de adminiración si el contenido es seguro.
+
+Loop con Blade
+--------------
+
+Suponiendo que tenemos un arrya de consolas:
+
+    $consolas = [
+        "Play Station 4", 
+        "Xbox One",
+        "Wii U"
+    ];
+
+En la vista 
+
+    <ul>
+		@foreach($consolas as $consola)
+			<li>
+				{{ $consola }}
+			</li>
+		@endforeach
+	</ul>
+
+Obtenemos el listado, y si el array esta vacio, simplemente no muestrra nada.
+
+     $consolas = [];
+
+Para estos casos podremos utilizar forelse
+
+    <ul>
+		@forelse($consolas as $consola)
+			<li>
+				{{ $consola }}
+			</li>
+		@empty
+			<p>No hay consolas</p>
+		@endforelse
+	</ul>
+
+    Igual funciona con los condicionales, solo si hay un elemento en el array
+
+    $consolas = [
+        "Play Station 4", 
+       
+    ];
+
+
+En la plantillas
+    @if(count($consolas) === 1)
+		<p>Solo tienes una consola</p>
+	@endif
+
+Tambien se puede utilizar elseif y else
+
+    @if(count($consolas) === 1)
+		<p>Solo tienes una consola</p>
+	@elseif(count($consolas) > 1)
+		<p>Tienes varias consolas</p>
+	@endif
+
+Si ninguna de las condiciones anteriores se cumple, quiere decir que el array esta vacio.
+
+Tendriamos:
+    @if(count($consolas) === 1)
+		<p>Solo tienes una consola</p>
+	@elseif(count($consolas) > 1)
+		<p>Tienes varias consolas</p>
+	@else(count($consolas) > 1)
+		<p>No tienes ninguna consola</p>
+	@endif
+Funconara si el array esta vacio.
+
+Atendiendo el proble de duplicidad de codigo anteriormente descrito para el meno de HTML, se solucionara utilizando plantillas de blade, 
+
+Vamos a crear un archivo de blade, que sera la plantilla y contendra todo el html que se repite en las paginas, contendra la navegación.
+
+    layout.blade.php
+
+Se crea un espacio para mostrar el contenido, individual de cada pagina.
+
+    layout.blade.php
+
+

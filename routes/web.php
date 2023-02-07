@@ -74,7 +74,7 @@ use Illuminate\Support\Facades\Route;
 
 //6.2.2. rutas con nombre
 
-Route::get('/', ['as' => 'home',  function () {
+/*Route::get('/', ['as' => 'home',  function () {
     return view('home');
 }]);
 
@@ -84,4 +84,27 @@ Route::get('contactame', ['as' => 'contactos', function(){
 
 Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"){
     return view('saludo', compact('nombre'));
+}])->where('nombre',"[A-Za-z0-9]+");    */
+
+
+//6.2.3 Blade
+
+Route::get('/', ['as' => 'home',  function () {
+    return view('home');
+}]);
+
+Route::get('contactame', ['as' => 'contactos', function(){
+    return "Seccion de contactos";
+}]);
+
+Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"){
+    $html = "<h2>Contenido HTML</h2>";
+    $script = "<script>alert('Problema XSS - Cross Site Scripting!')</script>";
+    $consolas = [
+        "Play Station 4", 
+        "Xbox One",
+        "Wii U"
+    ];
+
+    return view('saludo', compact('nombre', 'html', 'script', 'consolas'));
 }])->where('nombre',"[A-Za-z0-9]+");    
