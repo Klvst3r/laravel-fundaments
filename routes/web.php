@@ -29,11 +29,11 @@ use Illuminate\Support\Facades\Route;
     echo "<a href=". route('contactos') .">contacto</a></br>";
 });*/
 
-// 6.2.2
+// 6.2.2 Inicial
 //------
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('home');
-});
+});*/
 
 
 
@@ -49,9 +49,9 @@ Route::get('/', function () {
 }]);
  */
 
- Route::get('contactame', ['as' => 'contactos', function(){
+ /*Route::get('contactame', ['as' => 'contactos', function(){
     return "Seccion de contactos";
-}]);
+}]);*/
 
 
 
@@ -66,7 +66,22 @@ Route::get('/', function () {
 })->where('nombre',"[A-Za-z]+");    */
 
 // Metodo compact
-Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
+/*Route::get('saludos/{nombre?}', function($nombre = "Invitado"){
     //siempre y cuando la variable nombre exista
     return view('saludo', compact('nombre'));//Devolvera un array con la llave nombre y el valor nombre 
-})->where('nombre',"[A-Za-z]+");    
+})->where('nombre',"[A-Za-z]+");    */
+
+
+//6.2.2. rutas con nombre
+
+Route::get('/', ['as' => 'home',  function () {
+    return view('home');
+}]);
+
+Route::get('contactame', ['as' => 'contactos', function(){
+    return "Seccion de contactos";
+}]);
+
+Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"){
+    return view('saludo', compact('nombre'));
+}])->where('nombre',"[A-Za-z0-9]+");    

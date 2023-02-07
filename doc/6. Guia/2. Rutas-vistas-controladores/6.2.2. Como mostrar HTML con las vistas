@@ -158,3 +158,45 @@ Otra forma de hacerlo y es la que se utilizara de ahora en adelante es utilzando
 	})->where('nombre',"[A-Za-z]+");    
 ---
 
+Recultando lo mismo solo que ahora el codigo se ve mucho mas limpio.
+
+No hay una forma correcta o incorrecta, lo que debemos de procurar es escoger una sola forma y utilizarla en todo el proyecto
+
+Ahora vamos a la ruta de contactos.
+
+Se crea la vista de contactos
+	
+	El listado completo esta en la ultima sección de "web.php"
+
+	//6.2.2. rutas con nombre
+
+	 En home hacemos referencia a los nombres de las rutas en "home.php"
+
+	 Cambiando:
+
+	 ---
+		<a href="/">Inicio</a>
+		<a href="saludos">Saludos</a>	
+		<a href="contactos">Contactos</a>
+	 ---
+
+por
+	---
+		<a href="<?php echo route('home') ?>">Inicio</a>
+		<a href="<?php echo route('saludos','Klvst3r') ?>">Saludos</a>
+		<a href="<?php echo route('contactos') ?>">Contactos</a>
+
+	---
+
+Lo interesante en la ruta saludos es que recibe un parametro opcional, para poder enviar un parametro con la funcion route, simplemente se agrega como segundo parametro 
+En la URL
+
+http://laravel-fundaments.io/
+
+Y para tener la navegación en todas las vistas, debemos copiarlas del home, Pero esto presentara un problema de duplicidad de codigo, y eso que es un ejemplo muy simple.
+
+Tendriamos que copiar todo el contenido para cada vista que se crea.
+
+Laravel tiene un poderoso motor de plantillas, llamado Blade.
+
+Para evitar esto.
