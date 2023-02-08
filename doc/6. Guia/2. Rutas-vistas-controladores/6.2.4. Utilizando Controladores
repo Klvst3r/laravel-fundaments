@@ -1,0 +1,144 @@
+6.2.4. Utilizando controladores
+
+
+Archivos
+-----
+
+    Secciones:
+        Vistas:
+            
+            
+        Rutas:
+            routes/
+                web.php
+            
+        Controladores
+            app/Http/Controllers/
+                PagesController.php
+
+
+Contexto
+--------
+En lugar de definir toda la lógica de la aplicación en el archivo "routes.php" podemos organizar mejor nuestra aplicación utilizando controllers.
+
+Los controller estan ubicados en 
+
+    app/Http/Controllers
+
+Por defecto Laravel viene con un controlador base que incluye algunos trails muy utiles.
+
+Para Crear un controlador, con crear una nueva clase en esta carpeta, 
+
+ej.
+
+    PagesController.php
+
+Y el codigo seria inicial con extender el controlador base
+
+    <?php
+    class Pagescontroller extends {
+
+    }
+
+agregar el namespace
+
+    namespace App\Http\Controlllers;
+
+Sin embargo uno de los objetivos de Laravel es hacer que el desarrollo de aplicaciones sea lo mas rapido pocible, es por esto que pone a nuestra disposición una serie de comandos para crear estos archivos raṕidamente.
+
+Para ello sera necesario ir a la consola y escribir:
+    php artisan 
+
+Esto mostrara todos los comandos disponibles, buscamos bajo el name space make
+
+Que es donde se encuentra los comandos para crear archivos, dentro de estos existe el comando
+    make:controller
+que nos permitira crear una nueva clase del controlador, en lugar de crearlo manualmente.
+
+Asi que en terminal.
+    php artisan make:controller <nombre_controlador>
+
+Ej.     
+    php artisan make:controller PagesController.
+
+ahora tenemos el controlador con todo el codigo que se necesitara en la mayoria de los casos. Aca se escribiran los metodos que iran a reemplazar a los que se encuentran en las rutas.
+
+    routes/web.php
+
+    Route::get('/', ['as' => 'home', 'uses' => 'PagesController@home']);
+
+Con esto indicamos que cuando vaya a la raiz del sitio, utilice el controlador Pagescontroller y ejecute el metodo home
+
+En el controlador
+
+
+    Pagescontroller.php
+
+
+        Route::get('/', ['as' => 'home', 'uses' => 'PagesController@home']);
+
+
+Se crea el metodo home y retornados la vista a home
+---
+    <?php
+
+    namespace App\Http\Controllers;
+
+    use Illuminate\Http\Request; 
+
+    use App\Http\Request;
+
+    class PagesController extends Controller
+    {
+        public function home()
+        {
+            return view('home');
+        }
+    }
+
+---
+
+Verificamos en el navegador
+
+Y nos genera un error:
+
+    Illuminate \ Contracts \ Container \ BindingResolutionException
+        PHP 8.1.15
+        9.48.0
+            Target class [PagesController] does not exist.
+
+    Composer provides a convenient, automatically generated class loader for this application. We just need to utilize it! We'll simply require 
+    into the script here so we don't need to manually load our classes.            
+
+Respuesta:
+    
+Necesitamos regenerar las clases con dump-autoload de composer dentro del namespace de RegisterController 
+
+Asi que ejecutamos con composer 
+
+    composer dump-autoload 
+
+Existe una forma de arreglar el error de ‘Target class does not exist’ en Laravel 
+
+
+Aunque este cambio es compatible con versiones anteriores, lo que significa que los proyectos más antiguos que usaban Laravel 7.x pueden migrar fácilmente a Laravel 8.x sin tener que cambiar nada, los nuevos proyectos creados en Laravel 8 (a partir del 8 de septiembre) deben tener esto en cuenta. .
+
+
+Muchos desarrolladores se han enfrentado a un problema en sus aplicaciones Laravel 9 recién creadas en las que intentan cargar sus rutas y se encuentran con una excepción que dice algo como:
+    ---
+        Target class [PagesController] does not exist
+    ---
+    
+El problema no es que el código esté roto, sino que el 99,9% de los tutoriales de Laravel ahora están rotos en este departamento porque la mayoría de ellos se basaron en este espacio de nombres predeterminado para la sintaxis de la cadena.
+
+
+
+
+
+
+
+Fuente:
+    https://stackoverflow.com/questions/63807930/error-target-class-controller-does-not-exist-when-using-laravel-8
+
+    https://diegooo.com/laravel-8-como-arreglar-target-class-does-not-exist/
+    
