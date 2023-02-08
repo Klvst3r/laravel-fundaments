@@ -1,5 +1,26 @@
 6.2.3. BLADE, el motor de plantillas de Laravel
 
+
+Archivos
+-----
+
+    Secciones:
+        Vistas:
+            resources/views/Backups_views
+
+            resources/views/
+                contactos.blade.php
+                home.blade.php
+                layout.blade.php
+                saludo.blade.php
+            
+        Rutas:
+            routes/web.php
+
+
+Contexto
+--------
+
 BLADE es el motor de plantillas que viene con Laravel, permite escribir codigo HTML de forma Elegante, divertida.
 
 Para utilizar Blade en Laravel, basta con agregar la extensión .blade dentro de la ruta:
