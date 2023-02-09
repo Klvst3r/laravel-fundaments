@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PagesController;
 
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -116,7 +119,22 @@ Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"
 
 //6.2.4 Controladores
 //----
-Route::get('/', ['as' => 'home', 'uses' => 'PagesController@home']);
+//Route::get('/', [PostController::class, 'home']);
+/*Route::get('/', ['as' => 'home',  function () {
+    return view('home');
+}]);*/
+
+
+/*Route::get('/', function() {
+})->name('home');*/
+
+
+
+//Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home']);
+
+// Usando la sintaxis de acción
+Route::get("/", [PagesController::class, 'home']);
+
 
 
 Route::get('contactame', ['as' => 'contactos', function(){

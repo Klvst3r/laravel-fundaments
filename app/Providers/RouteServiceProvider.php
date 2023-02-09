@@ -24,6 +24,10 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
+
+    //Se agrega esta linea para volver a usar el nombre de espacio predeterminado como en laravel 7.x
+    protected $namespace = "App\Http\Controllers"; 
+
     public function boot()
     {
         $this->configureRateLimiting();
@@ -31,9 +35,11 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
+                ->namespace($this->namespace)// Se agrega esta linea como en Versiones 7.x
                 ->group(base_path('routes/api.php'));
 
             Route::middleware('web')
+                ->namespace($this->namespace)// Se agrega esta linea como en Versiones 7.x
                 ->group(base_path('routes/web.php'));
         });
     }

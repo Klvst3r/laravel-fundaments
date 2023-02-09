@@ -128,17 +128,183 @@ Muchos desarrolladores se han enfrentado a un problema en sus aplicaciones Larav
     ---
         Target class [PagesController] does not exist
     ---
-    
+
 El problema no es que el código esté roto, sino que el 99,9% de los tutoriales de Laravel ahora están rotos en este departamento porque la mayoría de ellos se basaron en este espacio de nombres predeterminado para la sintaxis de la cadena.
 
 
+El cambio a realizar
+------------------
+Hasta Laravel 7, el archivo RouteServiceProvider.php tenia el siguiente código
+    ---
+        Protectted $namespace = 'App\Http\Controllers';
+
+        Route::middleware('web')
+        ->namespace($this->namespace)
+        ->group(base_path('routes/web.php'));
+    ---
+    
+Lo que hace esto es decirle a Laravel que cargue las rutas en routes\web.php, usando el middleware web y el espacio de nombres App\Http\controllers. Esto, a su vez, significa que siempre que declarste una ruta usando la sintaxis de cadena, Laravel buscaría este controlador en la carpeta App\Http\controllers:
+
+    ---
+       //Laravel will look for App\Http\Controller
+       Route::get('/post', 'PostsController@all');
+    ---
+
+A partir de Laravel 8, la variabel $namespace se eliminó y la declaración de Route se cmabió a:
+
+    ---
+        Route::middleware('web')
+            ->group(base_path('routes/web.php'));
+    ---
+
+Ahora, Laravel está buscando rutas dentro de su archivo web.php, como siempre. También está aplicando el middleware web, como siempre. Pero hay que observar que no usa el espacio de nombre anterior.
+
+Esto significa que a partir de Laravel 8, cuando declaras tus rutas usando la sitaxis de cadena, Laravel no buscará tu controlador dentro de App\Http\Controllers.
+
+    ---
+        //What's Postscontroller? Cannot find it
+       Route::get('/post', 'PostsController@all');
+    ---
+
+
+¿Como puedo solucionar esto?
+------------------------------
+El problema aquí es que Laravel no tiene idea de dónde buscar su controlador, ¡Asi que todo lo que tenemos que hacer es avisarle!.
+
+Hay tres formas de lograr esto:
+
+- Vuelva a agregar el espacio de nombres manualmente para que pueda usarlo como lo hizo en Laravel 7.x y anteriores.
+
+- Usar el espacio de nombres completo en sus archivos de ruta cuando use la sintaxis de cadena.
+
+- Utilice la sintaxis de accion (recomendado)
+
+
+Agregar el espacio de nombres manualmente
+
+Podemos utilizar esta soluciṕion combinada con La Sintaxis de Acción para Laravel 9 y no causara ningunconlicto, es algo asi como si prepararamos nuestro entorno para ser compatible con versiones 7x, 8.x y 9.x al mismo tiempos lo cual es una solución amplia.
+
+
+Esto es bastante simple. Vaya a su archivo RoutesServiceProvider.php y verá lo siguiente:
+
+
+    ---
+    public function boot()
+    {
+        $this->configureRateLimiting();
+
+        $this->routes(function () {
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
+
+            Route::prefix('api')
+                ->middleware('api')
+                ->group(base_path('routes/api.php'));
+        });
+    }
+    ---
+
+Todo lo que necesita hacer es agregar las siguientes tres líneas a este archivo y Laravel volverá a usar el espacio de nombres predeterminado como en Laravel 7.x:
+
+    ---
+    //Se agrega esta linea para volver a usar el nombre de espacio predeterminado como en laravel 7.x
+        protected $namespace = "App\Http\Controllers"; 
+
+        public function boot()
+        {
+            $this->configureRateLimiting();
+
+            $this->routes(function () {
+                Route::middleware('api')
+                    ->prefix('api')
+                    ->namespace($this->namespace)// Se agrega esta linea como en Versiones 7.x
+                    ->group(base_path('routes/api.php'));
+
+                Route::middleware('web')
+                    ->namespace($this->namespace)// Se agrega esta linea como en Versiones 7.x
+                    ->group(base_path('routes/web.php'));
+            });
+        }
+    ---
+
+
+¿Qué acabamos de hacer? Declaramos la variable $namespace con el espacio de nombres predeterminado para nuestros controladores y le dijimos a laravel que lo usara para nuestras rutas web y api.
+
+Si intenta ejecutar su aplicación nuevamente, todo debería estar funcionando.
 
 
 
+Para nuestro caso Ahora podemos utilizar en el llamado del controlador desde nuestro archivo de rutas:
+
+routes/web.php
+    ---
+    //Podemos utilizar este formato
+    //Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home']);
+
+    // Usando la sintaxis de acción (recomendado)
+    Route::get("/", [PagesController::class, 'home']);
+    ---
+
+
+
+Usando el espacio de nombres completo
+
+Este implica cambiar todas las declaraciones de ruta, pero la idea es simple: anteponga los nombres de sus controladores con su espacio de nombres. Vea el siguiente ejemplo para nuestro PostsController dentro de la carpeta app/Http/Controllers.
+
+routes/web.php
+    ---
+    //Route::get("/", 'App\Http\Controllers\PagesController@home');
+    ---
+
+Si vuelve a intentarlo, todo debería funcionar sin problemas.
+
+
+
+Usar la sintaxis de acción
+--------------------------
+
+Esta es la alternativa que recomiendo personalmente, ya que la encuentro más a prueba de errores tipográficos y, en mi experiencia, proporciona un mejor soporte de IDE, ya que le decimos explícitamente al código qué clase usar. En lugar de usar nuestra sintaxis de cadena habitual, podemos usar la sintaxis de acción donde especificamos la clase y el método a usar en una matriz:
+
+routes/web.php
+    ---
+    //Podemos utilizar este formato
+    //Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home']);
+    //o bien 
+    //Route::get("/", 'PagesController@home');
+
+    // Usando la sintaxis de acción (recomendado)
+    Route::get("/", [PagesController::class, 'home']);
+    ---
+
+
+
+
+Observe que aquí no estamos pasando PagesController entre comillas, sino PostsController::class, que internamente devolverá “App\Http\Controllers\PagesController”. El segundo valor en la matriz es el método para llamar dentro de ese controlador, lo que significa: “En PagesController.php, llame al método” home “.
+
+Nuevamente, si intenta ejecutar su aplicación nuevamente, todo debería estar en funcionamiento.
+
+
+Palabras de clausura del problema presentado con los Controladores
+--------------------
+A estas alturas, su aplicación debería estar funcionando nuevamente. Si no es así, no dude en pedir ayuda. Todos en la comunidad están ansiosos por ayudar.
+
+Ya sea que haya agregado el espacio de nombres manualmente, haya especificado el espacio de nombres completo en sus rutas o haya seguido la sintaxis de la acción, lo que acaba de hacer es decirle a Laravel en qué espacio de nombres se encuentran realmente sus controladores, por lo que ahora sabe dónde buscar.
+
+http://laravel-fundaments.io/contactame#
 
 
 Fuente:
     https://stackoverflow.com/questions/63807930/error-target-class-controller-does-not-exist-when-using-laravel-8
 
     https://diegooo.com/laravel-8-como-arreglar-target-class-does-not-exist/
-    
+
+
+Referencias para arreglar el problema:
+
+https://laracasts.com/discuss/channels/code-review/illuminatecontractscontainerbindingresolutionexception-target-class-usercontroller-does-not-exist
+
+    https://stackoverflow.com/questions/71087930/illuminate-contracts-container-bindingresolutionexception-target-class-comman
+
+    https://es.stackoverflow.com/questions/400514/por-que-laravel-no-encuentra-el-controlador
+
+    https://www.cursosdesarrolloweb.es/blog/namespaces-en-las-rutas-de-laravel-8

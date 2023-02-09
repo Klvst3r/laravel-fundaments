@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class PagesController extends Controller
 {
-    /*public function __invoke(){
+    /*public function home(){
         return "Welcome to principal page";
     }*/
     public function home()

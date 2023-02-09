@@ -8,7 +8,7 @@
 <body>
 	<header>
 		<nav>
-			<a href="<?php echo route('home') ?>">Inicio</a>
+			<a href="#">Inicio</a>
 			<a href="<?php echo route('saludos','Klvst3r') ?>">Saludos</a>
 			<a href="<?php echo route('contactos') ?>">Contacto</a>
 		</nav>
