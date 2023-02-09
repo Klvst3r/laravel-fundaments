@@ -185,6 +185,37 @@ Observe que aquí no estamos pasando PagesController entre comillas, sino PostsC
 Nuevamente, si intenta ejecutar su aplicación nuevamente, todo debería estar en funcionamiento.
 
 
+Continuando con el tema de los controladores de la aplicación
+
+
+
+Ahora podemos eliminar la primer linea y hacer las mismas referencias al controlador con los demas metodos es decir, contactos, y saludos
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Palabras de clausura del problema presentado con los Controladores
 --------------------
 A estas alturas, su aplicación debería estar funcionando nuevamente. Si no es así, no dude en pedir ayuda. Todos en la comunidad están ansiosos por ayudar.

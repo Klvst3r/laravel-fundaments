@@ -6,7 +6,7 @@ Archivos
 
     Secciones:
         Vistas:
-            
+            saludo.blade.php            
             
         Rutas:
             routes/
@@ -282,6 +282,97 @@ routes/web.php
 Observe que aquí no estamos pasando PagesController entre comillas, sino PostsController::class, que internamente devolverá “App\Http\Controllers\PagesController”. El segundo valor en la matriz es el método para llamar dentro de ese controlador, lo que significa: “En PagesController.php, llame al método” home “.
 
 Nuevamente, si intenta ejecutar su aplicación nuevamente, todo debería estar en funcionamiento.
+
+
+
+Continuando con el ejericio, las ruta quedan:
+
+routes/web.php
+
+    ---
+    Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home']);
+
+    Route::get('contactame',['as' =>'contactos', 'uses' => 'PagesController@contacto']);
+
+    Route::get('saludos/{nombre?}', ['as' => 'saludos', 'uses' => 'PagesController@saludo'])->where('nombre',"[A-Za-z0-9]+");
+
+    ---
+
+En la parte del controlador:
+
+    ---
+        public function home()
+        {
+            return view('home');
+        }
+
+        
+        public function contacto()
+        {
+            return view('contactos');
+        }
+        
+
+        public function saludo($nombre = "Invitado")
+        {
+            $html = "<h2>Contenido HTML</h2>";
+            
+            $script = "<script>alert('Problema XSS - Cross Site Scripting!')</script>";
+            
+            $consolas = [
+                "Play Station 4", 
+                "Xbox One",
+                "Wii U"
+            ];
+            return view('saludo', compact('nombre', 'html', 'script', 'consolas'));
+        }
+
+    ---
+
+
+Si verificamos en el navegador todo funcionara sin problema
+
+Si queremos verifica si las variables ha sido pasadas a la vista saludo, En la vista saludo:
+
+saludo.blade.php
+    ---
+     @extends('layout')
+
+    @section('contenido')
+        <h1>Saludos a {{ $nombre }}</h1>
+
+        <ul>
+            @forelse($consolas as $consola)
+                <li>{{ $consola }} </li>
+            @empty
+                <p>No hay consolas-</p>
+            @endforelse
+        </ul>
+    @stop
+    ---
+
+todo funciona como antes, pero ahora es con una estructura mucho mas escalable que antes.
+
+si regresamos al controlador vemos que cuando se creo con el comando make:
+
+automaticamente Laravel añade la clase, 
+
+Pagescontroller.php
+    ---
+    namespace App\Http\Controllers;
+
+    use Illuminate\Http\Request;
+
+    use App\Http\Requests;
+
+    ---
+
+
+En la siguiente sección se vera como utiilzarse.
+
+
+
+
 
 
 Palabras de clausura del problema presentado con los Controladores

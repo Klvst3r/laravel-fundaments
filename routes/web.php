@@ -130,18 +130,21 @@ Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"
 
 
 
-//Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home']);
+Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home']);
 
 // Usando la sintaxis de acción
-Route::get("/", [PagesController::class, 'home']);
+//Route::get("/", [PagesController::class, 'home']);
 
 
 
-Route::get('contactame', ['as' => 'contactos', function(){
+/*Route::get('contactame', ['as' => 'contactos', function(){
     return view('contactos');
-}]);
+}]);*/
+//Route::get("/contactos", [PagesController::class, 'contact']);
+Route::get('contactame',['as' =>'contactos', 'uses' => 'PagesController@contacto']);
 
-Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"){
+
+/*Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"){
     $html = "<h2>Contenido HTML</h2>";
     $script = "<script>alert('Problema XSS - Cross Site Scripting!')</script>";
     $consolas = [
@@ -151,4 +154,6 @@ Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"
     ];
 
     return view('saludo', compact('nombre', 'html', 'script', 'consolas'));
-}])->where('nombre',"[A-Za-z0-9]+");    
+}])->where('nombre',"[A-Za-z0-9]+");    */
+
+Route::get('saludos/{nombre?}', ['as' => 'saludos', 'uses' => 'PagesController@saludo'])->where('nombre',"[A-Za-z0-9]+");

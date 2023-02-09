@@ -3,14 +3,14 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
+	<title>Mi sitio</title>
 </head>
 <body>
 	<header>
 		<nav>
-			<a href="#">Inicio</a>
-			<a href="<?php echo route('saludos','Klvst3r') ?>">Saludos</a>
-			<a href="<?php echo route('contactos') ?>">Contacto</a>
+			<a href="<?php echo route('home') ?>">Inicio</a>
+			<a href="<?php echo route('saludos','Klvst3r') ?>">Saludo</a>
+			<a href="<?php echo route('contactos') ?>">Contactos</a>
 		</nav>
 	</header>
 	
