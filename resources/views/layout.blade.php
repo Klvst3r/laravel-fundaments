@@ -3,14 +3,25 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		.active{
+			text-decoration: none;
+			color: green;
+		}
+	</style>
 	<title>Mi sitio</title>
 </head>
 <body>
 	<header>
-		<nav>
-			<a href="<?php echo route('home') ?>">Inicio</a>
-			<a href="<?php echo route('saludos','Klvst3r') ?>">Saludo</a>
-			<a href="<?php echo route('contactos') ?>">Contactos</a>
+		<h1>
+			{{ request()->is('/') ? 'Estás en el Home' : 'No estas en el home' }}
+		</h1>
+
+
+		  <nav>
+			<a class="{{ request()->is('/') ? 'active' : '' }}" href="{{ route('home') }}">Inicio</a>
+			<a class="{{ request()->is('saludos/*') ? 'active' : '' }}" href="{{ route('saludos','Klvst3r') }}">Saludo</a>
+			<a class="{{ request()->is('contactame') ? 'active' : '' }}" href="{{ route('contactos') }}">Contactos</a>
 		</nav>
 	</header>
 	
