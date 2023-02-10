@@ -36,11 +36,41 @@ class PagesController extends Controller
     {
         return $this->request->all();
     }*/
+
+    //Inyeccion por el metodo
+    /*public function mensajes(Request $request)
+    {
+
+        return $request->all();
+        
+    }*/
     //en el metodo inyectamos la clase
+    /*public function mensajes(Request $request)
+    {
+
+        if($request->has('nombre')){
+            return "Si tiene nombre";
+        }else{
+            return "No tiene nombre";
+        }
+
+    }*/
+        
     public function mensajes(Request $request)
     {
-        return $request->all(); 
+
+        return $request->all();
+
+        if($request->has('nombre'))
+        {
+            return "Si tiene nombre";
+        }
+
+        return "No tiene nombre";
+        
+
     }
+
     
 
     public function saludo($nombre = "Invitado")
