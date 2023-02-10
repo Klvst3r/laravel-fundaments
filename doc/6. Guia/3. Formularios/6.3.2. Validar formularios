@@ -105,6 +105,40 @@ Contacto.blade.php
 
 Ahora el valor se mantiene.
 
+Tercera regla de validación de formularios
+
+Para el Text area.
+
+en este caso indicamos que el mensaje sea obligatorio, y que tenga un minimo de cinco letras,
+
+---
+    'mensaje'   =>  'required|min:5' //Obligatorio con un minimo de cinco letras
+---
+
+Si quwremos ver todas las opciones de reglas de validación disponibles en Laravel, podemos acudir a:
+
+    https://laravel.com/docs/5.2/validation
+en especifico:
+    https://laravel.com/docs/5.2/validation#available-validation-rules    
+
+Agregamos los mensajes deerror al textarea
+
+---
+    <p><label for="mensaje">Mensaje
+				<textarea name="mensaje"></textarea>
+				{{ $errors->first('mensaje') }}
+			</label></p>
+---
+
+Verificamos, agregando el antiguo valor al email y al textarea
+
+---
+    <input type="email" name="email" value="{{ old('email') }}">
+    ...
+    <textarea name="mensaje">{{ old('mensaje') }}</textarea>
+---
+
+
 
 
 
