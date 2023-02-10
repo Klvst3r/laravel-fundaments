@@ -1,0 +1,59 @@
+6.3.1. Validar Formularios
+
+Archivos
+-----
+
+    Secciones:
+        Vistas-Plantillas:
+            layout.blade.php
+            contacto.blade.php
+            
+            
+        Rutas:
+            routes/
+                web.php
+            
+        Controladores
+            app/Http/Controllers/
+                PagesController.php
+                Controller.php
+
+        Middleware
+            app/Http/Middleware/
+                VerifyCsrfToken.php
+
+        Trails
+            Illuminate\Fundation\Validation\ValidatesRequests
+
+
+
+Contenido
+----------
+En la sección anterio se reviso como se puede revisar y accesar a las peticiones HTTP, realizadas por el usuario a traves del navegador, en esta seccion se vera como validar estas peticiones, para que concuerden con la logica de la aplicación.
+
+En Pagecontroller, podemos ver que el controlador se extiende  a un controlador base ubicado en:
+
+    App\Http\controllers\Controller.php
+
+Este a su vez utiliza un trail llamado  ValidatesRequests, que viene con Laravel y nos provee de varios metodos utiles para la validación.
+
+Regresando a PagesController, el comidog final retornara todos los campos.
+
+Accediendo al metodo validate del trail validate ValidatesRequests
+
+El primer parametro, es el reuqest y el segundo un array con las reglas de validación.
+
+---
+    $this->validate($request,[
+            'nombre' => 'required' //campo obligatorio
+        ]);
+---
+
+Si esta regla no se cumple, Laravel automaticamente regresara al formulario para que el usuario corriga los errores. En el formulario al enviar un campo vacio nos regresara inmediatamente al formulario de captura, pues la validación se esta efectuando correctamente.
+
+Si se envian datos la validación pasa,
+
+Agregando otra regla
+
+
+

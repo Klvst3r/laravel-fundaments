@@ -56,18 +56,27 @@ class PagesController extends Controller
 
     }*/
 
-    //6.3.1. Procesamiento de Formulario        
+    //6.3.x. Procesamiento de Formulario        
     public function mensajes(Request $request)
     {
 
         //return $request->all();
-
-        if($request->has('nombre'))
+        //6.3.1
+        /*if($request->has('nombre'))
         {
             return "Si tiene nombre. Es " . $request->input('nombre');
 
         }
-            return "No tiene nombre";
+            return "No tiene nombre";*/
+
+        //6.3.2. Validacion de formularios
+        $this->validate($request,[
+            'nombre' => 'required' //campo obligatorio
+        ]);
+
+        //retornando todos los campos del formulario
+        return $request->all();
+
 
         
         
