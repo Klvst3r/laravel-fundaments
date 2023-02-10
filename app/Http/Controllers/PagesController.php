@@ -10,12 +10,14 @@ use App\Http\Requests;
 class PagesController extends Controller
 {
 
-    protected $request; 
+    //Inyeccion por constructor
+    /*protected $request; 
     
     public function __construct(Request $request)
     {
         $this->request = $request;
-    }
+    }*/
+
 
 
     public function home()
@@ -29,9 +31,15 @@ class PagesController extends Controller
         return view('contactos');
     }
 
-    public function mensajes()
+    //Inyeccion por constructor
+    /*public function mensajes()
     {
         return $this->request->all();
+    }*/
+    //en el metodo inyectamos la clase
+    public function mensajes(Request $request)
+    {
+        return $request->all(); 
     }
     
 
