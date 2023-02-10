@@ -59,14 +59,16 @@ class PagesController extends Controller
     public function mensajes(Request $request)
     {
 
-        return $request->all();
+        //return $request->all();
 
         if($request->has('nombre'))
         {
-            return "Si tiene nombre";
-        }
+            return "Si tiene nombre. Es " . $request->input('nombre');
 
-        return "No tiene nombre";
+        }
+            return "No tiene nombre";
+
+        
         
 
     }
