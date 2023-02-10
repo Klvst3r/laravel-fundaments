@@ -1,0 +1,173 @@
+6.3.1 Procesar Formularios
+------------------
+Archivos
+-----
+
+    Secciones:
+        Vistas-Plantillas:
+            layout.blade.php
+            contacto.blade.php
+            
+            
+        Rutas:
+            routes/
+                web.php
+            
+        Controladores
+            app/Http/Controllers/
+                PagesController.php
+
+        middleware
+            app/Http/Middleware/
+                VerifyCsrfToken.php
+
+
+
+contenido
+---------
+En la vista contacto Se crea un formulario de contacto.
+
+Los formularios tienen por defecto un metodo get, pero ahora se va a utilizar el metodo post 
+
+Formulario de contacto
+---
+---
+
+Ahora vamos a definir la ruta que se encarga de procesar el formulario en la ruta
+la url es la accion del formulario 
+
+Ruta
+---
+    Route::post('contacto', 'PagesController@mensajes');
+---
+
+Controlador
+---
+    public function mensajes()
+    {
+        return 'Procesando el mensaje...';
+    }
+    
+---
+
+al enviar el formulario genera un error,
+TikenMismatchException in VerifyCsrfToken
+
+Este error es dispardo por un middleware, que aun es un tema no visto, por ahora solo se deshabilitar. Abruimos el middleweare
+
+    VerifyCsrfToken.php
+
+Tenemos una propiedad excep, Aca se va a definir la ura que no queremos que sea verifiada. No es recomendable hacer esto.
+
+Por ahora esta bien.
+
+protected $except = [
+        'contacto'
+    ];
+
+Dentro del controlador se utilizara la calse Reuqest
+
+---
+protected $request; 
+    
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+---
+
+Se tienen varias opciones, una de ellas inyectarla a trevs del constructor, de la forma anterior
+
+En el metodo.
+---
+public function mensajes()
+    {
+        return $this->request->all();
+    }
+---
+
+Acedemos a la propiedad y aca ya se puede utilizar cualquier metodo de la clase request, en este caso todos los datos con el metodo all.
+
+Volvemos allenar el formualrio. Se envia y ahora tendremos los datos del formulario en formato JSON.
+
+    {
+    "nombre": "Klvst3r",
+    "email": "klvst3r@email.com",
+    "mensaje": "Mi mensaje"
+    }
+
+Ahora si solo vamos a utilziar la clase request en este metoso  Se puede tambien inyectar directamente desde PagesController
+
+
+
+De la siguiente forma, se borra el constructor. Y en el metodo inyectamos la clase, laravel automaticamente resolvera la clase y la asignara a la variable Reuqest, y ya se podra utilizar en el metodo mensaje.
+
+---
+ public function mensajes(Request $request)
+    {
+        return $request->all(); 
+    }
+    
+---
+
+Obteniendo la misma respuesta en formato JSON
+
+
+Validación de campos en formulario
+------
+
+
+Tambien se puede revisar si un campo fue llenado o no
+En el controlador 
+--
+  public function mensajes(Request $request)
+    {
+     
+        if($request->has('nombre'))
+        {
+            return "Si tiene nombre";
+        }
+
+        return "No tiene nombre";
+    }
+
+Con un if preguntamos si la peticion tiene nombre con el metodo has y solo se devuelme mensaje si tiene nombre, caso contrario no tiene nombre.
+
+si envio el formlario sin nombre, indica no tiene nombre, si se agrega, si tiene nombre,
+
+
+Tambien se puede acceder a un campo especifico
+
+---
+   public function mensajes(Request $request)
+    {
+
+        return $request->all();
+
+        if($request->has('nombre'))
+        {
+            return "Si tiene nombre";
+        }
+
+        return "No tiene nombre";
+        
+
+    }
+--
+
+Tambien se puede acceder a un campo especifico, con el nombre del campo
+
+---
+if($request->has('nombre'))
+        {
+            return "Si tiene nombre. Es " . $request->input('nombre');
+
+        }
+            return "No tiene nombre";
+
+---
+
+De esta forma se pueden validar formularios de forma manual, sin embargo Laravel, tiene su propio sistema de validación.
+
+Se vera en la siguiente seccion

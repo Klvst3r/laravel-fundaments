@@ -3,7 +3,7 @@
 @section('contenido')
 		<h1>Contactos</h1>
 		<h2>Escríbeme</h2>
-
+		<!-- 6.3.1. Formularios -->
 		<form method="POST" action="contacto">
 			<p><label for="nombre">Nombre
 				<input type="text" name="nombre">

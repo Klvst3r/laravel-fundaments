@@ -55,7 +55,8 @@ class PagesController extends Controller
         }
 
     }*/
-        
+
+    //6.3.1. Procesamiento de Formulario        
     public function mensajes(Request $request)
     {
 

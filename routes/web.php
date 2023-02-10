@@ -158,6 +158,6 @@ Route::get('contactame',['as' =>'contactos', 'uses' => 'PagesController@contacto
 
 Route::get('saludos/{nombre?}', ['as' => 'saludos', 'uses' => 'PagesController@saludo'])->where('nombre',"[A-Za-z0-9]+");
 
-//6.2.5. Procesamiento de formulario con el metodo post
+//6.3.1. Procesamiento de formulario con el metodo post
 
 Route::post('contacto', 'PagesController@mensajes');
