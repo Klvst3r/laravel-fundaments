@@ -9,9 +9,15 @@ use App\Http\Requests;
 
 class PagesController extends Controller
 {
-    /*public function home(){
-        return "Welcome to principal page";
-    }*/
+
+    protected $request; 
+    
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+
     public function home()
     {
         return view('home');
@@ -25,7 +31,7 @@ class PagesController extends Controller
 
     public function mensajes()
     {
-        return 'Procesando el mensaje...';
+        return $this->request->all();
     }
     
 

@@ -202,3 +202,37 @@ Por ahora esta bien.
 protected $except = [
         'contacto'
     ];
+
+Dentro del controlador se utilizara la calse Reuqest
+
+---
+protected $request; 
+    
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+---
+
+Se tienen varias opciones, una de ellas inyectarla a trevs del constructor, de la forma anterior
+
+En el metodo.
+---
+public function mensajes()
+    {
+        return $this->request->all();
+    }
+---
+
+Acedemos a la propiedad y aca ya se puede utilizar cualquier metodo de la clase request, en este caso todos los datos con el metodo all.
+
+Volvemos allenar el formualrio. Se envia y ahora tendremos los datos del formulario en formato JSON.
+
+    {
+    "nombre": "Klvst3r",
+    "email": "klvst3r@email.com",
+    "mensaje": "Mi mensaje"
+    }
+
+Ahora si solo vamos a utilziar la clase request en este metoso    
