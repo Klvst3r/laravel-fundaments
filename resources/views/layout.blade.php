@@ -13,15 +13,20 @@
 </head>
 <body>
 	<header>
-		<h1>
-			{{ request()->is('/') ? 'Estás en el Home' : 'No estas en el home' }}
-		</h1>
+		<?php function activeMenu($url){
+			return request()->is($url) ? 'active' : ''; 
+		}
 
-
+		?>
 		  <nav>
-			<a class="{{ request()->is('/') ? 'active' : '' }}" href="{{ route('home') }}">Inicio</a>
-			<a class="{{ request()->is('saludos/*') ? 'active' : '' }}" href="{{ route('saludos','Klvst3r') }}">Saludo</a>
-			<a class="{{ request()->is('contactame') ? 'active' : '' }}" href="{{ route('contactos') }}">Contactos</a>
+			<a class="{{ activeMenu('/') }}" 
+				href="{{ route('home') }}">Inicio</a>
+			
+			<a class="{{ activeMenu('saludos/*') }}" 
+				href="{{ route('saludos','Klvst3r') }}">Saludo</a>
+			
+			<a class="{{ activeMenu('contactame') }}" 
+				href="{{ route('contactos') }}">Contactos</a>
 		</nav>
 	</header>
 	

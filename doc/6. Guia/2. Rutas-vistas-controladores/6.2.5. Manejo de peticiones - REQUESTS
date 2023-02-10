@@ -124,4 +124,32 @@ ahora ya se tiene una navegación dinamicam, pero si se cambia el parametro de s
 
 Ahora puedo cambiar el aprametro que sea necesario.
 
+Para evitar la repetición creamos una funcion de la siguiente maner:
 
+---
+<header>
+
+		<header>
+		<?php function activeMenu($url){
+			return request()->is($url) ? 'active' : ''; 
+		}
+
+		?>
+		  <nav>
+			<a class="{{ activeMenu('/') }}" 
+				href="{{ route('home') }}">Inicio</a>
+			
+			<a class="{{ activeMenu('saludos/*') }}" 
+				href="{{ route('saludos','Klvst3r') }}">Saludo</a>
+			
+			<a class="{{ activeMenu('contactame') }}" 
+				href="{{ route('contactos') }}">Contactos</a>
+		</nav>
+	</header>
+
+---
+ 
+
+ Verificando que aun siga funcionado todo.
+
+ 
