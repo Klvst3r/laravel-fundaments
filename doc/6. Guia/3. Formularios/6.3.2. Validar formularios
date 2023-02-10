@@ -138,6 +138,30 @@ Verificamos, agregando el antiguo valor al email y al textarea
     <textarea name="mensaje">{{ old('mensaje') }}</textarea>
 ---
 
+Para darle color en el archivo de plantillas.
+
+en el layout.blade.php
+aplicables en contactos.blade.php
+
+Como un segundo argumento, pasando la estructura HTML5, con un span Laravel buscara la cadena :message y reempazara por el error
+
+---
+    {{ $errors->first('nombre','<span class=error>:message</span>') }}
+---
+
+Pegandose en los demas campos, al actualizar en el nevgador mostrara la estructura html, esto se soluciona  
+
+Para imprimir HTML como estructura
+con {!! ... !!} cambiando las siguientes lineas:
+
+
+---
+{!! $errors->first('nombre','<span class=error>:message</span>') !!}
+...
+{!! $errors->first('email','<span class=error>:message</span>') !!}
+...
+{!! $errors->first('mensaje','<span class=error>:message</span>') !!}
+---
 
 
 
