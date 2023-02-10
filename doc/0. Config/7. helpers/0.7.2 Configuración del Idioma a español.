@@ -1,0 +1,93 @@
+
+
+Para poder configurar los mensajes de validación a un idioma especifico, en nuestro español, vamos necesitar instalar el paquete de idiomas necesarios e indicarle a Laravel que lo use de manera predeterminada cuando se requiera.
+
+Este proceso es importante si se reuiqre de alguna técnica para localización de textos, de modo que se puda hacer un sistema multiidioma, aprovechando las funcionalidades que ofrece el framework.
+
+Repositorio de localización de Laravel
+
+Exciste un repositorio en   
+    https://github.com/Laravel-Lang/lang
+
+En este repositorio encontramos las localizaciones a muchos idiomas, incluido por supuesto el español. En concreto nos ofrecerán en este repo todas las traducciones de los textos que ya están presentes en una instalación básica de Laravel, así como los textos de toda la parte de login y autorización de usuarios que podemos instalar en los starter kits oficiales, como Breeze, Fortify, Sanctum, etc.
+
+
+
+Actualización: Instalación de paquetes de idioma ha cambiado
+-------------
+
+En este artículo hemos explicado la instalación de paquetes de idioma de laravel-lang, que nos permite traducir fácilmente las aplicaciones Laravel a otros idiomas. Sin embargo, algunas cosas han cambiado y las vamos a explicar antes que nada, para que no cause confusiones.
+
+Actualmente existe una diferencia respecto al repositorio de localizaciones de Laravel a los distintos idiomas con las traducciones directamente producidos. 
+
+ahorano. En él encontramos los archivos php que sirven para generar los archivos de idioma, por lo que para producirlos vamos a tener que usar una herramienta extra que se llama "Translation Managers".
+
+
+
+Instalación del paquete de idiomas Laravel-lang
+------------
+
+Comenzamos instalando vía composer los paquetes de idiomas, el repositorio completo de laravel-lang.
+
+    composer require laravel-lang/lang --dev
+
+Como ves, la instalación se hace solo en "modo desarrollo" con --dev. Estos archivos realmente no hacen falta en producción, solo los archivos que generaremos con el "Translation Manager".
+
+
+
+Instalación del publisher, el translation manager
+-----
+
+Hay varios translation managers disponibles. Este que vamos a instalar es el "oficial" de "laravel-lang". Este software se encarga de producir los archivos de las traducciones y colocarlos en la carpeta adecuada.
+
+composer require laravel-lang/publisher laravel-lang/lang --dev
+
+También se instala en modo desarrollo, como puedes ver con el flag --dev.
+
+
+
+Instalar el service provider del publisher
+------
+Ahora necesitamos un service provider del publisher, que es el que nos va a crear en nuestra aplicación los comandos necesarios para producir los archivos de las traducciones y colocar esos archivos en las carpetas "lang".
+
+    php artisan vendor:publish --provider="LaravelLang\Publisher\ServiceProvider"
+
+Lo bueno de los publisher es que automatizan el proceso de copiado de las carpetas de idioma, con lo que podremos crear una o varias carpetas de idioma directamente con comandos de artisan.
+Instalación de los archivos del idioma español
+
+Con el siguiente comando vamos a ver cómo se instalan los archivos de idioma español.
+
+    php artisan lang:add es
+
+Para cualquier otro idioma, es simplemente cambiar el "es" por el código del idioma que necesites. Por ejemplo, alemán sería "de".
+
+Ahora te dejamos con el resto del artículo que te explicará cosas importantes como la estructura de carpetas de los idiomas y la configuración de la aplicación para indicarle el paquete de localización que debe de usar.
+
+
+
+Instalación de los archivos para localización al español de Laravel
+------------------
+
+Para instalar los archivos que permiten traducir una página al español, o cualquier otro idioma, tenemos dos posibilidades.
+
+
+
+Opción 1.- Descarga el repositorio y copiado de los archivos
+
+Puedes simplemente hace la descarga del repositorio de GitHub en tu ordenador, ya sea vía clonado del repo o bien mediante la descarga directa.
+
+Una vez descargado puedes acceder a los archivos de las traducciones de los idiomas que necesites, desde la carpeta correspondiente al idioma que requieras. Por ejemplo, los archivos de la localización al español están en la ruta:
+
+    https://github.com/Laravel-Lang/lang/tree/main/locales/es
+
+Si has descargado el zip de GitHub esa ruta corresponderá con la carpeta siguiente:
+
+locales/es
+
+Los archivos de la traducción al español, es decir, toda la carpeta completa llamada "es", la tienes que pegar en la carpeta de tu aplicación donde se guardan los archivos de localización que tienes en la ruta "lang", que cuelga directamente de la raíz del proyecto.
+
+Es decir, una vez copiados los archivos tendrás una nueva carpeta llamada:
+
+lang/es
+
+Una vez copiados los archivos, lang/es vez tendrá dentro todos los archivos que descargaste de la carpeta "locales/es" del repositorio indicado. Al final, tendrás una estructura de directorios más o menos como esta imagen:
