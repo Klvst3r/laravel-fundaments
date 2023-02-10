@@ -71,7 +71,8 @@ class PagesController extends Controller
 
         //6.3.2. Validacion de formularios
         $this->validate($request,[
-            'nombre' => 'required' //campo obligatorio
+            'nombre'    =>  'required', //campo obligatorio
+            'email'     =>  'required|email'  //vaidacion de tipo email
         ]);
 
         //retornando todos los campos del formulario

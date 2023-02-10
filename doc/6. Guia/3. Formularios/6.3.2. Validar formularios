@@ -6,7 +6,7 @@ Archivos
     Secciones:
         Vistas-Plantillas:
             layout.blade.php
-            contacto.blade.php
+            contactos.blade.php
             
             
         Rutas:
@@ -54,6 +54,57 @@ Si esta regla no se cumple, Laravel automaticamente regresara al formulario para
 Si se envian datos la validación pasa,
 
 Agregando otra regla
+
+Validando el campo email    
+    'email'     =>  'email'  //vaidacion de tipo email
+
+La validación es por parte de HTML5, lo caul es muy bueno ya que la validación es por parte del cleinte y si por alguna razon Js esta deshabilitado, tenemos la validación del lado del servidor.
+
+Mientras mas capas de validación se tengan es mucho mejor.
+
+
+Hasta este punto no muestra ningun comentario sobre que esta haciendo mal el usuario, para el desarollador podria tener idera, pero el usuario final no sabria que esta haciendo mal.
+
+Para esto existe un objeto que esta disponible en todas las vistas llamado errors, que contiene los errores de validación 
+
+Vista Contactos.blade.php
+---
+    <p><label for="nombre">Nombre
+				<input type="text" name="nombre">
+				{{ $errors->first('nombre') }}
+			</label></p>
+---
+
+Con esto ahora podremos ver el error. Por ahora esta en ingles. Procedemos con el campo email.
+
+    {{ $errors->first('email') }}
+
+Pero esto no mostrara el error del email, esto es por que no se ha cometido ningun error, ya que cuando se definen las reglas de validación en el archivo PagesController. solo estamos verifiacndo que se tenga el formato de un email, no le estamos indicando que se a obligatorio
+
+Entonces si queremos añadir mas de una regla por campo podremos separarlas por una linea vertical en la validación en el controlador.
+
+    ALT + 124    |
+
+Otra alternativa es pasar un array, cualuiera de las formas funciona
+
+    'email'     =>  'required|email'  //vaidacion de tipo email
+
+O tambien por medio de un array
+    'email'     =>  ['required', 'email']
+
+ahora tenemos dos reglas para el campo email.
+
+aunque la validación paso por el nombre, al regresar debo volver a requisitar todos los datos previamente llenados.
+
+Esto no es optimo, por eso proporciona una funcion llamada  "old" que recibe por parametro el nombre del caomp y devuelve el valor ingresado  anteriormente, esta funcion se agrega a la funcion value
+
+Contacto.blade.php
+---
+    <input type="text" name="nombre" value="{{ old('nombre') }}">
+---
+
+Ahora el valor se mantiene.
+
 
 
 
