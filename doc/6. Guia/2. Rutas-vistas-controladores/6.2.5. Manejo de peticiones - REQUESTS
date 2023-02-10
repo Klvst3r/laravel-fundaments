@@ -6,16 +6,20 @@ Archivos
     Secciones:
         Vistas-Plantillas:
             layout.blade.php
+            contacto.blade.php
             
             
         Rutas:
             routes/
-            
+                web.php
             
         Controladores
             app/Http/Controllers/
+                PagesController.php
 
-
+        middleware
+            app/Http/Middleware/
+                VerifyCsrfToken.php
 
 Contenido:
 ------
@@ -152,4 +156,49 @@ Para evitar la repetición creamos una funcion de la siguiente maner:
 
  Verificando que aun siga funcionado todo.
 
- 
+
+Aunque es necesario decir que una vista no es un buen lugar para definir funciones.
+
+Procesar Formularios
+------------------
+
+
+En la vista contacto Se crea un formulario de contacto.
+
+Los formularios tienen por defecto un metodo get, pero ahora se va a utilizar el metodo post 
+
+Formulario de contacto
+---
+---
+
+Ahora vamos a definir la ruta que se encarga de procesar el formulario en la ruta
+la url es la accion del formulario 
+
+Ruta
+---
+    Route::post('contacto', 'PagesController@mensajes');
+---
+
+Controlador
+---
+    public function mensajes()
+    {
+        return 'Procesando el mensaje...';
+    }
+    
+---
+
+al enviar el formulario genera un error,
+TikenMismatchException in VerifyCsrfToken
+
+Este error es dispardo por un middleware, que aun es un tema no visto, por ahora solo se deshabilitar. Abruimos el middleweare
+
+    VerifyCsrfToken.php
+
+Tenemos una propiedad excep, Aca se va a definir la ura que no queremos que sea verifiada. No es recomendable hacer esto.
+
+Por ahora esta bien.
+
+protected $except = [
+        'contacto'
+    ];

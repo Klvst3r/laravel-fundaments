@@ -22,6 +22,11 @@ class PagesController extends Controller
     {
         return view('contactos');
     }
+
+    public function mensajes()
+    {
+        return 'Procesando el mensaje...';
+    }
     
 
     public function saludo($nombre = "Invitado")
