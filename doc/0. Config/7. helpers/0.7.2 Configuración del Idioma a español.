@@ -90,4 +90,29 @@ Es decir, una vez copiados los archivos tendrás una nueva carpeta llamada:
 
 lang/es
 
-Una vez copiados los archivos, lang/es vez tendrá dentro todos los archivos que descargaste de la carpeta "locales/es" del repositorio indicado. Al final, tendrás una estructura de directorios más o menos como esta imagen:
+Una vez copiados los archivos, lang/es vez tendrá dentro todos los archivos que descargaste de la carpeta "locales/es" del repositorio indicado. Al final, tendrás una estructura de directorios más o menos como sigue:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Existen otros repositorios desde:
+
+https://github.com/Laravel-Lang/lang/tree/main/locales/es
+
+https://github.com/Laravel-Lang/lang
+
+
