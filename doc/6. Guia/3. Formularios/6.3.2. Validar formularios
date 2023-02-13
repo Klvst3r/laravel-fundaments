@@ -165,4 +165,68 @@ con {!! ... !!} cambiando las siguientes lineas:
 
 
 
+Cambio de mensajes de error de idioma
+-------------------
 
+Si vamos a la carpeta
+    lang/en
+
+Aca se guardan las traducciones en ingles  de validación , paginación entre otros.
+
+Revisando el archivo
+    validation.php
+
+Buscando la palabra required. Encontraremos el mensaje cuando un campo es obligatorio, la cadena 'atribute' es reemplazada por el nombre del campo. en este caso nombre, Podriamos editar los mensajes directamente desde aqui, pero existe una mejor forma de hacerlo.
+
+Dupilcamos la carpeta en y la cambiamos a es en conjunto de todos sus archivos.
+
+Abriendo el archivo podriamos traducir cada uno de los mensajes, abrimos el archivo
+    lang/es/validation.php
+
+Volvemos la palabra required con el mensaje que debemos modificar.
+
+---
+    'required' => 'El campo :attribute es obligatorio.',
+---
+
+Esto no es suficiente por que ahora debemos decirle a Laravel, que nuestra aplicación esta en español, para ello en la carpeta
+
+confirg/app.php
+
+Buscar la linea que contiene:
+    'locale' => 'en',
+
+    'locale' => 'es',
+
+
+Con esto sera suficiente. Ahora cambiamos el mensaje de validación del mensaje 
+
+De esta forma se podria ir traduciendo manualmente todos los errores, pero existe un repositorio que se puede utilizar.
+
+Google
+    laravel validation languages
+
+En el primer resultado de github, eonctremos varios repositorio con las traducciones necesarias, aca hay que buscar la carpeta es, con las traducciones en español.
+
+    https://github.com/Laravel-Lang/lang
+
+    https://github.com/Laravel-Lang/lang/blob/main/locales/es/json.json
+
+Seria descargar cada uno de los archivos contenidos, igual que en el archivo
+    lang/locales/es/validation.php
+
+Se abrira el archivo, y hacemos click en "Ramw" Seleccionamos todo y copiamos el contenido copiamos en el archivo locale
+    validation.php
+
+Para la Version 9 la situaicón cambia.
+
+Pero hay una forma de hacer multiidioma nuestro proyecto.
+
+Para este proceso se crea un helper de configuración 
+
+
+
+
+Referencia:
+
+https://desarrolloweb.com/articulos/localizacion-laravel
