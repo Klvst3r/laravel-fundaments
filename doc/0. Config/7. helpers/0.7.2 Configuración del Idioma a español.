@@ -93,13 +93,136 @@ lang/es
 Una vez copiados los archivos, lang/es vez tendrá dentro todos los archivos que descargaste de la carpeta "locales/es" del repositorio indicado. Al final, tendrás una estructura de directorios más o menos como sigue:
 
 
+/en
+ |_ en.json
+/es
+ |_ auth.php
+    es.json
+    paginacion.php
+    password.php
+    validation-inline.php
+    validation-nova-inline.php
+    validation-nova.php
+    validation.php
+
+
+
+Importante: sigue leyendo, porque la ruta final del archivo de localizaciones es.json la tendremos que mover a una carpeta distinta a la que aparece en la imagen anterior. Enseguida te explicamos por qué.
 
 
 
 
 
+Opción 2.- Hacer un require del repositorio con Composer
+
+Alternativamente puedes descargar este repositorio directamente con Composer.
+
+    composer require laravel-lang/lang --dev
+
+Una vez instalado tienes los archivos de traducción en la carpeta vendor/laravel-lang/lang/locales. Por tanto, para las traducciones al español tendremos que copiar la carpeta
+
+    vendor/laravel-lang/lang/locales/es
+
+El destino de la carpeta copiada será el que hemos explicado antes, dentro de lang/es, o la carpeta que corresponda según el idioma de localización que hayamos instalado.
+Cambiar la configuración de la aplicación para definir el idioma
+
+Una vez hemos instalado los archivos de la localización, para que la aplicación se traduzca tenemos además que hacer un cambio en la configuración de la aplicación.
+
+Para ello editamos el archivo config/app.php y buscamos la declaración "locale", en la que ponemos el código de la localización deseada.
+
+Tendremos que cambiar:
+
+    'locale' => 'en',
+
+Por la correspondiente localización instalada. Para español sería:
+
+'locale' => 'es',
+
+Además, existe otra configuración que nos permite indicar cuál será la localización de la cadena, si es que no existe una correspondencia con aquello que se intenta traducir.
+
+'fallback_locale' => 'en',
 
 
+Aproximaciones para ampliar y personalizar la localización de Laravel
+-------------------
+
+Obviamente, además de los textos básicos de una aplicación Laravel recién instalada, cuando estés realizando una página multi-idioma irás introduciendo nuevos textos que también tendrás que localizar. Llegado ese punto existen dos aproximaciones posibles para definir las cadenas localizadas en aplicaciones Laravel, que podemos usar de la manera que se adapte mejor a nuestras necesidades.
+
+
+Archivo de palabras en formato JSON
+----
+
+La más sencilla sería usando un archivo de palabras sueltas en formato JSON. Este archivo de palabras contiene todas las cadenas que se deberían traducir y se coloca en la raíz de la carpeta "lang".
+
+El nombre del archivo json será compuesto por la cadena de la localización, algo como "es", con extensión "json". Por ejemplo, para español tendremos el archivo es.json.
+
+En los archivos que habíamos copiado anteriormente, veremos que en la carpeta "es" había un archivo llamado "es.json". Ese archivo contiene todas las cadenas de las traducciones, pero tendremos que moverlo a la carpeta "lang". Por tanto, los archivos de las localizaciones en la carpeta "lang" nos quedarán finalmente como vemos a continuación:
+
+/lang
+    |_en/
+    |_es/
+    |_ vendor/
+    {} en.json
+    {} es.json
+
+En ese archivo están todas las cadenas sueltas que se deben traducir, en pares clave/valor. La clave es la cadena a localizar y el valor es la cadena localizada. Por ejemplo, cada vez que veamos en la aplicación un código como este:
+
+__('Email')
+
+Se buscará en el archivo JSON una clave llamada "Email" y se presentará en la vista su correspondiente valor.
+
+{
+  //…
+  "Email": "Correo electrónico",
+  //…
+}
+
+Si no se encuentra una correspondencia de esa clave, se buscará entonces en un archivo en la carpeta lang/es, tal como vamos a explicar a continuación. Si tampoco se encuentra nada allí, entonces se mostrará el mismo mensaje enviado al helper.
+
+
+
+Localizaciones en archivos sueltos
+-----
+
+Adicionalmente, podríamos tener las localizaciones en archivos sueltos en la carpeta lang/es o similares. Pero no es tan práctico porque si hay muchas cadenas a localizar tendríamos que manejar muchos archivos.
+
+Por ejemplo, podríamos tener un archivo lang/es/email.php con el contenido "Correo electrónico" escrito tal cual. Entonces se usaría si esa cadena no está en el JSON que hemos mencionado anteriormente.
+
+
+
+Mensajes de aplicación
+----
+A menudo, los mensajes que la aplicación envía por diversos motivos se encuentran también en archivos sueltos de la localización bajo la carpeta correspondiente.
+
+Por ejemplo, los intentos de login fallidos se envían desde el controlador localizados con cadenas que están en un archivo llamado lang/es/auth.php.
+
+En ese archivo tenemos un array asociativo, también clave/valor, donde las claves corresponden con el mensaje que se debe enviar.
+
+Por ejemplo, si vemos un código como este:
+
+__('auth.password')
+
+Se mostrará el mensaje que hay en el archivo lang/es/auth.php con la clave "password".
+
+También hay un helper para localización llamado trans(). Funciona de manera similar al helper __(). Por ejemplo, si encontramos este código:
+
+trans('pagination.next')
+
+Buscará la traducción en el archivo lang/es/pagination.php que hay en el array con la clave "next".
+Archivo validation.php para los mensajes de validación de Laravel
+
+Hay otro archivo relevante para las validaciones, que mantiene todos los mensajes de validación. Ese archivo lo puedes usar para traducir los mensajes de validación de Laravel, pero también para traducir los nombres de los campos validados.
+
+Por ejemplo, al construir un formulario si estamos validando un campo input llamado "name" no queremos que nos diga algo como "el campo name es requerido". Entonces tienes que suministrar en validation.php todas las cadenas de nombres de campos que estés usando en una clave llamada "attributes".
+
+Esto lo tienes explicado con ejemplos y mayor detalle en la FAQ: ¿Cómo traducir los nombres de los campos (input name) en las validaciones Laravel?
+Conclusión
+
+En principio esto es todo lo que necesitas saber para mantener las traducciones de tus aplicaciones Laravel y localizar los textos al español, u otros idiomas. Afortunadamente, no necesitas hacer tú mismo los archivos de localización, ya que están disponibles en el repositorio que hemos compartido. Se trata simplemente de copiarlos en la carpeta "lang".
+
+En adelante, a medida que vayas desarrollando tu aplicación, tendrás que ampliar los textos de los archivos de localización, con las técnicas y alternativas que hemos explicado.
+
+Hemos visto cómo localizar tu página Laravel a un idioma en concreto, pero por supuesto, puedes configurar diversas localizaciones para construir también páginas multiidioma en Laravel
 
 
 
