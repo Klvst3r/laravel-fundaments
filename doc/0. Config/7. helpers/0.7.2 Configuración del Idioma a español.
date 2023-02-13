@@ -1,3 +1,4 @@
+0.7.2. Configuración del idioma a español
 
 
 Para poder configurar los mensajes de validación a un idioma especifico, en nuestro español, vamos necesitar instalar el paquete de idiomas necesarios e indicarle a Laravel que lo use de manera predeterminada cuando se requiera.

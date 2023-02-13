@@ -169,9 +169,10 @@ con {!! ... !!} cambiando las siguientes lineas:
 
 
 
-
 Cambio de mensajes de error de idioma
 -------------------
+
+
 
 Si vamos a la carpeta
     lang/en
