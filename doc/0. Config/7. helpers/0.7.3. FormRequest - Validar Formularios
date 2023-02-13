@@ -1,0 +1,162 @@
+0.7.3. Validar Formularios con Form Request
+
+Una de nuestras metas como desarrollador profesional es construir un código limpio, fácil de mantener y reusable. Sin embargo, es común que tengamos controladores que se ocupan de muchas tareas y a veces repetidas haciendo que sean extensos o complejos. Para tales casos, puede ser conveniente usar una clase especial de Laravel llamada Form Request que permiten separar la lógica de validación de datos (validación, mensajes de errores, autorización de usuarios y redirección en caso de fallar) de la lógica del controlador.  Esta clase intercepta la solicitud o request y valida los datos que vienen de una petición HTTP antes de pasar al controlador. En este tutorial aprenderemos cómo trabajar con Form Request:
+
+Para validar formularios o requests desde un controlador se puede usar algo como:
+
+Usando el método validate del trait ValidatesRequests:
+<?php
+namespace App\Http\Controllers;
+use App\Product;
+use Illuminate\Http\Request;
+class ProductController extends Controller
+{    
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'price' => 'required|min:0',
+        ]);
+        // se crea un nuevo producto
+    }
+}
+
+o usando el Facade Validator:
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+class ProductController extends Controller
+{
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'price' => 'required|min:0',
+        ]);
+        if ($validator->fails()) {
+            return redirect('product/create')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        //se crea un nuevo producto
+    }
+}
+
+Para mantener el código del controlador limpio podemos aprovechar la ventaja que nos ofrece Form Request para separar la lógica de la validación del controlador a una clase dedicada a ello.
+Creación de un Form Request
+
+Para crear una clase Form Request se ejecuta en la consola:
+
+    php artisan make:request NombreRequest
+
+Como por ejemplo:
+
+    php artisan make:request ProductCreateRequest
+
+y creará un nuevo archivo en /app/Http/Requests/ProductCreateRequest.php
+
+Por defecto, esta clase viene con dos métodos:
+
+authorize este es un método opcional donde colocamos la lógica para la autorización del usuario que devolverá true si el usuario está autorizado para hacer la solicitud y false en caso contrario. Si se decide dejar la lógica de autorización en otra parte de la aplicación, simplemente se devuelve true de esta manera:
+public function authorize()
+{
+    return true;
+}
+
+Si es tu caso, asegura que retorne true pues al crearse la clase retorna false, por tanto lanzará una excepción.
+
+rules método que devuelve un array con las reglas de validación que serán aplicadas. Por ejemplo:
+public function rules()
+{
+    return [
+        'name' => 'required',
+        'price' => 'required|min:0',
+    ];
+}
+
+Éstos no son los únicos métodos con los que podemos trabajar, pues esta clase extiende de Illuminate\Foundation\Http\FormRequest, por tanto también podemos sobrescribir los métodos:
+messages es el método encargado de retornar un array con pares atributo.regla y su correspondiente mensaje de error y de esta manera podemos personalizar los errores de la validación. Por ejemplo:
+public function messages()
+{
+    return [
+        'name.required' => 'El :attribute es obligatorio.',
+        'price.required' => 'Añade un :attribute al producto',
+        'price.min' => 'El :attribute debe ser mínimo 0'
+    ];
+}
+
+attributes es el método con el que podemos sobrescribir o personalizar el nombre de los atributos validados al mostrar el mensaje de error:
+public function attributes()
+{
+    return [
+        'name' => 'nombre del producto',
+        'price' => 'precio de venta',
+    ];
+}
+
+También puedes personalizar hacia dónde se redirige el usuario cuando la validación falla, agregando alguno de los siguientes atributos: protected $redirect para asignar un URI, protected $redirectRoute para asignar una ruta o protected $redirectAction para asignar una acción de un controlador. Como por ejemplo:
+<?php
+namespace App\Http\Requests;
+use Illuminate\Foundation\Http\FormRequest;
+class ProductCreateRequest extends FormRequest
+{
+    protected $redirectRoute = 'post.create' //ruta definida en alguno de los archivos de la carpeta routes/
+    //...
+}
+
+Estos atributos son evaluados en el método getRedirectUrl, el cual es el encargado de obtener la URL a redirigir en caso de haber errores en la validación. Si no hemos personalizado algunos de esos atributos este método redirigirá a la URL anterior de la solicitud.
+
+Otra propiedad que podemos modificar es $dontFlash el cual es un array que contiene todos aquellas claves del request que queremos que estén vacíos al hacer la redirección. Esta propiedad por defecto tiene lo siguiente:
+
+protected $dontFlash = ['password', 'password_confirmation'];
+
+Por otro lado, un método útil es prepareForValidation() disponible desde Laravel 5.3, que como su nombre lo indica, se encarga de preparar los datos para hacer la validación y se ejecuta antes de ésta.
+
+Hay otros métodos con los que puedes trabajar en caso que lo necesites, para conocerlos puedes revisar el archivo:
+
+vendor/laravel/framework/src/Illuminate/Foundation/Http/FormRequest.php
+Uso de un Form Request
+
+Después de crear y definir nuestro form request para usarlo en el controlador tan solo cambiamos el tipo de dato (typehint) Request de $request en la declaración del método del controlador por el nombre de la clase Form Request, sin olvidar importarla, por ejemplo:
+<?php
+namespace App\Http\Controllers;
+use App\Http\Requests\ProductCreateRequest;
+class ProductController extends Controller
+{
+    public function store(ProductCreateRequest $request)
+    {
+        //se crea un nuevo producto
+    }
+}
+
+De esta manera, el request que viene del formulario será evaluado por el Form Request antes de ejecutar las instrucciones del método del controlador que está siendo llamado, es decir, la creación del producto será ejecutada únicamente si el request pasa la validación.
+
+En cambio si falla la validación, el Form Request se encargará de redirigir a URL que definimos (o a la URL anterior en caso de no personalizar la redirección). En caso de ser una petición Ajax, nuestro form request responderá enviando un json de los errores de validación y con el código de estado 422.
+
+El método del Form Request que se encarga de esto es response() en caso que quieras personalizarlo:
+public function response(array $errors)
+    {
+        if ($this->expectsJson()) {
+            return new JsonResponse($errors, 422);
+        }
+        return $this->redirector->to($this->getRedirectUrl())
+            ->withInput($this->except($this->dontFlash))
+            ->withErrors($errors, $this->errorBag);
+    }
+¿Cuándo debo usar un Form Request?
+
+El uso de Form Request depende ti y de tu proyecto, no necesitas hacerlo con todas las validaciones sino que tómalo en cuenta como alternativa al método validate o el Facade Validator disponibles desde el controlador en casos donde tengas muchos campos que validar, quieras reusar la validación, o necesites personalizar varios mensajes, nombres de atributo, redirección, etc. Para validaciones estándares de 4 campos o menos, definitivamente te recomendamos usar el método validate y mantener el código simple.
+
+
+
+Referencias:
+
+https://styde.net/como-trabajar-con-form-requests-en-laravel/
+
+https://www.laraveltip.com/que-son-como-y-por-que-utilizar-los-form-request-de-laravel/
+
+Que son los FormRequest
+    https://www.youtube.com/watch?v=Ze-Sg2BT3mc
+
+    

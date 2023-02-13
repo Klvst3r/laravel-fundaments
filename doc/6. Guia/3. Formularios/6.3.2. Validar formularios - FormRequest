@@ -22,13 +22,15 @@ Archivos
             app/Http/Middleware/
                 VerifyCsrfToken.php
 
-        Trails
+        Traits
             Illuminate\Fundation\Validation\ValidatesRequests
 
         traducciones    
             lang/en
                 validation.php
 
+        Request
+            app\Http\Request\CreateMessageRequest.php
 
 
 Contenido
@@ -257,6 +259,10 @@ Para el FormRequest
     use Illuminate\Foundation\Http\FormRequest;
     ---
     
+ahora todo funciona bien pero ahora se tiene una clase especifica para la validación del formulario y desatender la carga de tareas del controlador.
+
+
+ahora una vez que se ha validado y guardado la información, debemos darle una respuesta al usuario, para eso utilizamos los responses es lo que se vera en la siguiente sección.
 
 
 
