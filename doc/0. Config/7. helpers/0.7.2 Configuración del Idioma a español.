@@ -200,22 +200,96 @@ En ese archivo tenemos un array asociativo, también clave/valor, donde las clav
 
 Por ejemplo, si vemos un código como este:
 
-__('auth.password')
+    __('auth.password')
 
 Se mostrará el mensaje que hay en el archivo lang/es/auth.php con la clave "password".
 
 También hay un helper para localización llamado trans(). Funciona de manera similar al helper __(). Por ejemplo, si encontramos este código:
 
-trans('pagination.next')
+    trans('pagination.next')
 
 Buscará la traducción en el archivo lang/es/pagination.php que hay en el array con la clave "next".
+
+
+
 Archivo validation.php para los mensajes de validación de Laravel
+----
 
 Hay otro archivo relevante para las validaciones, que mantiene todos los mensajes de validación. Ese archivo lo puedes usar para traducir los mensajes de validación de Laravel, pero también para traducir los nombres de los campos validados.
 
 Por ejemplo, al construir un formulario si estamos validando un campo input llamado "name" no queremos que nos diga algo como "el campo name es requerido". Entonces tienes que suministrar en validation.php todas las cadenas de nombres de campos que estés usando en una clave llamada "attributes".
 
 Esto lo tienes explicado con ejemplos y mayor detalle en la FAQ: ¿Cómo traducir los nombres de los campos (input name) en las validaciones Laravel?
+
+
+
+¿Cómo traducir los nombres de los campos (input name) en las validaciones Laravel?
+------
+
+Resulta que los nombres de los campos en el formulario están en inglés (están así por buenas prácticas a la hora de programar) y, a pesar de que los mensajes sí están traducidos, los nombres de los campos de formulario en los mensajes aparencen en inglés todavía.
+
+Me explico, el campo es así:
+
+<input type="text" name="currency">
+
+Como vemos, el name del input text está definido como "currency". Entonces el mensaje de validación de Laravel me aparece así:
+
+El campo currency es obligatorio.
+
+Es solo un ejemplo. Por supuesto pasa con todos los nombres de los campos y, aunque se entiende, no queda del todo bien.
+
+¿Cómo podemos traducir esos nombres de campos para que las validaciones de Laravel salgan totalmente en español?
+
+
+Es un tema importante sin duda eso de traducir los nombres de los campos de validación. Afortunadamente, Laravel ofrece un sistema bastante sencillo y rápido para conseguirlo.
+
+No encontrarás una traducción genérica, puesto que las palabras dependen completamente de los campos que tengas tú en la base de datos. De modo que tienes que editar a mano el archvio de las localizaciones y crear un array con todas las palabras a traducir, que serían los "name" de los <input> y las palabras traducidas en tu idioma.
+
+
+Para ello tienes que abrir el archivo de la localización de las validaciones, validation.php, que se encuentra en la carpeta lang de tu idioma. Por ejemplo:
+
+resources/lang/es/validation.php
+
+Actualizado: En Laravel 9 las rutas de los archivos de validación han cambiado, ahora las encuentras en la carpeta raíz:
+
+lang/es/validation.php
+
+Obviamente esa es la ruta para la localización al español, pero sirve para traducir los campos a cualquier otro idioma, simplemente cambiando la carpeta "es" por la que sea.
+
+En ese archivo encontrarás un array llamado "attributes". Inicialmente está vacío.
+
+Actualizado: En los archivos de traducciones instalados en una aplicación nueva con Laravel 9 el array attributes no está presente, pero lo puedes generar tú mismo en el array asociativo que encontrarás en validation.php.
+
+    Como clave (key) del array tienes que colocar el nombre a traducir (el valor del atributo "name", definido en la etiqueta <input>, <select> o cualquier otro elemento de formulario)
+    Como valor tienes que colocar la palabra traducida.
+
+Por ejemplo este sería un posible ejemplo de array de traducciones de atributos name:
+
+'attributes' => [
+    'role' => 'rol',
+    'name' => 'nombre',
+    'password' => 'clave',
+],
+
+En Laravel 9 el archivo validation devuelve un array. En el array que devuelve puedes crear un índice con el texto 'attributes', al que asignas el valor de un array con todas las traducciones que necesites para los name de los campos input.
+
+<?php
+return [
+    'accepted'             => ':attribute debe ser aceptado.',
+    
+    // Muchas otras entradas de localización
+
+    'attributes' => [
+        'title' => 'título',
+        'name' => 'nombre',
+        'password' => 'clave',
+    ],
+];
+
+Miguel Angel 
+
+
+
 Conclusión
 
 En principio esto es todo lo que necesitas saber para mantener las traducciones de tus aplicaciones Laravel y localizar los textos al español, u otros idiomas. Afortunadamente, no necesitas hacer tú mismo los archivos de localización, ya que están disponibles en el repositorio que hemos compartido. Se trata simplemente de copiarlos en la carpeta "lang".
@@ -223,6 +297,24 @@ En principio esto es todo lo que necesitas saber para mantener las traducciones 
 En adelante, a medida que vayas desarrollando tu aplicación, tendrás que ampliar los textos de los archivos de localización, con las técnicas y alternativas que hemos explicado.
 
 Hemos visto cómo localizar tu página Laravel a un idioma en concreto, pero por supuesto, puedes configurar diversas localizaciones para construir también páginas multiidioma en Laravel
+
+
+Traduccion de Laravel a español 
+---------------------------------
+
+Actualmente ya no se hace copiando los archivos manualmente y básicamente es obligatorio usar el gestor de traducción.
+
+ 
+
+La recomendación ahora es hacer 
+
+`composer require laravel-lang/publisher laravel-lang/lang laravel-lang/attributes --dev`
+
+ 
+
+Y después instalar los idiomas, por ejemplo español con el comando
+
+`php artisan lang:add es`
 
 
 
@@ -239,3 +331,15 @@ https://github.com/Laravel-Lang/lang/tree/main/locales/es
 https://github.com/Laravel-Lang/lang
 
 
+https://morioh.com/p/12c8decaf9ef
+
+https://diarioprogramador.com/como-crear-proyecto-multi-idioma-en-laravel/
+
+https://github.com/diarioprogramador/multi-idioma
+
+https://styde.net/como-usar-el-componente-de-traducciones-de-laravel/
+
+https://styde.net/traduccion-de-los-modulos-de-registro-autenticacion-y-recuperacion-de-contrasena-en-laravel/
+
+
+https://codersfree.com/posts/traduce-tus-aplicaciones-laravel-al-espanol
