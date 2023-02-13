@@ -231,8 +231,54 @@ Pero hay una forma de hacer multiidioma nuestro proyecto.
 Para este proceso se crea un helper de configuración 
 
 
+Para poder Cargar el FormRequest al proyecto
+
+Ejecutamos
+    Para limpiar el cache
+        composer clear-cache  
+
+    Para Cargar el FormRequest
+        composer dump-autoload
+
+
+Finalmente el namespace y uso de FormRequest 
+
+Para el Controlador: (PagesController.php)
+    ---
+    / 6.3.2 Ok - Funcionales para validación
+    namespace App\Http\Controllers;
+    use App\Http\Requests\CreateMessageRequest;
+    use Illuminate\Http\Request;
+    ---
+
+Para el FormRequest
+    ---
+    namespace App\Http\Requests;
+    use Illuminate\Foundation\Http\FormRequest;
+    ---
+    
+
+
 
 
 Referencia:
 
 https://desarrolloweb.com/articulos/localizacion-laravel
+
+https://dev.to/lucasgio/mejora-tus-validaciones-en-laravel-con-form-request-23pd
+
+https://styde.net/como-trabajar-con-form-requests-en-laravel/
+
+https://laravel.io/forum/01-08-2017-how-to-solve-class-apphttprequestsupdateuserrequest-does-not-exist-laravel-53
+
+https://litvinjuan.medium.com/how-to-fix-target-class-does-not-exist-in-laravel-8-f9e28b79f8b4
+
+https://laracasts.com/discuss/channels/general-discussion/class-apphttpcontrollersrequest-does-not-exist
+
+
+Referencias Oficiales:
+
+https://laravel.com/docs/5.2/validation#available-validation-rules
+
+https://laravel.com/docs/9.x/validation#creating-form-requests
+
