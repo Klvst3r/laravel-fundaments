@@ -3,6 +3,13 @@
 @section('contenido')
 		<h1>Contactos</h1>
 		<h2>Escríbeme</h2>
+		<!-- 6.3.3 Redirección con sesiones -->
+
+		@if( session()->has('info') )
+			<h3>{{ session('info') }}</h3>
+		@else
+
+
 		<!-- 6.3.1. Formularios -->
 		<form method="POST" action="contacto">
 			<p><label for="nombre">Nombre
@@ -19,5 +26,9 @@
 			</label></p>
 			<p><input type="submit" value="Enviar">
 		</form>
+
+
+		@endif
+
 		<hr> 
 @stop

@@ -85,10 +85,35 @@ class PagesController extends Controller
         ]);*/
 
         //retornando todos los campos del formulario
-        return $request->all(); //Procesar los datos del formulario
+        //return $request->all(); //Procesar los datos del formulario
+
+        // 6.3.3. Responses
+
+        //Cambio de valor a los headers
+        /*$data = $request->all();
+        return response()->json(['data' => $data],202);*/
+
+        //Se envian headers
+        /*$data = $request->all();
+        return response()->json([
+            'data' => $data
+            ],202)
+            ->header('TOKEN','secret');*/
 
         //Redirección
+        /*$data = $request->all();
+        return redirect('/');*/
         
+        //Redirección a una pagina especifica.
+        /*$data = $request->all();
+        return redirect()->route('saludos');*/
+
+        //Redirección con sesiones para mensajes.
+        $data = $request->all();
+         
+         return redirect()
+            ->route('contactos')
+            ->with('info', 'Tu mensaje ha sido enviado correctamente :)');
         
 
     }
@@ -109,3 +134,4 @@ class PagesController extends Controller
         return view('saludo', compact('nombre', 'html', 'script', 'consolas'));
     }
 }
+ 
