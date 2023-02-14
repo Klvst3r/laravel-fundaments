@@ -13,6 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     //6.3.1.
     protected $except = [
-       // 'contacto'
+       'contacto'
     ];
 }

@@ -1,0 +1,224 @@
+6.3.4. que son y como se utilizan los MIDDLEWARES
+
+Archivos
+-----
+
+    Secciones:
+           
+        Controladores
+            app/Http/Controllers/
+                
+                
+
+        Vista
+            resources/views/
+                
+
+        helper  
+            helper.php
+                
+
+        middleware
+            App/Http/Middleware/
+                VerirycsrfToken.php
+
+            vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware
+                VerifyCsrfToken.php
+
+                
+
+
+Contenido
+----------
+En la sección anterior vimos como manejar respuestas del lado del servidor.
+
+ahora se vera que son los middlewares.
+
+
+Un middleware es algo asi como un guardian, una capa que intercepta las peticiones del usuario y verifica que cumplan sus reglas y en caso de que estas reglas no se cumplan, la peticion es terminada.
+
+ se toma como ejemplo el middleware
+    VerirycsrfToken.php
+    ---
+    class VerifyCsrfToken extends Middleware
+    ---
+
+Vemos como el middleware se extiende a la clase BaseVerifier.php desde  
+    Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+
+
+
+---
+
+public function handle($request, Closure $next)
+    {
+        if (
+            $this->isReading($request) || //Si el método es GET
+            $this->runningUnitTests() || // Si estamos ejecutando un test
+            $this->inExceptArray($request) ||  // Si la URL está dentro de la propiedad except
+            $this->tokensMatch($request)
+        ) {
+            return tap($next($request), function ($response) use ($request) {
+                if ($this->shouldAddXsrfTokenCookie()) {
+                    $this->addCookieToResponse($request, $response);
+                }
+            });
+        }
+
+        throw new TokenMismatchException('CSRF token mismatch.');
+    }
+
+---
+
+el metodo handle es el que nos interesa.
+
+Todo middleware tiene un metodo llamado handle que es el reponsable de verificar lo que necesitamos para determinar si se le permite continuar o no. En el caso que se muestra es un if que erifica varias cosas. a breves razgos en el perimer metodo se verifica si el request es de tipo get, luego si se esta ejecutando un test, despues si la url del request se se encuentra en la propiedad escept donde pusimos la url contacto.
+
+
+VerifyCsrfToken.php
+---
+class VerifyCsrfToken extends Middleware
+{
+    /**
+     * The URIs that should be excluded from CSRF verification.
+     *
+     * @var array<int, string>
+     */
+    //6.3.1.
+    protected $except = [
+       // 'contacto'
+    ];
+}
+---
+
+Al agregar la ahi actualiza la propiedad en:
+
+ Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+
+ ---
+/**
+     * The URIs that should be excluded from CSRF verification.
+     *
+     * @var array
+     */
+    protected $except = []; //se actualiza la propiedad en:
+ ---
+
+ Y por ultimo verifica el origen del request
+
+ ---
+public function handle($request, Closure $next)
+    {
+        ...
+        
+            $this->tokensMatch($request)
+        ...
+    }
+ --
+
+ Verificando como lo hace:
+
+ Primero obtiene un token unico de la sessión, luego trata de encontrar un token enviado por el request ya sea un compa de formulario  o en una cabecera.
+
+ ---
+    protected function tokensMatch($request)
+    {
+        $token = $this->getTokenFromRequest($request);
+
+        return is_string($request->session()->token()) &&
+               is_string($token) &&
+               hash_equals($request->session()->token(), $token);
+    }
+ ---
+
+ al final hace la comparación, si sin iguales significa que el origen es el mismo, por lo tanto permite el paso, si cualquiera de estas condiciones devuelve verdadeo, el request pasa:
+
+
+ ---
+ if (
+            $this->isReading($request) || //Si el método es GET
+            $this->runningUnitTests() || // Si estamos ejecutando un test
+            $this->inExceptArray($request) ||  // Si la URL está dentro de la propiedad except
+            $this->tokensMatch($request)
+        ) {
+            return tap($next($request), function ($response) use ($request) {
+                if ($this->shouldAddXsrfTokenCookie()) {
+                    $this->addCookieToResponse($request, $response);
+                }
+            });
+        }
+
+ ---
+
+ Caso contrario lanza una excepcion, 
+
+ ---
+...
+    throw new TokenMismatchException('CSRF token mismatch.');
+ ---
+
+ entonces, para hacer que la verificación pase, podemos enviar un campo llamado 
+    _token
+
+ ---
+
+ return is_string($request->session()->token()) &&
+               is_string($token) &&
+               hash_equals($request->session()->token(), $token);
+
+ ---
+
+ con el valor del token de la sesión, 
+
+Para ello abrimos la vista contactos.blade.php
+
+Y dentro del formulario vamos a agregar un campo oculto.
+
+
+Se descomento
+App/Http/Middleware/VerifyCsrfToken
+---
+protected $except = [
+       'contacto'
+    ];
+---
+
+
+Para ello abrimos la vista contactos.blade.php
+
+Y dentro del formulario vamos a agregar un campo oculto.
+
+---
+<!-- 6.3.4. Middleware -->
+			<input type="hidden" name="_token" value="{{ csrf_token() }}">
+---
+
+Inspección del formulario
+    <input type="hidden" name="_token" value="NeAc2yRmp1L79KF47m52HSnU1encvFc7mgWVvlwK">
+
+con el valor del Token, si se llena el formulario y se envia, el middleware identifica el token y me permite pasar al siguiente request.
+
+Ahora, una ultima cosa antes de crear nuestro propio middleware, en lugar de escribir el codigo para el formulario, se tienen a disposición, otra cuncion llamada.
+    {!! csrf_field() !!}
+
+Lo que hace es regresar, el campo completo con el token,     
+contactos.blade.php
+---
+<!-- 6.3.4. Middleware -->
+			<input type="hidden" name="_token" value="{{ csrf_token() }}">
+			{!! csrf_field() !!}
+---
+
+
+Lo que hace es regresar el campo completo con el token
+
+Insepccionando:
+
+    <input type="hidden" name="_token" value="NeAc2yRmp1L79KF47m52HSnU1encvFc7mgWVvlwK">
+    <input type="hidden" name="_token" value="NeAc2yRmp1L79KF47m52HSnU1encvFc7mgWVvlwK">
+
+
+solo que ahora nos ahorramos unos cuantos caracteres.
+
+
+

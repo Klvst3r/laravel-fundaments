@@ -12,6 +12,11 @@
 
 		<!-- 6.3.1. Formularios -->
 		<form method="POST" action="contacto">
+
+			<!-- 6.3.4. Middleware -->
+			<input type="hidden" name="_token" value="{{ csrf_token() }}">
+			{!! csrf_field() !!}
+
 			<p><label for="nombre">Nombre
 				<input type="text" name="nombre" value="{{ old('nombre') }}">
 				{!! $errors->first('nombre','<span class=error>:message</span>') !!}
