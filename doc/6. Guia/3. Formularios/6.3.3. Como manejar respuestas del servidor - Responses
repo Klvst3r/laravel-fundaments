@@ -18,7 +18,8 @@ Archivos
             helper.php
                 
 
-
+        middleware
+            App/Http/Middleware/VerirycsrfToken.php
 
                 
 
@@ -306,4 +307,39 @@ si se envia el formlario el mensaje aparece y desaparece el formulario pues ya n
 
 Por ultimo se va a reemplazar todo, por otro helper.
 
+Pagescontroller
+---
+
+public function mensajes(CreateMessageRequest $request)
+    {
+     $data = $request->all();
+         
+         return back()
+            ->with('info', 'Tu mensaje ha sido enviado correctamente :)');
+        
+    }
+---
+Se prueba en el navegador funcionando sin problema alguno
+
+
+
+----------------
+Recordando en la seccion de request que el Archivo
+    App/Http/Middleware/VerirycsrfToken.php
+
+Se añadio la ruta contacto, para que no sea verificado el origen del formulario, si se comenta esta linea    
+
+---
+protected $except = [
+       // 'contacto'
+    ];
+---
+
+si se intenta enviar el formulario, aparece el siguiente error:
+
+1/1 TokenMismatchException in VerifyCsrfToken.php
+
+Debidoa que el middleware intercepto el reuqest. 
+
+en la siguiente sección veremos que son y como funcionan los middlewares.
 
