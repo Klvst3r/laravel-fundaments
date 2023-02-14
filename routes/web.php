@@ -130,7 +130,10 @@ Route::get('saludos/{nombre?}', ['as' =>'saludos', function($nombre = "Invitado"
 
 
 
-Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home']);
+//Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home']);
+// 6.3.4 Middleware - Example
+
+Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home'])->middleware('example');
 
 // Usando la sintaxis de acción
 //Route::get("/", [PagesController::class, 'home']);

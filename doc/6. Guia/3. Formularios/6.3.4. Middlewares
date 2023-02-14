@@ -21,12 +21,17 @@ Archivos
         middleware
             App/Http/Middleware/
                 VerirycsrfToken.php
+                Example.php
 
             vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware
                 VerifyCsrfToken.php
 
-                
+        Archivos Kernel
+            App/Http/Kernel.php    
 
+        Rutas:
+            routes/
+                web.php
 
 Contenido
 ----------
@@ -222,3 +227,186 @@ solo que ahora nos ahorramos unos cuantos caracteres.
 
 
 
+
+
+Creación de un middleware propio
+----------------------------------
+
+En la terminal
+    php artisan make:middleware <nombre-Middleware>
+
+Una buena practica es nombrar los archivos de forma que describa la acción que realizn, Por ejemplo el middleware revisado antoeriormente se traduce  VerifyCsrfToken (Verifica el token csrf)
+
+Describe la acción que realizam; existe otro que Redirecciona si esta autorizado (RedirectIfAuthenticated)
+
+Incluso podria nombrarse en español, por ejemploe 
+    RedireccionasiTalCosaSeCumple
+
+En lo personal se prefiere nombrear a los archivos en ingles, por principio de universalidad.
+
+Ej.     
+    php artisan make:middleware Example
+
+Esto crea dentro de la Carpeta Middleware el archivo recien creado.
+
+
+Al abrirlo:
+
+---
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class Example
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        
+        if (true){
+
+            return $next($request);
+        }
+
+        return response('No puedes continuar',404);
+    }
+}
+
+---
+
+Esta es la estructura basica de un middleware, se tienen el metodo handle, que todo middleware debe tener, es donde se define el condicional.
+
+Si la condicion se cumple, dejamos pasar al siguiente request, casoconttario devovemos una respuesta, no puedes continuar y se agrega un codigo de 404 o 403.
+
+Aqui ya se tendria nuestro middleware listo
+
+Para utilizarlo, debemos ir al archivo 
+    App/Http/Kernel.php
+
+Vemos  que es en donde se definen los middlewares, en la primera propiedad llamada middleware se definen los middewares de forma glbal.
+
+
+---
+protected $middleware = [
+        // \App\Http\Middleware\TrustHosts::class,
+        \App\Http\Middleware\TrustProxies::class,
+        \Illuminate\Http\Middleware\HandleCors::class,
+        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+    ];
+---
+
+
+Es decir que se aplicaran a todas y cada una de las peticiones Http, en la parte inferior se tiene la propiedad, middlewaregroups, donde podemos definir middlewares agrupado.
+
+---
+protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+
+        'api' => [
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+    ];
+---
+
+se tiene un middleware llamado web, que agrupa a cinco middleware, por ultimo se tienen los routeMiddlewares donde se definen, los middlewares que se pueden aplicar, a rutas y controladores.
+
+Se agregara el middleware example que se acaba de crear 
+
+
+---
+protected $routeMiddleware = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'example' => \App\Http\Middleware\Example::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed' => \App\Http\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    ];
+---
+
+Se le da una llave al middeware, en este caso se llama example y el nombfre de la clase creada es Example.
+
+Se tienen dos formas de aplicar el middleweare.
+
+1. La primera es desde la ruta
+
+desde
+    routes/web.php
+
+Simplemente añadimos el metodo del middleware  y elnombre que definimos en el kernel.
+
+   ---
+    Route::get("/", ['as' => 'home', 'uses' => 'PagesController@home'])->middleware('example');
+   ---
+
+De esta manera cuando acceda al home, el middleware interceptara el request, hara la comprobación, y respondera en consecuencia.
+Middleware/Example.php
+---
+
+public function handle(Request $request, Closure $next)
+    {
+        
+        if (true){
+
+            return $next($request);
+        }
+
+        return response('No puedes continuar',404);
+    }
+
+---
+
+En este caso como la comprobación siempre va a retornar verdadero el request va a continuar.
+
+En el navegador
+
+home
+ Y accedemos a la pagina.
+
+ Pero si la condicion no se cumple
+
+ ---
+public function handle(Request $request, Closure $next)
+    {
+        
+        if (false){
+
+            return $next($request);
+        }
+
+        return response('No puedes continuar',404);
+    }
+
+---
+ No sdeja pasar al home, y si vamos a otras rutas, se pude acceder sin problemas
+
+ en este caso   saludos/klvst3r
+                contactos
+
+6.17                
