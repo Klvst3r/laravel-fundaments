@@ -109,10 +109,17 @@ class PagesController extends Controller
         return redirect()->route('saludos');*/
 
         //Redirección con sesiones para mensajes.
-        $data = $request->all();
+        /*$data = $request->all();
          
          return redirect()
             ->route('contactos')
+            ->with('info', 'Tu mensaje ha sido enviado correctamente :)');*/
+
+        //Redirección  a la ruta anterior.
+
+        $data = $request->all();
+         
+         return back()
             ->with('info', 'Tu mensaje ha sido enviado correctamente :)');
         
 
