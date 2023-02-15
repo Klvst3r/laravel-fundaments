@@ -29,10 +29,13 @@ class PagesController extends Controller
     public function __construct()
     {
         //Si aplica el middleware example afectara a todos los metodos por el contructor que aplica a todos los metodos
-        $this->middleware('example');
+        //$this->middleware('example');
 
         //Para que actue a solo un metodo hay que especificarlo a traves de un array
         //$this->middleware('example', ['only' => ['home']]);
+
+        //Accion opuesta usando except
+        $this->middleware('example', ['except' => ['home']]);
     }
 
 
