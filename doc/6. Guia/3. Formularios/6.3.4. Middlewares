@@ -7,6 +7,7 @@ Archivos
            
         Controladores
             app/Http/Controllers/
+                Pagescontrollers.php
                 
                 
 
@@ -21,7 +22,7 @@ Archivos
         middleware
             App/Http/Middleware/
                 VerirycsrfToken.php
-                Example.php
+                Example.php //ambos casos de uso de middleware
 
             vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware
                 VerifyCsrfToken.php
@@ -409,4 +410,51 @@ public function handle(Request $request, Closure $next)
  en este caso   saludos/klvst3r
                 contactos
 
-6.17                
+
+
+Otra forma de agregar middlewares
+---------------
+
+Es la que se recomienda
+
+En el Pagescontrollers, se añade un constructor
+---
+public function __construct()
+    {
+        $this->middleware('example');
+    }
+---
+
+Accediendo al middleware que se hereda del controlador base y por parametro se pasa el nombre del middleware, aqui se debe tener en cuenta que este middleware se esta aplicando a todos los metodos de este controlador (home(), contact(), mensajes()). Por ahora no se puede acceder a ninguna ruta. Entonces como hacemos para aplicar el middleware a metodos especificos.
+
+Como segundo parametro agregamos un array con la llave only y el valor sera otro array con los metodos a los que queremos que se aplique el middleware. Para este ejemplo queremos que solo se aplique al home.
+
+---
+public function __construct()
+    {
+        $this->middleware('example', ['only' => ['home']]);
+    }
+---    
+En el home no se pude acceder.
+
+Recordando que el middleware example debe estar con el valor false para que sea Verificando
+
+---
+
+public function handle(Request $request, Closure $next)
+    {
+        
+        if (true){
+
+            return $next($request);
+        }
+
+        return response('No puedes continuar',404);
+    }
+
+---
+
+
+En el navegador se podra verificar que el metodo home es el que no se puede acceder cuando actua el middleware, en el array ['only].
+
+

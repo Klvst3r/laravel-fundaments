@@ -18,7 +18,7 @@ class Example
     {
         
         //6.3.4 Middleware
-        if (true){
+        if (false){
 
             return $next($request);
         }
