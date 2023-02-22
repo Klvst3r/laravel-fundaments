@@ -3,21 +3,6 @@
 
 Archivos
 -----
-
-    Secciones:
-        Vistas-Plantillas:
-            layout.blade.php
-            contacto.blade.php
-            
-            
-        Rutas:
-            routes/
-                web.php
-            
-        Controladores
-            app/Http/Controllers/
-                PagesController.php
-
         config
             database.php
 

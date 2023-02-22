@@ -1,0 +1,72 @@
+6.4.2. Control de Versiones de Bd - Migrations
+
+
+Archivos
+-----
+
+    Secciones:
+
+        migraciones
+            database/migrations
+                2014_10_12_000000_create_users_table.php
+                2014_10_12_100000_create_password_resets_table.php
+
+
+
+Contenido
+---------
+
+En la seecion acterior vimos como se integran las bases de datos en Laravel y como se integran las variables de entorno.
+
+En esta sección se vera que son y para que sirven las migraciones.
+
+Las migraciones son una especie de control de versiones para bases de datos, permiete modificarlas y compartirlar.
+
+La carpeta donde se guardan las migraciones se encunetra en
+
+database/migrations
+
+Existen regularmente dos migraciones de entrada que Laravel contiene por defecto.
+
+- Una para crear la tabla de usuarios y otra 
+- Para crear la tabla de password_resets
+
+Toda migracion esta compuesta por dos metodos 
+
+---
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('users');
+    }
+---
+
+En el metodo up() utilizamos la clase Schema para crear la base de datos users y dentro de esta función definimos los campos de la tabla.
+
+Primero se definen los campos de la tabla con un campo invrementable id, como llave primaria, luego un campo 'name' de tipo string, luego un campo 'email' tambien como string con una llave de valor unica, luego un string de nombre password, a continuacion haty una funcion que devuelve un campo llamado 'rememberToken'
+
+01'07
