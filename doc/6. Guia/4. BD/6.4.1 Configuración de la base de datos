@@ -1,0 +1,87 @@
+6.4.1 Configuración de la base de datos
+
+
+Archivos
+-----
+
+    Secciones:
+        Vistas-Plantillas:
+            layout.blade.php
+            contacto.blade.php
+            
+            
+        Rutas:
+            routes/
+                web.php
+            
+        Controladores
+            app/Http/Controllers/
+                PagesController.php
+
+        config
+            database.php
+
+        .env
+
+Contenido
+---------
+
+Para integrar las Bd en la App, para ello si vamos a la carpeta 
+
+	config/database.php
+
+Se podra apreciar lo siguiente por la linea 18.
+    'default' => env('DB_CONNECTION', 'mysql'),
+
+Que es donde se define la Bd por defecto, que ejecuta una funcion env(), que recibe dos parametros, el primero es la llave de configuración que queremos, la funcion buscara en el archivo .env
+
+    DB_CONNECTION=mysql
+
+El valor que contienen es decir que se estaria enviando mysql, el segundo parametro es un valor por defecto, en caso de que la llave DB_CONNECTION no exista en el archivo .env.
+
+Es decir si borramos de .env 
+
+    DB_CONNECTION=mysql
+
+mysql sera el que se utilizara por defecto como se indica en el archivo 
+    config/database.php
+
+Sin embargo es buena practica definir nuestrs variables aqui, es decir en el archivo .env por seguridad ya que este archivo no se incluira en el control de versiones de producción.
+
+Para entender como funcionan las variables de entorno  ya que se utilizaran a lo largo del desarrollo.
+
+Nuevamente en el archivo 
+    database.php
+
+En la llave conections, existe entrada para varios soportes de BD.
+    sqlite, mysql, pgsql, sqlsrv, redis    
+
+Si utilizamos valet con Mac, pero si se esta enWindows con Laragon se tiene lo necesario. ahora es necesario definir las credenciales en el archivo .env para conectarnos a la Bd MySQL, se llamara para nuesro caso practico.
+
+    .env
+---
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=root
+DB_PASSWORD=desarrollo
+---
+
+Para Valet en Mac o nuestro gestor de base de datos favorito vamos a conectarnos a MySQL, con las mismas credenciales.
+
+Add Database
+    db
+
+
+Con esto ya estamos listos, tradicionalmente comenzariamos craando las tablas de la nueva estructura, pero esto trae algunos inconvenientes como por ejemplo.
+
+- cuando se quiere compartir el proyecto con los colaboradores, debemos exportar la base de datos a un script SQL comprimirlas, enviarlas etc.
+
+
+Laravel tiene un sistema de control de versiones de base de datos, que soluciona todos estos problemas.
+
+
+
+
+
